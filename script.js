@@ -72,3 +72,57 @@ document.addEventListener("click", (e) => {
     menu.classList.remove("open");
   }
 });
+const ACCENT = "#ff7a00";
+const ACCENT_LIGHT = "rgba(255,122,0,0.72)";
+const ACCENT_SOFT = "rgba(255,122,0,0.18)";
+
+const DANGER = "#ef4444";
+const DANGER_LIGHT = "rgba(239,68,68,0.72)";
+const DANGER_SOFT = "rgba(239,68,68,0.18)";
+
+const SUCCESS = "#22c55e";
+const SUCCESS_LIGHT = "rgba(34,197,94,0.72)";
+const SUCCESS_SOFT = "rgba(34,197,94,0.18)";
+
+const WARNING = "#f59e0b";
+const WARNING_LIGHT = "rgba(245,158,11,0.72)";
+const WARNING_SOFT = "rgba(245,158,11,0.18)";
+
+const BLUE = "#38bdf8";
+const BLUE_SOFT = "rgba(56,189,248,0.18)";
+
+const MUTED = "#9ca3af";
+const TEXT = "#ffffff";
+const GRID = "rgba(255,255,255,0.08)";
+/* Growth */
+mkChart("c-growth","bar",D.monthly.labels,[
+  {
+    label:"Applications",
+    data:D.monthly.apps,
+    backgroundColor:ACCENT_SOFT,
+    borderColor:ACCENT,
+    borderWidth:1.5,
+    borderRadius:6,
+    yAxisID:"y"
+  },
+  {
+    label:"Funded Amount",
+    data:D.monthly.funded,
+    type:"line",
+    borderColor:BLUE,
+    backgroundColor:BLUE_SOFT,
+    fill:true,
+    tension:.35,
+    pointRadius:4,
+    pointBackgroundColor:BLUE,
+    pointBorderColor:"#101010",
+    pointBorderWidth:2,
+    yAxisID:"y2"
+  }
+],{
+  scales:{
+    x:{ticks:{color:MUTED},grid:{display:false}},
+    y:{ticks:{color:MUTED,callback:v=>v>=1000?v/1000+"K":v},grid:{color:GRID}},
+    y2:{position:"right",ticks:{color:BLUE,callback:v=>"$"+v+"M"},grid:{display:false}}
+  }
+});
