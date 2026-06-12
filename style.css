@@ -1155,6 +1155,41 @@ border-bottom: 1px solid rgba(255,255,255,0.06);
     grid-template-columns: 1fr;
   }
 }
+.risk-flag {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 82px;
+  padding: 5px 10px;
+  border-radius: 999px;
+  font-size: 0.82rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+
+.risk-flag.high {
+  color: var(--danger);
+  background: var(--danger-soft);
+  border: 1px solid rgba(239,68,68,0.28);
+}
+
+.risk-flag.medium {
+  color: var(--warning);
+  background: var(--warning-soft);
+  border: 1px solid rgba(245,158,11,0.28);
+}
+
+.risk-flag.low {
+  color: var(--success);
+  background: var(--success-soft);
+  border: 1px solid rgba(34,197,94,0.28);
+}
+
+.risk-flag.neutral {
+  color: var(--muted);
+  background: rgba(255,255,255,0.05);
+  border: 1px solid var(--line);
+}
 /* =========================
   Mobile Responsive Fix
 ========================= */
