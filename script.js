@@ -126,3 +126,112 @@ mkChart("c-growth","bar",D.monthly.labels,[
     y2:{position:"right",ticks:{color:BLUE,callback:v=>"$"+v+"M"},grid:{display:false}}
   }
 });
+/* Donut */
+new Chart(document.getElementById("c-goodbad-donut"),{
+  type:"doughnut",
+  data:{
+    labels:["Good Loan","Bad Loan"],
+    datasets:[{
+      data:[86.18,13.82],
+      backgroundColor:[SUCCESS, DANGER],
+      hoverBackgroundColor:[SUCCESS_LIGHT, DANGER_LIGHT],
+      borderColor:"#101010",
+      borderWidth:4,
+      hoverOffset:8
+    }]
+  },
+  options:{
+    responsive:true,
+    maintainAspectRatio:false,
+    cutout:"68%",
+    plugins:{
+      legend:{
+        display:true,
+        position:"bottom",
+        labels:{
+          color:MUTED,
+          boxWidth:10,
+          boxHeight:10,
+          usePointStyle:true,
+          pointStyle:"circle"
+        }
+      }
+    }
+  }
+});
+/* Good bad bar */
+mkChart("c-goodbad-bar","bar",["Good Loan","Bad Loan"],[
+  {
+    label:"Funded",
+    data:[370.22,65.53],
+    backgroundColor:[SUCCESS_SOFT,DANGER_SOFT],
+    borderColor:[SUCCESS,DANGER],
+    borderWidth:1.5,
+    borderRadius:6
+  },
+  {
+    label:"Received",
+    data:[435.79,37.28],
+    backgroundColor:[SUCCESS_LIGHT,DANGER_LIGHT],
+    borderColor:[SUCCESS,DANGER],
+    borderWidth:1,
+    borderRadius:6
+  }
+],{
+  scales:{
+    x:{ticks:{color:MUTED},grid:{display:false}},
+    y:{ticks:{color:MUTED,callback:v=>"$"+v+"M"},grid:{color:GRID}}
+  }
+});
+const gradeColors = [
+  SUCCESS_LIGHT,
+  "rgba(132,204,22,0.78)",
+  WARNING_LIGHT,
+  "rgba(249,115,22,0.78)",
+  DANGER_LIGHT,
+  "rgba(220,38,38,0.82)",
+  "rgba(153,27,27,0.88)"
+];
+{
+  data:D.dti.bad_rate,
+  backgroundColor:[SUCCESS_LIGHT, WARNING_LIGHT, DANGER_LIGHT],
+  borderColor:[SUCCESS, WARNING, DANGER],
+  borderWidth:1.5,
+  borderRadius:5
+}
+datasets:[{
+  data:D.purpose_risk.bad_rate,
+  backgroundColor:D.purpose_risk.bad_rate.map(v =>
+    v > 20 ? DANGER_LIGHT : v > 14 ? WARNING_LIGHT : SUCCESS_LIGHT
+  ),
+  borderColor:D.purpose_risk.bad_rate.map(v =>
+    v > 20 ? DANGER : v > 14 ? WARNING : SUCCESS
+  ),
+  borderWidth:1,
+  borderRadius:4
+}]
+datasets:[
+  {
+    label:"MoM Change",
+    data:D.monthly.mom,
+    backgroundColor:D.monthly.mom.map(v => v > 0 ? DANGER_SOFT : SUCCESS_SOFT),
+    borderColor:D.monthly.mom.map(v => v > 0 ? DANGER : SUCCESS),
+    borderWidth:1.5,
+    borderRadius:5,
+    yAxisID:"y2"
+  },
+  {
+    label:"Bad Loan Rate",
+    data:D.monthly.bad_rate,
+    type:"line",
+    borderColor:DANGER,
+    backgroundColor:DANGER_SOFT,
+    fill:true,
+    tension:.35,
+    pointRadius:4,
+    pointBackgroundColor:DANGER,
+    pointBorderColor:"#101010",
+    pointBorderWidth:2,
+    yAxisID:"y"
+  }
+]
