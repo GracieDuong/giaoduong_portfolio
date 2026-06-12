@@ -235,34 +235,3 @@ datasets:[
     yAxisID:"y"
   }
 ]
-/* Monthly table */
-const monthlyBody = document.getElementById("monthly-detail-body");
-
-const riskBadge = rate => {
-  if (rate >= 15) return `<span class="risk-flag high">${rate.toFixed(2)}%</span>`;
-  if (rate >= 13.5) return `<span class="risk-flag medium">${rate.toFixed(2)}%</span>`;
-  return `<span class="risk-flag low">${rate.toFixed(2)}%</span>`;
-};
-
-const momBadge = mom => {
-  if (mom === 0) return `<span class="risk-flag neutral">—</span>`;
-  if (mom > 1) return `<span class="risk-flag high">+${mom.toFixed(2)}pp</span>`;
-  if (mom > 0) return `<span class="risk-flag medium">+${mom.toFixed(2)}pp</span>`;
-  return `<span class="risk-flag low">${mom.toFixed(2)}pp</span>`;
-};
-
-D.monthly.labels.forEach((m,i) => {
-  const mom = D.monthly.mom[i];
-  const badLoans = Math.round(D.monthly.apps[i] * D.monthly.bad_rate[i] / 100);
-
-  monthlyBody.innerHTML += `
-    <tr>
-      <td>${m}</td>
-      <td>${D.monthly.apps[i].toLocaleString()}</td>
-      <td>${badLoans.toLocaleString()}</td>
-      <td>${riskBadge(D.monthly.bad_rate[i])}</td>
-      <td>${momBadge(mom)}</td>
-      <td>$${D.monthly.funded[i].toFixed(1)}M</td>
-    </tr>
-  `;
-});
