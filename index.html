@@ -4,131 +4,592 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Giao Duong | Business Data Analyst Portfolio</title>
-<meta
-name="description"
-content="Business Data Analyst portfolio focusing on data analytics, product thinking, customer insights, and business decision-making."
-/>
+<meta name="description" content="Business Data Analyst portfolio focusing on data analytics, product thinking, customer insights, and business decision-making." />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link
-href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
-rel="stylesheet"
-/>
-<link rel="stylesheet" href="style.css" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+<style>
+/* ── DESIGN TOKENS (identical to credit-risk-report) ── */
+:root {
+  --bg:          #060608;
+  --surface:     #0e0e12;
+  --surface-2:   #141419;
+  --line:        rgba(255,255,255,0.07);
+  --line-soft:   rgba(255,255,255,0.04);
+  --text:        #f0f0f4;
+  --muted:       #8a8a9a;
+  --muted-2:     #5a5a6e;
+  --accent:      #ff6b1a;
+  --accent-dim:  rgba(255,107,26,0.15);
+  --accent-glow: rgba(255,107,26,0.35);
+  --danger:      #f0463a;
+  --danger-dim:  rgba(240,70,58,0.13);
+  --success:     #22c97a;
+  --success-dim: rgba(34,201,122,0.12);
+  --warning:     #f5a623;
+  --warning-dim: rgba(245,166,35,0.13);
+  --blue:        #4db8f0;
+  --blue-dim:    rgba(77,184,240,0.14);
+  --max:         1100px;
+  --r:           14px;
+  --r-sm:        8px;
+}
+
+*,*::before,*::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: "Inter", sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+a { text-decoration: none; color: inherit; }
+img { display: block; max-width: 100%; }
+
+/* ── REVEAL ANIMATION ── */
+.reveal {
+  opacity: 0;
+  transform: translateY(22px);
+  transition: opacity .55s ease, transform .55s ease;
+}
+.reveal.visible { opacity: 1; transform: none; }
+.delay-1 { transition-delay: .1s; }
+.delay-2 { transition-delay: .18s; }
+.delay-3 { transition-delay: .26s; }
+@media (prefers-reduced-motion: reduce) {
+  .reveal { opacity: 1; transform: none; transition: none; }
+}
+
+/* ── LAYOUT ── */
+.container { width: min(100% - 32px, var(--max)); margin-inline: auto; }
+
+/* ── HEADER ── */
+.site-header {
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(6,6,8,0.88);
+  backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--line);
+}
+.nav {
+  display: flex; align-items: center;
+  justify-content: space-between;
+  min-height: 64px;
+}
+.brand {
+  font-size: 1rem; font-weight: 800;
+  letter-spacing: -0.02em; color: var(--text);
+}
+.brand em { color: var(--accent); font-style: normal; }
+
+.menu-toggle {
+  display: none;
+  flex-direction: column; gap: 5px;
+  background: none; border: none; cursor: pointer; padding: 4px;
+}
+.menu-toggle span {
+  display: block; width: 22px; height: 2px;
+  background: var(--muted); border-radius: 2px;
+  transition: all .2s;
+}
+
+.menu { display: flex; gap: 24px; }
+.menu a {
+  font-size: .85rem; color: var(--muted);
+  transition: color .15s; font-weight: 500;
+}
+.menu a:hover { color: var(--accent); }
+
+/* ── HERO ── */
+.hero {
+  padding: 80px 0 64px;
+  position: relative; overflow: hidden;
+}
+.hero-bg-grid {
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(rgba(255,107,26,0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,107,26,0.05) 1px, transparent 1px);
+  background-size: 72px 72px;
+  mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, black 40%, transparent 100%);
+  pointer-events: none;
+}
+.hero-bg-glow {
+  position: absolute; top: -140px; left: 50%;
+  transform: translateX(-50%);
+  width: 700px; height: 700px;
+  background: radial-gradient(circle, rgba(255,107,26,0.08) 0%, transparent 68%);
+  pointer-events: none;
+}
+
+.hero-layout {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 48px;
+  align-items: center;
+  position: relative; z-index: 1;
+}
+
+/* eyebrow — same as credit risk */
+.eyebrow {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: .72rem; font-weight: 700;
+  letter-spacing: .2em; text-transform: uppercase;
+  color: var(--accent); margin-bottom: 20px;
+}
+.eyebrow::before {
+  content: ''; display: block;
+  width: 20px; height: 1px; background: var(--accent);
+}
+
+.hero-title {
+  font-size: clamp(2.2rem, 5vw, 3.6rem);
+  font-weight: 800; line-height: 1.06;
+  letter-spacing: -.04em; margin-bottom: 20px;
+}
+.hero-title span { color: var(--accent); }
+
+.hero-lead {
+  max-width: 560px; color: var(--muted);
+  font-size: .98rem; line-height: 1.65;
+  margin-bottom: 28px;
+}
+
+/* social links — link-chip style from credit risk */
+.hero-socials { display: flex; flex-wrap: wrap; gap: 10px; }
+.link-chip {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 6px 14px; font-size: .8rem; font-weight: 500;
+  border: 1px solid var(--line); border-radius: 999px;
+  color: var(--muted); transition: all .15s;
+}
+.link-chip:hover { border-color: var(--accent); color: var(--accent); }
+.link-chip svg { width: 12px; height: 12px; flex-shrink: 0; }
+.link-chip.primary {
+  background: var(--accent); border-color: var(--accent);
+  color: #fff;
+}
+.link-chip.primary:hover { background: #e55a0e; border-color: #e55a0e; }
+
+/* portrait card */
+.portrait-wrap { position: relative; flex-shrink: 0; }
+.portrait-card {
+  width: 200px; height: 200px;
+  border-radius: var(--r);
+  overflow: hidden;
+  border: 1px solid var(--line);
+  background: var(--surface);
+}
+.portrait-card img { width: 100%; height: 100%; object-fit: cover; }
+
+.status-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  margin-top: 12px;
+  padding: 6px 12px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  font-size: .76rem; color: var(--muted);
+}
+.status-dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--success);
+  box-shadow: 0 0 0 3px rgba(34,201,122,0.2);
+  animation: pulse 2s ease-in-out infinite;
+}
+@keyframes pulse {
+  0%,100% { box-shadow: 0 0 0 3px rgba(34,201,122,0.2); }
+  50%      { box-shadow: 0 0 0 6px rgba(34,201,122,0.08); }
+}
+
+/* ── SECTION BASE ── */
+.section { padding: 64px 0; border-top: 1px solid var(--line); }
+
+.section-tag {
+  display: inline-block;
+  font-size: .7rem; font-weight: 700;
+  letter-spacing: .18em; text-transform: uppercase;
+  color: var(--accent); margin-bottom: 10px;
+}
+.section-title {
+  font-size: clamp(1.5rem, 2.5vw, 2rem);
+  font-weight: 800; letter-spacing: -.035em;
+  line-height: 1.15; margin-bottom: 12px;
+}
+.section-lead {
+  color: var(--muted); font-size: .95rem;
+  line-height: 1.65; max-width: 640px;
+  margin-bottom: 32px;
+}
+
+/* ── ABOUT ── */
+.about-grid {
+  display: grid;
+  grid-template-columns: 1fr 240px;
+  gap: 40px; align-items: start;
+}
+.about-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r);
+  padding: 28px 32px;
+}
+.about-text p {
+  color: var(--muted); font-size: .95rem;
+  line-height: 1.75; margin-bottom: 14px;
+}
+.about-text p:last-child { margin-bottom: 0; }
+.about-text p strong { color: var(--text); font-weight: 600; }
+
+.about-portrait {
+  border-radius: var(--r);
+  overflow: hidden;
+  border: 1px solid var(--line);
+  aspect-ratio: 3/4;
+  background: var(--surface-2);
+}
+.about-portrait img { width: 100%; height: 100%; object-fit: cover; }
+
+/* ── EXPERIENCE ── */
+.experience-list { display: flex; flex-direction: column; gap: 0; }
+.experience-item {
+  display: grid;
+  grid-template-columns: 160px 1fr;
+  gap: 24px;
+  padding: 24px 0;
+  border-bottom: 1px solid var(--line);
+}
+.experience-item:first-child { border-top: 1px solid var(--line); }
+.experience-time {
+  font-size: .78rem; color: var(--muted-2);
+  padding-top: 4px; flex-shrink: 0;
+  font-weight: 500;
+}
+.exp-type {
+  font-size: .7rem; font-weight: 700;
+  letter-spacing: .12em; text-transform: uppercase;
+  color: var(--accent); margin-bottom: 6px;
+}
+.exp-org {
+  font-size: 1rem; font-weight: 700;
+  margin-bottom: 3px; letter-spacing: -.01em;
+}
+.exp-role {
+  font-size: .82rem; color: var(--muted);
+  margin-bottom: 10px; font-style: italic;
+}
+.exp-desc {
+  font-size: .88rem; color: var(--muted); line-height: 1.65;
+}
+
+/* ── TECH STACK ── */
+.tech-stack {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r);
+  overflow: hidden;
+}
+.tech-row {
+  display: grid;
+  grid-template-columns: 180px 1fr;
+  gap: 20px;
+  padding: 18px 24px;
+  border-bottom: 1px solid var(--line);
+  align-items: center;
+}
+.tech-row:last-child { border-bottom: none; }
+.tech-cat {
+  font-size: .72rem; font-weight: 700;
+  letter-spacing: .12em; text-transform: uppercase;
+  color: var(--muted-2);
+}
+.tech-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+.tech-tag {
+  padding: 4px 11px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  font-size: .78rem; color: var(--muted);
+  font-weight: 500;
+  transition: border-color .15s, color .15s;
+}
+.tech-tag:hover { border-color: var(--accent); color: var(--accent); }
+
+/* ── PROJECTS ── */
+.projects-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+}
+
+.project-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r);
+  padding: 22px 24px;
+  display: flex; flex-direction: column;
+  position: relative; overflow: hidden;
+  transition: border-color .2s;
+}
+.project-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0;
+  height: 2px;
+  background: var(--accent);
+  opacity: 0;
+  transition: opacity .2s;
+}
+.project-card:hover { border-color: rgba(255,107,26,0.3); }
+.project-card:hover::before { opacity: 1; }
+
+.project-meta {
+  font-size: .7rem; font-weight: 700;
+  letter-spacing: .12em; text-transform: uppercase;
+  color: var(--accent); margin-bottom: 10px;
+}
+.project-card h3 {
+  font-size: 1rem; font-weight: 700;
+  letter-spacing: -.015em; line-height: 1.3;
+  margin-bottom: 10px;
+}
+.project-card > p {
+  font-size: .85rem; color: var(--muted);
+  line-height: 1.65; margin-bottom: 14px;
+}
+.project-list {
+  list-style: none; padding: 0;
+  margin-bottom: 18px; flex: 1;
+}
+.project-list li {
+  font-size: .82rem; color: var(--muted-2);
+  padding: 5px 0;
+  border-bottom: 1px solid var(--line-soft);
+  padding-left: 14px; position: relative;
+  line-height: 1.5;
+}
+.project-list li::before {
+  content: '–';
+  position: absolute; left: 0;
+  color: var(--accent);
+}
+.project-list li:last-child { border-bottom: none; }
+
+.project-links { display: flex; gap: 8px; flex-wrap: wrap; margin-top: auto; }
+.project-link {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 5px 12px; font-size: .76rem; font-weight: 500;
+  border: 1px solid var(--line); border-radius: 999px;
+  color: var(--muted); transition: all .15s;
+}
+.project-link:hover { border-color: var(--accent); color: var(--accent); }
+.project-link.primary {
+  background: var(--accent-dim); border-color: rgba(255,107,26,0.35);
+  color: var(--accent);
+}
+.project-link.primary:hover { background: rgba(255,107,26,0.25); }
+
+/* Academic badge on card */
+.project-card.academic {
+  border-color: rgba(77,184,240,0.2);
+}
+.project-card.academic .project-meta { color: var(--blue); }
+.project-card.academic::before { background: var(--blue); }
+
+/* ── CV SECTION ── */
+.cv-block {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r);
+  padding: 28px 32px;
+  display: flex; align-items: center;
+  justify-content: space-between; gap: 24px;
+}
+.cv-block h3 {
+  font-size: 1.1rem; font-weight: 700;
+  letter-spacing: -.02em; margin-bottom: 6px;
+}
+.cv-block p { font-size: .88rem; color: var(--muted); line-height: 1.6; max-width: 560px; }
+.cv-actions { display: flex; gap: 10px; flex-shrink: 0; }
+
+/* ── FOOTER ── */
+.site-footer {
+  border-top: 1px solid var(--line);
+  padding: 32px 0;
+}
+.footer-inner {
+  display: flex; align-items: center;
+  justify-content: space-between; flex-wrap: wrap; gap: 14px;
+}
+.footer-brand { font-weight: 800; font-size: .9rem; }
+.footer-brand em { color: var(--accent); font-style: normal; }
+.footer-copy { font-size: .78rem; color: var(--muted-2); }
+
+/* ── BACK TO TOP ── */
+.to-top {
+  position: fixed; bottom: 24px; right: 24px; z-index: 50;
+  width: 40px; height: 40px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 50%; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: .9rem; color: var(--muted);
+  opacity: 0; pointer-events: none;
+  transition: all .2s;
+}
+.to-top.visible { opacity: 1; pointer-events: auto; }
+.to-top:hover { border-color: var(--accent); color: var(--accent); }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 860px) {
+  .hero-layout { grid-template-columns: 1fr; }
+  .portrait-wrap { display: none; }
+  .about-grid { grid-template-columns: 1fr; }
+  .about-portrait { display: none; }
+  .projects-grid { grid-template-columns: 1fr; }
+  .tech-row { grid-template-columns: 1fr; gap: 10px; }
+  .experience-item { grid-template-columns: 1fr; gap: 6px; }
+  .cv-block { flex-direction: column; align-items: flex-start; }
+
+  .menu-toggle { display: flex; }
+  .menu {
+    display: none;
+    position: fixed; inset: 64px 0 0;
+    background: rgba(6,6,8,0.98);
+    flex-direction: column; gap: 0;
+    padding: 12px 0; z-index: 200;
+  }
+  .menu.open { display: flex; }
+  .menu a {
+    padding: 14px 24px; font-size: .95rem;
+    border-bottom: 1px solid var(--line);
+  }
+}
+</style>
 </head>
 
 <body>
+
+<!-- ════════════════ HEADER ════════════════ -->
 <header class="site-header">
-<div class="container nav">
-<a href="#top" class="brand">Giao Duong</a>
+  <div class="container nav">
+    <a href="#top" class="brand">Giao <em>Duong</em></a>
 
-<button class="menu-toggle" id="menuToggle" aria-label="Open menu">
-<span></span>
-<span></span>
-</button>
+    <button class="menu-toggle" id="menuToggle" aria-label="Open menu" aria-expanded="false">
+      <span></span><span></span>
+    </button>
 
-<nav class="menu" id="menu">
-<a href="#about">About</a>
-<a href="#experience">Experience</a>
-<a href="#projects">Featured Works</a>
-<a href="#cv">CV</a>
-</nav>
-</div>
+    <nav class="menu" id="menu">
+      <a href="#about">About</a>
+      <a href="#experience">Experience</a>
+      <a href="#skills">Tech Stack</a>
+      <a href="#projects">Featured Works</a>
+      <a href="#cv">CV</a>
+    </nav>
+  </div>
 </header>
 
-<main id="top">
-<section class="hero section">
-<div class="container hero-grid">
-<div class="hero-text reveal">
-<p class="eyebrow">BUSINESS DATA ANALYST / PRODUCT ANALYST</p>
-<h1>
-Hi, I'm <span>Giao</span><br />
-Business Data Analyst<br />
-& Product Thinker          </h1>
-<p class="lead">
-I am a Business Analytics graduate with experience in data visualization,
-Python-based data processing, customer segmentation, and product thinking.
-I enjoy connecting data with business context to support better decisions.
-</p>
+<!-- ════════════════ HERO ════════════════ -->
+<section class="hero" id="top">
+  <div class="hero-bg-grid" aria-hidden="true"></div>
+  <div class="hero-bg-glow" aria-hidden="true"></div>
+  <div class="container">
+    <div class="hero-layout">
 
-<div class="socials">
-<a href="https://github.com/GracieDuong" target="_blank" rel="noreferrer">GitHub</a>
-<a href="https://www.linkedin.com/in/graiceduong/?lipi=urn%3Ali%3Apage%3Ad_flagship3_profile_view_base_contact_details%3BGEOnFGS3Rx6lmdUe2m2dag%3D%3D" target="_blank" rel="noreferrer">LinkedIn</a>
-<a href="mailto:dnqgiao1408@gmail.com">Email</a>
-<a href="https://flowcv.com/resume/hbqnpa47gumc">CV</a>
-</div>
-</div>
+      <div class="reveal">
+        <p class="eyebrow">Business Data Analyst · Product Analyst</p>
+        <h1 class="hero-title">
+          Hi, I'm <span>Giao</span><br />
+          Business Data Analyst<br />
+          &amp; Product Thinker
+        </h1>
+        <p class="hero-lead">
+          Business Analytics graduate with experience in data visualization,
+          Python-based data processing, customer segmentation, and product thinking.
+          I connect data with business context to support better decisions.
+        </p>
+        <div class="hero-socials">
+          <a href="https://github.com/GracieDuong" target="_blank" rel="noreferrer" class="link-chip">
+            <svg viewBox="0 0 12 12" fill="currentColor"><path d="M6 .5A5.5 5.5 0 0 0 .5 6c0 2.43 1.57 4.49 3.75 5.22.27.05.37-.12.37-.26v-.92C3.2 10.3 2.87 9.22 2.87 9.22c-.25-.63-.6-.8-.6-.8-.49-.33.04-.33.04-.33.54.04.83.56.83.56.48.82 1.27.58 1.58.44.05-.35.19-.58.34-.71-1.2-.14-2.46-.6-2.46-2.67 0-.59.21-1.07.56-1.44-.06-.14-.24-.68.05-1.42 0 0 .46-.15 1.5.56a5.2 5.2 0 0 1 2.73 0c1.04-.71 1.5-.56 1.5-.56.3.74.11 1.28.05 1.42.35.37.56.85.56 1.44 0 2.07-1.26 2.53-2.46 2.67.19.17.37.5.37 1.01v1.5c0 .14.1.31.38.26A5.5 5.5 0 0 0 11.5 6 5.5 5.5 0 0 0 6 .5Z"/></svg>
+            GitHub
+          </a>
+          <a href="https://www.linkedin.com/in/graiceduong/" target="_blank" rel="noreferrer" class="link-chip">
+            <svg viewBox="0 0 12 12" fill="currentColor"><path d="M1.5 3.5h2V10h-2V3.5Zm1-2.8a1.15 1.15 0 1 1 0 2.3 1.15 1.15 0 0 1 0-2.3ZM4.8 3.5H6.6v.9h.02c.24-.45.83-.93 1.72-.93C10.2 3.47 10.5 4.7 10.5 6.2V10H8.52V6.6c0-.76-.01-1.73-1.06-1.73-1.06 0-1.22.83-1.22 1.68V10H4.8V3.5Z"/></svg>
+            LinkedIn
+          </a>
+          <a href="mailto:dnqgiao1408@gmail.com" class="link-chip">
+            <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.4"><rect x=".75" y="2.25" width="10.5" height="7.5" rx="1"/><path d="m.75 2.75 5.25 4 5.25-4"/></svg>
+            Email
+          </a>
+          <a href="https://flowcv.com/resume/hbqnpa47gumc" target="_blank" rel="noreferrer" class="link-chip primary">
+            Download CV
+          </a>
+        </div>
+      </div>
 
-<div class="hero-side reveal delay-1">
-<div class="portrait-card">
-<img src="img/portrait.jpg" alt="Giao Duong portrait" />
-</div>
+      <div class="portrait-wrap reveal delay-1">
+        <div class="portrait-card">
+          <img src="img/portrait.jpg" alt="Giao Duong portrait" />
+        </div>
+        <div class="status-badge">
+          <span class="status-dot"></span>
+          Open to opportunities
+        </div>
+      </div>
 
-<div class="status-badge">
-<span class="status-dot"></span>
-Open to opportunities
-</div>
-</div>
-</div>
+    </div>
+  </div>
 </section>
 
+<!-- ════════════════ ABOUT ════════════════ -->
 <section class="section" id="about">
-<div class="container">
-
-<h2 class="section-title">About Me</h2>
-
-<div class="section-card">
-<div class="about-grid">
-
-<!-- TEXT -->
-<div class="about-text">
-<p>
-I am a Business Analytics graduate with a strong interest in
-business data analysis, product thinking, and customer behavior.
-</p>
-
-<p>
-My work focuses on understanding problems, structuring insights,
-and communicating findings that support decision-making.
-</p>
-
-<p>
-Through academic and project-based work, I have developed
-hands-on experience in Tableau, Python, RFM segmentation,
-UX flow design, and data storytelling.
-</p>
-
-<p>
-I do not just analyze data — I aim to understand the system behind it.
-</p>
-</div>
-
-<!-- IMAGE -->
-<div class="about-image">
-<img src="img/gracieportrait.jpg" alt="Your portrait" />
-</div>
-
-</div>
-</div>
-
-</div>
+  <div class="container">
+    <div class="reveal">
+      <div class="section-tag">About</div>
+      <h2 class="section-title">About Me</h2>
+    </div>
+    <div class="about-grid reveal delay-1">
+      <div class="about-card">
+        <div class="about-text">
+          <p>
+            I am a <strong>Business Analytics graduate</strong> with a strong interest in
+            business data analysis, product thinking, and customer behavior.
+          </p>
+          <p>
+            My work focuses on understanding problems, structuring insights,
+            and communicating findings that support decision-making.
+          </p>
+          <p>
+            Through academic and project-based work, I have developed hands-on experience
+            in <strong>Tableau, Python, RFM segmentation, UX flow design,</strong> and data storytelling.
+          </p>
+          <p>
+            I do not just analyze data — I aim to understand the system behind it.
+          </p>
+        </div>
+      </div>
+      <div class="about-portrait">
+        <img src="img/gracieportrait.jpg" alt="Giao Duong" />
+      </div>
+    </div>
+  </div>
 </section>
 
+<!-- ════════════════ EXPERIENCE ════════════════ -->
 <section class="section" id="experience">
   <div class="container">
-    <div class="section-head reveal">
-      <h2>Experience</h2>
+    <div class="reveal">
+      <div class="section-tag">Experience</div>
+      <h2 class="section-title">Experience</h2>
     </div>
+    <div class="experience-list reveal delay-1">
 
-    <div class="experience-list reveal">
       <article class="experience-item">
         <div class="experience-time">12/2024 — 02/2025</div>
-
         <div class="experience-content">
-          <p class="experience-type">Banking</p>
-          <h3>Sacombank</h3>
-          <p class="experience-role">Credit Analyst Intern</p>
-          <p>
+          <p class="exp-type">Banking</p>
+          <h3 class="exp-org">Sacombank</h3>
+          <p class="exp-role">Credit Analyst Intern</p>
+          <p class="exp-desc">
             Assisted in credit appraisal and preliminary risk assessment for customer
             loan applications. Supported documentation review, customer verification,
             and on-site appraisal activities with senior staff.
@@ -138,182 +599,248 @@ I do not just analyze data — I aim to understand the system behind it.
 
       <article class="experience-item">
         <div class="experience-time">08/2024 — 11/2024</div>
-
         <div class="experience-content">
-          <p class="experience-type">Leadership</p>
-          <h3>Macquarie University</h3>
-          <p class="experience-role">Unit Representative</p>
-          <p>
+          <p class="exp-type">Leadership</p>
+          <h3 class="exp-org">Macquarie University</h3>
+          <p class="exp-role">Unit Representative</p>
+          <p class="exp-desc">
             Represented a cohort of 100+ students by collecting and communicating
             feedback to the course convenor, helping improve communication and the
             overall learning experience.
           </p>
         </div>
       </article>
+
     </div>
   </div>
 </section>
+
+<!-- ════════════════ TECH STACK ════════════════ -->
 <section class="section" id="skills">
-<div class="container">
-<div class="section-head reveal">
-<h2>Tech Stack</h2>
-</div>
-
-<div class="tech-stack reveal">
-<div class="tech-row">
-<div class="tech-title">Data Analysis</div>
-<div class="tech-tags">
-<span>Python</span>
-<span>Excel</span>
-<span>SQL</span>
-<span>DAX</span>
-<span>R Studio</span>
-<span>SPSS</span>
-</div>
-</div>
-
-<div class="tech-row">
-<div class="tech-title">Business Intelligence</div>
-<div class="tech-tags">
-<span>Tableau</span>
-<span>Power BI</span>
-<span>Dashboard Design</span>
-<span>Data Visualization</span>
-<span>KPI Reporting</span>
-</div>
-</div>
-
-<div class="tech-row">
-<div class="tech-title">Customer Analytics</div>
-<div class="tech-tags">
-<span>RFM Segmentation</span>
-<span>Customer Behavior</span>
-<span>Sales Analytics</span>
-<span>Insight Generation</span>
-</div>
-</div>
-
-<div class="tech-row">
-<div class="tech-title">Product Thinking</div>
-<div class="tech-tags">
-<span>User Journey Mapping</span>
-<span>Chatbot Flow</span>
-<span>Figma</span>
-<span>UX Logic</span>
-<span>Decision Support</span>
-</div>
-</div>
-</div>
-</div>
-</section>
-<section class="section" id="projects">
-<div class="container">
-<div class="section-head reveal">
-<h2>Featured Works</h2>
-</div>
-
-<div class="projects-grid">
-<article class="project-card reveal">
-  <div class="project-meta">Credit Risk · Banking · Dashboard</div>
-
-  <h3>Bank Loan Portfolio — Credit Risk Report 2021</h3>
-
-  <p>
-    Built an interactive credit risk analytics report to evaluate loan portfolio
-    performance, bad loan concentration, monthly risk trends, and policy recommendations.
-  </p>
-
-  <ul class="clean-list">
-    <li>Analyzed 38,576 loan records</li>
-    <li>Tracked funded amount, recovery ratio, good loan rate, and bad loan rate</li>
-    <li>Segmented credit risk by grade, term, DTI, interest rate, and purpose</li>
-    <li>Developed risk monitoring recommendations for portfolio control</li>
-  </ul>
-
-  <div class="project-links">
-    <a href="projects/credit-risk-report.html">View Report</a>
-    <a href="#">GitHub</a>
+  <div class="container">
+    <div class="reveal">
+      <div class="section-tag">Skills</div>
+      <h2 class="section-title">Tech Stack</h2>
+    </div>
+    <div class="tech-stack reveal delay-1">
+      <div class="tech-row">
+        <div class="tech-cat">Data Analysis</div>
+        <div class="tech-tags">
+          <span class="tech-tag">Python</span>
+          <span class="tech-tag">Excel</span>
+          <span class="tech-tag">SQL</span>
+          <span class="tech-tag">DAX</span>
+          <span class="tech-tag">R Studio</span>
+          <span class="tech-tag">SPSS</span>
+        </div>
+      </div>
+      <div class="tech-row">
+        <div class="tech-cat">Business Intelligence</div>
+        <div class="tech-tags">
+          <span class="tech-tag">Tableau</span>
+          <span class="tech-tag">Power BI</span>
+          <span class="tech-tag">Dashboard Design</span>
+          <span class="tech-tag">Data Visualization</span>
+          <span class="tech-tag">KPI Reporting</span>
+        </div>
+      </div>
+      <div class="tech-row">
+        <div class="tech-cat">Customer Analytics</div>
+        <div class="tech-tags">
+          <span class="tech-tag">RFM Segmentation</span>
+          <span class="tech-tag">Customer Behavior</span>
+          <span class="tech-tag">Sales Analytics</span>
+          <span class="tech-tag">Insight Generation</span>
+        </div>
+      </div>
+      <div class="tech-row">
+        <div class="tech-cat">Product Thinking</div>
+        <div class="tech-tags">
+          <span class="tech-tag">User Journey Mapping</span>
+          <span class="tech-tag">Chatbot Flow</span>
+          <span class="tech-tag">Figma</span>
+          <span class="tech-tag">UX Logic</span>
+          <span class="tech-tag">Decision Support</span>
+        </div>
+      </div>
+    </div>
   </div>
-</article>
-<article class="project-card reveal">
-<div class="project-meta">Python + Tableau + Customer Analytics</div>
-<h3>Sales & Customer Analytics: O&F Retail Case Study</h3>
-<p>
-Analyzed a retail dataset to understand sales performance, profitability,
-customer behavior, and operational efficiency.
-</p>
-<ul class="clean-list">
-<li>Cleaned and transformed raw data using Python</li>
-<li>Created RFM customer segmentation dataset</li>
-<li>Built Tableau dashboards for sales, discount, loyalty, and fulfillment</li>
-<li>Identified margin erosion from high discounting and delivery delays</li>
-</ul>
-<div class="project-links">
-<a href="https://public.tableau.com/app/profile/nguyen.quynh.giao.duong/viz/OFRetailPerformanceCustomerInsights/Story1#1">Tableau Dashboard</a>
-<a href="projects/retail-sales.html">Case Study</a>
-</div>
-</article>
-
-<article class="project-card reveal delay-1">
-<div class="project-meta">Product Case Study + Figma</div>
-<h3>TravelHelper – AI Chatbot for Travel Decision Support</h3>
-<p>
-Designed a travel chatbot that helps users make travel decisions through
-a structured conversation flow instead of overwhelming search results.
-</p>
-<ul class="clean-list">
-<li>Mapped travel-planning pain points and user decision flow</li>
-<li>Designed BPMN 2-pool workflow (User + System) with retry logic and human escalation</li>
-<li>Created Figma mobile UI with guided interaction, short prompts, and friendly tone</li>
-<li>Built service recovery for unclear inputs, failed payments, and unsupported requests</li>
-</ul>
-<div class="project-links">
-<a href="https://www.figma.com/design/LOiwtiQs61GqTdIh16l0WR/Untitled?node-id=0-1&p=f&t=Xxts1nD2Vc41dXCy-0">Figma Design</a>
-<a href="https://miro.com/app/board/uXjVHVsdx_M=/?share_link_id=756339237043">Miro</a>
-<a href="projects/travelhelper.html">Case Study</a>
-</div>
-</article>
-  
-<article class="project-card reveal delay-1">
-<div class="project-meta">Academic Recognition</div>
-<h3>MQBS2010 Teaching Resource</h3>
-<p>
-Created a teaching resource on time management in collaborative projects.
-The work was recognised as a high-quality sample for future students.
-</p>
-<ul class="clean-list">
-<li>Applied communication, teamwork, and self-leadership skills</li>
-<li>Translated learning concepts into an engaging educational resource</li>
-<li>Strengthened confidence in structuring and presenting ideas</li>
-</ul>
-<div class="project-links">
-<a href="https://www.linkedin.com/feed/update/urn:li:activity:7456942187491282944/">LinkedIn Post</a>
-</div>
-</article>
-</div>
-</div>
 </section>
 
+<!-- ════════════════ PROJECTS ════════════════ -->
+<section class="section" id="projects">
+  <div class="container">
+    <div class="reveal">
+      <div class="section-tag">Work</div>
+      <h2 class="section-title">Featured Works</h2>
+      <p class="section-lead">A selection of analytical and product projects spanning credit risk, retail analytics, and product design.</p>
+    </div>
+
+    <div class="projects-grid">
+
+      <!-- Project 1: Credit Risk -->
+      <article class="project-card reveal">
+        <div class="project-meta">Credit Risk · Banking · Dashboard</div>
+        <h3>Bank Loan Portfolio — Credit Risk Report 2021</h3>
+        <p>
+          Built an interactive credit risk analytics report to evaluate loan portfolio
+          performance, bad loan concentration, monthly risk trends, and policy recommendations.
+        </p>
+        <ul class="project-list">
+          <li>Analyzed 38,576 loan records across 2021</li>
+          <li>Tracked funded amount, recovery ratio, good and bad loan rate</li>
+          <li>Segmented credit risk by grade, term, DTI, interest rate, and purpose</li>
+          <li>Developed risk monitoring recommendations for portfolio control</li>
+        </ul>
+        <div class="project-links">
+          <a href="projects/credit-risk-report.html" class="project-link primary">View Report</a>
+          <a href="https://github.com/GracieDuong/giaoduong_portfolio" target="_blank" rel="noreferrer" class="project-link">GitHub</a>
+        </div>
+      </article>
+
+      <!-- Project 2: Retail -->
+      <article class="project-card reveal delay-1">
+        <div class="project-meta">Python · Tableau · Customer Analytics</div>
+        <h3>Sales &amp; Customer Analytics: O&amp;F Retail Case Study</h3>
+        <p>
+          Analyzed a retail dataset to understand sales performance, profitability,
+          customer behavior, and operational efficiency.
+        </p>
+        <ul class="project-list">
+          <li>Cleaned and transformed raw data using Python</li>
+          <li>Created RFM customer segmentation dataset</li>
+          <li>Built Tableau dashboards for sales, discount, loyalty, and fulfillment</li>
+          <li>Identified margin erosion from high discounting and delivery delays</li>
+        </ul>
+        <div class="project-links">
+          <a href="https://public.tableau.com/app/profile/nguyen.quynh.giao.duong/viz/OFRetailPerformanceCustomerInsights/Story1#1" target="_blank" rel="noreferrer" class="project-link primary">Tableau Dashboard</a>
+          <a href="projects/retail-sales.html" class="project-link">Case Study</a>
+        </div>
+      </article>
+
+      <!-- Project 3: Chatbot -->
+      <article class="project-card reveal delay-2">
+        <div class="project-meta">Product Case Study · Figma</div>
+        <h3>TravelHelper – AI Chatbot for Travel Decision Support</h3>
+        <p>
+          Designed a travel chatbot that helps users make travel decisions through
+          a structured conversation flow instead of overwhelming search results.
+        </p>
+        <ul class="project-list">
+          <li>Mapped travel-planning pain points and user decision flow</li>
+          <li>Designed BPMN 2-pool workflow with retry logic and human escalation</li>
+          <li>Created Figma mobile UI with guided interaction and friendly tone</li>
+          <li>Built service recovery for unclear inputs and failed payments</li>
+        </ul>
+        <div class="project-links">
+          <a href="https://www.figma.com/design/LOiwtiQs61GqTdIh16l0WR/" target="_blank" rel="noreferrer" class="project-link primary">Figma Design</a>
+          <a href="https://miro.com/app/board/uXjVHVsdx_M=/" target="_blank" rel="noreferrer" class="project-link">Miro</a>
+          <a href="projects/travelhelper.html" class="project-link">Case Study</a>
+        </div>
+      </article>
+
+      <!-- Project 4: Academic -->
+      <article class="project-card academic reveal delay-3">
+        <div class="project-meta">Academic Recognition</div>
+        <h3>MQBS2010 Teaching Resource</h3>
+        <p>
+          Created a teaching resource on time management in collaborative projects.
+          The work was recognised as a high-quality sample for future students.
+        </p>
+        <ul class="project-list">
+          <li>Applied communication, teamwork, and self-leadership skills</li>
+          <li>Translated learning concepts into an engaging educational resource</li>
+          <li>Strengthened confidence in structuring and presenting ideas</li>
+        </ul>
+        <div class="project-links">
+          <a href="https://www.linkedin.com/feed/update/urn:li:activity:7456942187491282944/" target="_blank" rel="noreferrer" class="project-link primary">LinkedIn Post</a>
+        </div>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════ CV ════════════════ -->
 <section class="section" id="cv">
-<div class="container">
-<div class="cv-box reveal">
-<div>
-<h2>CV</h2>
-<p>
-I am seeking opportunities as a Business Data Analyst, Product Analyst
-  where I can apply data-driven thinking to solve business problems.
-</p>
-</div>
-<div class="cv-actions">
-<a class="btn" href="https://flowcv.com/resume/hbqnpa47gumc">Download</a>
-</div>
-</div>
-</div>
+  <div class="container">
+    <div class="reveal">
+      <div class="section-tag">CV</div>
+      <h2 class="section-title">Curriculum Vitae</h2>
+    </div>
+    <div class="cv-block reveal delay-1">
+      <div>
+        <h3>Looking for new opportunities</h3>
+        <p>
+          Seeking roles as a Business Data Analyst or Product Analyst where I can apply
+          data-driven thinking, product reasoning, and analytical storytelling to solve
+          real business problems.
+        </p>
+      </div>
+      <div class="cv-actions">
+        <a href="https://flowcv.com/resume/hbqnpa47gumc" target="_blank" rel="noreferrer" class="link-chip primary">Download CV</a>
+        <a href="mailto:dnqgiao1408@gmail.com" class="link-chip">Get in touch</a>
+      </div>
+    </div>
+  </div>
 </section>
-</main>
+
+<!-- ════════════════ FOOTER ════════════════ -->
+<footer class="site-footer">
+  <div class="container footer-inner">
+    <a href="#top" class="footer-brand">Giao <em>Duong</em></a>
+    <div class="footer-copy">Business Data Analyst · Business Analytics Graduate</div>
+    <div class="footer-copy">dnqgiao1408@gmail.com</div>
+  </div>
+</footer>
 
 <button class="to-top" id="toTop" aria-label="Back to top">↑</button>
 
-<script src="script.js"></script>
+<script>
+/* ── SCROLL REVEAL ── */
+const rObs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add("visible");
+      rObs.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.08 });
+document.querySelectorAll(".reveal").forEach(el => rObs.observe(el));
+
+/* ── MOBILE MENU ── */
+const toggle = document.getElementById("menuToggle");
+const menu   = document.getElementById("menu");
+toggle.addEventListener("click", () => {
+  const open = menu.classList.toggle("open");
+  toggle.setAttribute("aria-expanded", open);
+});
+menu.querySelectorAll("a").forEach(a => {
+  a.addEventListener("click", () => {
+    menu.classList.remove("open");
+    toggle.setAttribute("aria-expanded", "false");
+  });
+});
+
+/* ── BACK TO TOP ── */
+const toTop = document.getElementById("toTop");
+window.addEventListener("scroll", () => {
+  toTop.classList.toggle("visible", window.scrollY > 400);
+}, { passive: true });
+toTop.addEventListener("click", () => window.scrollTo({ top: 0, behavior: "smooth" }));
+
+/* ── NAV ACTIVE ON SCROLL ── */
+const sections = document.querySelectorAll("section[id]");
+const navLinks = document.querySelectorAll(".menu a");
+window.addEventListener("scroll", () => {
+  let cur = "";
+  sections.forEach(s => {
+    if (window.scrollY >= s.offsetTop - 100) cur = s.id;
+  });
+  navLinks.forEach(a => {
+    a.style.color = a.getAttribute("href") === "#" + cur ? "var(--accent)" : "";
+  });
+}, { passive: true });
+</script>
 </body>
 </html>
