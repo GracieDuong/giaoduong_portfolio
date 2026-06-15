@@ -1,251 +1,772 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>O&F Retail Case Study | Giao Duong</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+<style>
+/* ── DESIGN TOKENS — identical to credit risk report ── */
+:root {
+  --bg:          #060608;
+  --surface:     #0e0e12;
+  --surface-2:   #141419;
+  --line:        rgba(255,255,255,0.07);
+  --line-soft:   rgba(255,255,255,0.04);
+  --text:        #f0f0f4;
+  --muted:       #8a8a9a;
+  --muted-2:     #5a5a6e;
+  --accent:      #ff6b1a;
+  --accent-dim:  rgba(255,107,26,0.15);
+  --accent-glow: rgba(255,107,26,0.35);
+  --danger:      #f0463a;
+  --danger-dim:  rgba(240,70,58,0.13);
+  --success:     #22c97a;
+  --success-dim: rgba(34,201,122,0.12);
+  --warning:     #f5a623;
+  --warning-dim: rgba(245,166,35,0.13);
+  --blue:        #4db8f0;
+  --blue-dim:    rgba(77,184,240,0.14);
+  --max:         1100px;
+  --r:           14px;
+  --r-sm:        8px;
+}
 
-  <title>O&F Retail Case Study | Giao Duong</title>
+*,*::before,*::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: "Inter", sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+a { text-decoration: none; color: inherit; }
+img { display: block; max-width: 100%; border-radius: var(--r); }
 
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link
-    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
-    rel="stylesheet"
-  />
+/* ── REVEAL ── */
+.reveal {
+  opacity: 0;
+  transform: translateY(22px);
+  transition: opacity .55s ease, transform .55s ease;
+}
+.reveal.visible { opacity: 1; transform: none; }
+.d1 { transition-delay: .08s; }
+.d2 { transition-delay: .16s; }
+.d3 { transition-delay: .24s; }
+@media (prefers-reduced-motion: reduce) {
+  .reveal { opacity: 1; transform: none; transition: none; }
+}
 
-  <link rel="stylesheet" href="../style.css" />
+/* ── LAYOUT ── */
+.container { width: min(100% - 32px, var(--max)); margin-inline: auto; }
+
+/* ── HEADER ── */
+.site-header {
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(6,6,8,0.88);
+  backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--line);
+}
+.nav {
+  display: flex; align-items: center;
+  justify-content: space-between;
+  min-height: 64px;
+}
+.brand {
+  font-size: 1rem; font-weight: 800;
+  letter-spacing: -0.02em;
+}
+.brand em { color: var(--accent); font-style: normal; }
+.menu { display: flex; gap: 24px; }
+.menu a {
+  font-size: .85rem; color: var(--muted);
+  font-weight: 500; transition: color .15s;
+}
+.menu a:hover { color: var(--accent); }
+
+/* ── HERO ── */
+.hero {
+  padding: 72px 0 56px;
+  position: relative; overflow: hidden;
+}
+.hero-grid {
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(rgba(255,107,26,0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,107,26,0.05) 1px, transparent 1px);
+  background-size: 72px 72px;
+  mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, black 40%, transparent 100%);
+  pointer-events: none;
+}
+.hero-glow {
+  position: absolute; top: -140px; left: 50%;
+  transform: translateX(-50%);
+  width: 700px; height: 700px;
+  background: radial-gradient(circle, rgba(255,107,26,0.08) 0%, transparent 68%);
+  pointer-events: none;
+}
+
+.eyebrow {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: .72rem; font-weight: 700;
+  letter-spacing: .2em; text-transform: uppercase;
+  color: var(--accent); margin-bottom: 20px;
+}
+.eyebrow::before {
+  content: ''; display: block;
+  width: 20px; height: 1px; background: var(--accent);
+}
+
+.hero-title {
+  font-size: clamp(2rem, 5vw, 3.4rem);
+  font-weight: 800; line-height: 1.06;
+  letter-spacing: -.04em; margin-bottom: 14px;
+  position: relative; z-index: 1;
+}
+.hero-title mark { background: none; color: var(--accent); }
+
+.hero-sub {
+  font-size: 1.05rem; color: var(--muted);
+  font-weight: 500; margin-bottom: 16px;
+  position: relative; z-index: 1;
+}
+
+.hero-lead {
+  max-width: 680px; color: var(--muted);
+  font-size: .95rem; line-height: 1.7;
+  margin-bottom: 28px;
+  position: relative; z-index: 1;
+}
+
+/* link chips — identical to credit risk */
+.hero-links { display: flex; flex-wrap: wrap; gap: 10px; position: relative; z-index: 1; margin-bottom: 44px; }
+.link-chip {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 6px 14px; font-size: .8rem; font-weight: 500;
+  border: 1px solid var(--line); border-radius: 999px;
+  color: var(--muted); transition: all .15s;
+}
+.link-chip:hover { border-color: var(--accent); color: var(--accent); }
+.link-chip svg { width: 12px; height: 12px; }
+.link-chip.primary {
+  background: var(--accent-dim);
+  border-color: rgba(255,107,26,0.4);
+  color: var(--accent);
+}
+.link-chip.primary:hover { background: rgba(255,107,26,0.25); }
+
+/* hero stat strip */
+.hero-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  background: var(--line);
+  border: 1px solid var(--line);
+  border-radius: var(--r);
+  overflow: hidden;
+  position: relative; z-index: 1;
+}
+.hero-stat { background: var(--surface); padding: 18px 20px; }
+.hero-stat-val {
+  font-size: 1.6rem; font-weight: 800;
+  letter-spacing: -.03em; line-height: 1; margin-bottom: 6px;
+}
+.hero-stat-val.danger { color: var(--danger); }
+.hero-stat-val.warning { color: var(--warning); }
+.hero-stat-val.success { color: var(--success); }
+.hero-stat-val.accent { color: var(--accent); }
+.hero-stat-label {
+  font-size: .7rem; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--muted-2);
+}
+
+/* ── TOC ── */
+.toc {
+  position: sticky; top: 64px; z-index: 80;
+  background: rgba(6,6,8,0.88);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--line);
+}
+.toc-inner { display: flex; overflow-x: auto; }
+.toc a {
+  display: inline-block; padding: 13px 16px;
+  font-size: .82rem; font-weight: 500;
+  white-space: nowrap; color: var(--muted);
+  border-bottom: 2px solid transparent;
+  transition: color .15s, border-color .15s;
+}
+.toc a:hover { color: var(--text); }
+.toc a.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+/* ── SECTION BASE ── */
+.report-body { padding-bottom: 80px; }
+.section { padding: 52px 0; }
+.section-header { margin-bottom: 28px; }
+.section-tag {
+  display: inline-block;
+  font-size: .7rem; font-weight: 700;
+  letter-spacing: .18em; text-transform: uppercase;
+  color: var(--accent); margin-bottom: 10px;
+}
+.section-title {
+  font-size: clamp(1.3rem, 2.2vw, 1.75rem);
+  font-weight: 800; letter-spacing: -.03em;
+  line-height: 1.15; margin-bottom: 12px;
+}
+.section-lead {
+  color: var(--muted); font-size: .95rem;
+  line-height: 1.65; max-width: 740px;
+}
+
+/* ── CARDS ── */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r);
+  padding: 22px 24px;
+  margin-bottom: 14px;
+}
+
+/* ── NARRATIVE ── */
+.narrative {
+  padding: 14px 16px 14px 18px;
+  border-radius: var(--r-sm);
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--accent);
+  background: var(--accent-dim);
+  color: var(--muted); font-size: .88rem;
+  line-height: 1.65; margin: 14px 0;
+}
+.narrative strong { color: var(--text); }
+.narrative.danger  { border-left-color: var(--danger);  background: var(--danger-dim); }
+.narrative.warning { border-left-color: var(--warning); background: var(--warning-dim); }
+.narrative.success { border-left-color: var(--success); background: var(--success-dim); }
+
+/* ── FINDING BLOCKS ── */
+.finding-block {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r);
+  padding: 28px 28px;
+  margin-bottom: 14px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+  transition: border-color .2s;
+}
+.finding-block::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0;
+  height: 2px;
+}
+.finding-block.f1::before { background: var(--danger); }
+.finding-block.f2::before { background: var(--warning); }
+.finding-block.f3::before { background: var(--blue); }
+.finding-block:hover { border-color: rgba(255,107,26,0.2); }
+
+.finding-number {
+  font-size: .7rem; font-weight: 700;
+  letter-spacing: .18em; text-transform: uppercase;
+  margin-bottom: 10px;
+}
+.f1 .finding-number { color: var(--danger); }
+.f2 .finding-number { color: var(--warning); }
+.f3 .finding-number { color: var(--blue); }
+
+.finding-title {
+  font-size: 1.05rem; font-weight: 700;
+  letter-spacing: -.02em; line-height: 1.3;
+  margin-bottom: 14px;
+}
+
+.finding-list {
+  list-style: none; padding: 0; margin-bottom: 16px;
+}
+.finding-list li {
+  font-size: .85rem; color: var(--muted);
+  padding: 6px 0 6px 14px;
+  border-bottom: 1px solid var(--line-soft);
+  position: relative; line-height: 1.55;
+}
+.finding-list li::before {
+  content: '–';
+  position: absolute; left: 0;
+  color: var(--accent);
+}
+.finding-list li:last-child { border-bottom: none; }
+
+.finding-impact {
+  padding: 12px 14px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--line);
+  border-radius: var(--r-sm);
+  font-size: .82rem; color: var(--muted); line-height: 1.55;
+}
+.finding-impact strong { color: var(--text); }
+
+.finding-image {
+  border-radius: var(--r);
+  overflow: hidden;
+  border: 1px solid var(--line);
+  background: var(--surface-2);
+  aspect-ratio: 16/10;
+}
+.finding-image img {
+  width: 100%; height: 100%;
+  object-fit: cover; border-radius: 0;
+}
+/* placeholder when no image */
+.finding-image.placeholder {
+  display: flex; align-items: center; justify-content: center;
+}
+.finding-image.placeholder span {
+  font-size: .75rem; color: var(--muted-2);
+  letter-spacing: .06em;
+}
+
+/* ── RECO GRID ── */
+.reco-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-bottom: 14px;
+}
+.reco-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r);
+  padding: 20px 22px;
+  border-top: 2px solid var(--accent);
+  transition: border-color .2s;
+}
+.reco-card:hover { border-color: rgba(255,107,26,0.35); }
+.reco-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 9px;
+  border-radius: 999px;
+  font-size: .7rem; font-weight: 700;
+  letter-spacing: .06em; text-transform: uppercase;
+  background: var(--accent-dim); color: var(--accent);
+  margin-bottom: 10px;
+}
+.reco-card:nth-child(1) .reco-label { background: var(--danger-dim); color: var(--danger); }
+.reco-card:nth-child(1) { border-top-color: var(--danger); }
+.reco-card:nth-child(2) .reco-label { background: var(--warning-dim); color: var(--warning); }
+.reco-card:nth-child(2) { border-top-color: var(--warning); }
+.reco-card:nth-child(3) .reco-label { background: var(--blue-dim); color: var(--blue); }
+.reco-card:nth-child(3) { border-top-color: var(--blue); }
+.reco-card:nth-child(4) .reco-label { background: var(--success-dim); color: var(--success); }
+.reco-card:nth-child(4) { border-top-color: var(--success); }
+
+.reco-text {
+  font-size: .85rem; color: var(--muted); line-height: 1.6;
+}
+
+/* ── FINAL CARD ── */
+.final-card {
+  padding: 28px 32px;
+  background: linear-gradient(135deg, rgba(255,107,26,0.07), rgba(255,107,26,0.02));
+  border: 1px solid rgba(255,107,26,0.2);
+  border-radius: var(--r);
+}
+.final-card p {
+  font-size: .95rem; color: var(--muted);
+  line-height: 1.75; margin-bottom: 12px;
+}
+.final-card p:last-child { margin-bottom: 0; }
+.final-card p strong { color: var(--text); }
+
+/* ── PIPELINE ── */
+.pipeline-card {
+  padding: 22px 24px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r);
+  margin-bottom: 14px;
+}
+.pipeline {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 0;
+  position: relative;
+}
+.pipeline::before {
+  content: '';
+  position: absolute; top: 28px; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--accent-glow), transparent);
+  z-index: 0;
+}
+.pipeline-step {
+  position: relative; z-index: 1;
+  text-align: center; padding: 0 8px;
+}
+.pipeline-num {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 32px; height: 32px; border-radius: 50%;
+  background: var(--surface-2);
+  border: 1px solid var(--accent);
+  color: var(--accent); font-size: .7rem; font-weight: 800;
+  margin: 0 auto 10px;
+}
+.pipeline-step-label { font-size: .76rem; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+.pipeline-step-desc { font-size: .7rem; color: var(--muted-2); }
+
+/* ── FOOTER ── */
+.site-footer {
+  border-top: 1px solid var(--line);
+  padding: 32px 0;
+}
+.footer-inner {
+  display: flex; align-items: center;
+  justify-content: space-between; flex-wrap: wrap; gap: 14px;
+}
+.footer-brand { font-weight: 800; font-size: .9rem; }
+.footer-brand em { color: var(--accent); font-style: normal; }
+.footer-copy { font-size: .78rem; color: var(--muted-2); }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 800px) {
+  .hero-stats { grid-template-columns: repeat(2, 1fr); }
+  .finding-block { grid-template-columns: 1fr; }
+  .finding-image { order: -1; }
+  .reco-grid { grid-template-columns: 1fr; }
+  .pipeline { grid-template-columns: repeat(3, 1fr); }
+  .pipeline::before { display: none; }
+}
+@media (max-width: 480px) {
+  .hero-stats { grid-template-columns: 1fr 1fr; }
+  .hero-title { font-size: 2rem; }
+}
+</style>
 </head>
 
 <body>
-  <header class="site-header">
-    <div class="container nav">
-      <a href="../index.html" class="brand">Giao Duong</a>
 
-      <nav class="menu">
-        <a href="../index.html#about">About</a>
-        <a href="../index.html#skills">Skills</a>
-        <a href="../index.html#projects">Featured Works</a>
-        <a href="../index.html#cv">CV</a>
-      </nav>
+<!-- ════════════════ HEADER ════════════════ -->
+<header class="site-header">
+  <div class="container nav">
+    <a href="../index.html" class="brand">Giao <em>Duong</em></a>
+    <nav class="menu">
+      <a href="../index.html#about">About</a>
+      <a href="../index.html#skills">Skills</a>
+      <a href="../index.html#projects">Featured Works</a>
+      <a href="../index.html#cv">CV</a>
+    </nav>
+  </div>
+</header>
+
+<!-- ════════════════ HERO ════════════════ -->
+<section class="hero">
+  <div class="hero-grid" aria-hidden="true"></div>
+  <div class="hero-glow" aria-hidden="true"></div>
+  <div class="container">
+
+    <p class="eyebrow reveal">Python · SQL · Tableau · Excel</p>
+
+    <h1 class="hero-title reveal d1">
+      O&amp;F Retail:<br>
+      <mark>Sales, Customer &amp; Operations</mark><br>
+      Case Study
+    </h1>
+
+    <p class="hero-sub reveal d2">Sales Performance, Customer Segmentation &amp; Operational Analysis</p>
+
+    <p class="hero-lead reveal d2">
+      An end-to-end analytics case study exploring how discount strategy,
+      customer segmentation, and fulfillment operations impacted profitability
+      and long-term customer value across North Asia, Oceania, and Southeast Asia.
+    </p>
+
+    <div class="hero-links reveal d3">
+      <a href="https://public.tableau.com/app/profile/nguyen.quynh.giao.duong/viz/OFRetailPerformanceCustomerInsights/Story1#1" target="_blank" rel="noreferrer" class="link-chip primary">
+        <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="1" y="1" width="10" height="10" rx="1"/><path d="M4 6h4M6 4v4"/></svg>
+        View Tableau Dashboard
+      </a>
+      <a href="#" class="link-chip">
+        <svg viewBox="0 0 12 12" fill="currentColor"><path d="M6 .5A5.5 5.5 0 0 0 .5 6c0 2.43 1.57 4.49 3.75 5.22.27.05.37-.12.37-.26v-.92C3.2 10.3 2.87 9.22 2.87 9.22c-.25-.63-.6-.8-.6-.8-.49-.33.04-.33.04-.33.54.04.83.56.83.56.48.82 1.27.58 1.58.44.05-.35.19-.58.34-.71-1.2-.14-2.46-.6-2.46-2.67 0-.59.21-1.07.56-1.44-.06-.14-.24-.68.05-1.42 0 0 .46-.15 1.5.56a5.2 5.2 0 0 1 2.73 0c1.04-.71 1.5-.56 1.5-.56.3.74.11 1.28.05 1.42.35.37.56.85.56 1.44 0 2.07-1.26 2.53-2.46 2.67.19.17.37.5.37 1.01v1.5c0 .14.1.31.38.26A5.5 5.5 0 0 0 11.5 6 5.5 5.5 0 0 0 6 .5Z"/></svg>
+        GitHub Repository
+      </a>
+      <a href="../index.html#projects" class="link-chip">
+        ← Back to Portfolio
+      </a>
     </div>
-  </header>
 
-  <main>
-    <!-- HERO -->
-    <section class="case-hero">
-      <div class="container">
-        <p class="eyebrow">PYTHON · SQL · TABLEAU · EXCEL</p>
+    <div class="hero-stats reveal d4">
+      <div class="hero-stat">
+        <div class="hero-stat-val danger">−$2.7K</div>
+        <div class="hero-stat-label">Max single-order loss</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-val warning">35–45%</div>
+        <div class="hero-stat-label">Late delivery rate</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-val accent">$1.12M</div>
+        <div class="hero-stat-label">"Others" segment revenue</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-val success">&gt;40%</div>
+        <div class="hero-stat-label">Discount threshold for losses</div>
+      </div>
+    </div>
 
-        <h1 class="case-title">
-          O&F Retail Case Study
-        </h1>
+  </div>
+</section>
 
-        <p class="case-lead">
-          Sales Performance, Customer Segmentation & Operational Analysis
-        </p>
+<!-- ════════════════ TOC ════════════════ -->
+<nav class="toc">
+  <div class="container toc-inner">
+    <a href="#methodology">Methodology</a>
+    <a href="#context">Business Context</a>
+    <a href="#findings">Key Findings</a>
+    <a href="#recommendations">Recommendations</a>
+    <a href="#insight">Final Insight</a>
+  </div>
+</nav>
 
-        <div class="case-text">
-          <p>
-            An end-to-end analytics case study exploring how discount strategy,
-            customer segmentation, and fulfillment operations impacted profitability
-            and long-term customer value.
-          </p>
+<div class="report-body">
+
+<!-- ════════════════ METHODOLOGY ════════════════ -->
+<section class="section" id="methodology">
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="section-tag">Project Methodology</div>
+      <h2 class="section-title">Analytics Pipeline</h2>
+      <p class="section-lead">End-to-end workflow from raw retail data to business insights and Tableau dashboard delivery.</p>
+    </div>
+    <div class="pipeline-card reveal">
+      <div class="pipeline">
+        <div class="pipeline-step">
+          <div class="pipeline-num">01</div>
+          <div class="pipeline-step-label">Raw Data</div>
+          <div class="pipeline-step-desc">Retail orders & customers</div>
         </div>
-
-        <div class="project-links">
-          <a href="https://public.tableau.com/app/profile/nguyen.quynh.giao.duong/viz/OFRetailPerformanceCustomerInsights/Story1#1">View Dashboard</a>
-          <a href="#">GitHub Repository</a>
-          <a href="../index.html#projects">Back to Portfolio</a>
+        <div class="pipeline-step">
+          <div class="pipeline-num">02</div>
+          <div class="pipeline-step-label">Python Cleaning</div>
+          <div class="pipeline-step-desc">Transform & validate</div>
+        </div>
+        <div class="pipeline-step">
+          <div class="pipeline-num">03</div>
+          <div class="pipeline-step-label">RFM Segmentation</div>
+          <div class="pipeline-step-desc">Customer scoring</div>
+        </div>
+        <div class="pipeline-step">
+          <div class="pipeline-num">04</div>
+          <div class="pipeline-step-label">SQL Analysis</div>
+          <div class="pipeline-step-desc">Discount, profit, logistics KPIs</div>
+        </div>
+        <div class="pipeline-step">
+          <div class="pipeline-num">05</div>
+          <div class="pipeline-step-label">Tableau Dashboard</div>
+          <div class="pipeline-step-desc">4 interactive views</div>
         </div>
       </div>
-    </section>
+    </div>
+  </div>
+</section>
 
-    <!-- BUSINESS CONTEXT -->
-    <section class="case-section">
-      <div class="container">
-        <h2>Business Context</h2>
+<!-- ════════════════ BUSINESS CONTEXT ════════════════ -->
+<section class="section" id="context">
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="section-tag">Section 01 · Business Context</div>
+      <h2 class="section-title">Strong revenue growth masking structural problems</h2>
+      <p class="section-lead">O&amp;F operates across North Asia, Oceania, and Southeast Asia. Revenue was growing — but deeper analysis revealed operational inefficiencies affecting profitability, customer experience, and retention.</p>
+    </div>
 
-        <div class="case-text">
-          <p>
-            O&F is a retail company operating across North Asia, Oceania,
-            and Southeast Asia.
-          </p>
+    <div class="card reveal">
+      <p style="font-size:.82rem;color:var(--muted-2);text-transform:uppercase;letter-spacing:.12em;font-weight:700;margin-bottom:14px">System view</p>
+      <div style="display:flex;align-items:center;flex-wrap:wrap;gap:8px">
+        <span style="padding:7px 14px;background:var(--surface-2);border:1px solid var(--line);border-radius:999px;font-size:.82rem;color:var(--muted);font-weight:500">Customer</span>
+        <span style="color:var(--accent);font-size:1rem">→</span>
+        <span style="padding:7px 14px;background:var(--surface-2);border:1px solid var(--line);border-radius:999px;font-size:.82rem;color:var(--muted);font-weight:500">Purchase</span>
+        <span style="color:var(--accent);font-size:1rem">→</span>
+        <span style="padding:7px 14px;background:var(--danger-dim);border:1px solid rgba(240,70,58,0.2);border-radius:999px;font-size:.82rem;color:var(--danger);font-weight:500">Discount</span>
+        <span style="color:var(--accent);font-size:1rem">→</span>
+        <span style="padding:7px 14px;background:var(--warning-dim);border:1px solid rgba(245,166,35,0.2);border-radius:999px;font-size:.82rem;color:var(--warning);font-weight:500">Delivery</span>
+        <span style="color:var(--accent);font-size:1rem">→</span>
+        <span style="padding:7px 14px;background:var(--danger-dim);border:1px solid rgba(240,70,58,0.2);border-radius:999px;font-size:.82rem;color:var(--danger);font-weight:500">Profit</span>
+        <span style="color:var(--accent);font-size:1rem">→</span>
+        <span style="padding:7px 14px;background:var(--surface-2);border:1px solid var(--line);border-radius:999px;font-size:.82rem;color:var(--muted);font-weight:500">Retention</span>
+      </div>
+    </div>
 
-          <p>
-            Although the business showed strong revenue growth and expanding
-            market activity, deeper analysis revealed operational inefficiencies
-            affecting profitability, customer experience, and retention.
-          </p>
+    <div class="narrative reveal">
+      <strong>Analytical approach:</strong> This project treated the business as a connected system rather than analyzing metrics in isolation — tracing how discount decisions in one part of the funnel created downstream effects on profitability and customer retention.
+    </div>
 
-          <p>
-            This project approached the business as a connected system:
-          </p>
+    <div class="card reveal" style="background:var(--surface-2)">
+      <div style="font-size:.78rem;color:var(--muted-2);margin-bottom:8px;text-transform:uppercase;letter-spacing:.1em;font-weight:700">Dashboard overview</div>
+      <img src="../img/of-dashboard-overview.jpg" alt="O&F Retail dashboard overview" style="width:100%;border-radius:var(--r-sm);border:1px solid var(--line)" />
+    </div>
+  </div>
+</section>
 
-          <p>
-            <strong>Customer → Purchase → Discount → Delivery → Profit → Retention</strong>
-          </p>
-        </div>
+<!-- ════════════════ KEY FINDINGS ════════════════ -->
+<section class="section" id="findings">
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="section-tag">Section 02 · Key Findings</div>
+      <h2 class="section-title">Three structural problems identified</h2>
+      <p class="section-lead">Each finding connects to a different layer of the business system — pricing strategy, customer intelligence, and operational execution.</p>
+    </div>
 
-        <div class="case-image-block">
-          <img
-            src="../img/of-dashboard-overview.jpg"
-            alt="O&F Retail dashboard overview"
-          />
+    <!-- Finding 01 -->
+    <div class="finding-block f1 reveal">
+      <div class="finding-content">
+        <p class="finding-number">Finding 01</p>
+        <h3 class="finding-title">Revenue growth was eroding profitability</h3>
+        <ul class="finding-list">
+          <li>Products discounted above 40% frequently generated negative profit</li>
+          <li>Some transactions recorded losses up to −$2.7K per order</li>
+          <li>Revenue growth relied heavily on discount-driven volume, not margin</li>
+        </ul>
+        <div class="finding-impact">
+          <strong>Business impact:</strong> The business was optimizing for top-line revenue growth rather than sustainable per-unit profitability — a pattern that compounds over time as discount expectations set in.
         </div>
       </div>
-    </section>
-
-    <!-- KEY FINDINGS -->
-    <section class="case-section">
-      <div class="container">
-        <h2>Key Findings</h2>
-
-        <!-- FINDING 1 -->
-        <article class="finding-block">
-          <div class="finding-content">
-            <p class="eyebrow">Finding 01</p>
-            <h3>Revenue Growth Was Eroding Profitability</h3>
-
-            <ul class="case-list">
-              <li>Products discounted above 40% frequently generated negative profit</li>
-              <li>Some transactions recorded losses up to -$2.7K</li>
-              <li>Revenue growth relied heavily on discount-driven sales</li>
-            </ul>
-
-            <p class="business-impact">
-              <strong>Business Impact:</strong>
-              The business was optimizing for revenue growth rather than
-              sustainable profitability.
-            </p>
-          </div>
-
-          <div class="case-image-block finding-image">
-            <img
-              src="../img/of-discount-profit.jpg"
-              alt="Discount and profit analysis chart"
-            />
-          </div>
-        </article>
-
-        <!-- FINDING 2 -->
-        <article class="finding-block">
-          <div class="finding-content">
-            <p class="eyebrow">Finding 02</p>
-            <h3>Customer Segmentation Was Underutilized</h3>
-
-            <ul class="case-list">
-              <li>“Others” generated the highest revenue contribution at around $1.12M</li>
-              <li>High-value “Champion” customers were underutilized</li>
-              <li>Customer segments were not integrated into business decisions</li>
-            </ul>
-
-            <p class="business-impact">
-              <strong>Business Impact:</strong>
-              High-value customers were treated similarly to lower-value segments,
-              limiting retention and upsell opportunities.
-            </p>
-          </div>
-
-          <div class="case-image-block finding-image">
-            <img
-              src="../img/of-rfm-dashboard.jpg"
-              alt="RFM customer segmentation dashboard"
-            />
-          </div>
-        </article>
-
-        <!-- FINDING 3 -->
-        <article class="finding-block">
-          <div class="finding-content">
-            <p class="eyebrow">Finding 03</p>
-            <h3>Delivery Performance Was Weakening Customer Experience</h3>
-
-            <ul class="case-list">
-              <li>Late order rates reached 35–45%</li>
-              <li>Southeast Asia experienced the highest delays</li>
-              <li>Standard shipping consistently underperformed</li>
-            </ul>
-
-            <p class="business-impact">
-              <strong>Business Impact:</strong>
-              Operational efficiency was prioritized over customer experience,
-              increasing retention risk for valuable customers.
-            </p>
-          </div>
-
-          <div class="case-image-block finding-image">
-            <img
-              src="../img/of-fulfillment-dashboard.jpg"
-              alt="Fulfillment and delivery performance dashboard"
-            />
-          </div>
-        </article>
+      <div class="finding-image placeholder">
+        <img src="../img/of-discount-profit.jpg" alt="Discount and profit analysis" onerror="this.parentNode.innerHTML='<span>of-discount-profit.jpg</span>'" />
       </div>
-    </section>
+    </div>
 
-    <!-- RECOMMENDATIONS -->
-    <section class="case-section">
-      <div class="container">
-        <h2>Recommendations</h2>
-
-        <div class="recommendation-grid">
-          <div class="recommendation-card">
-            <span>Pricing</span>
-            <p>
-              Introduce discount thresholds and track profit-per-order.
-            </p>
-          </div>
-
-          <div class="recommendation-card">
-            <span>Customer Strategy</span>
-            <p>
-              Prioritize loyalty and upsell campaigns for high-value segments.
-            </p>
-          </div>
-
-          <div class="recommendation-card">
-            <span>Operations</span>
-            <p>
-              Introduce priority shipping and optimize Southeast Asia logistics.
-            </p>
-          </div>
-
-          <div class="recommendation-card">
-            <span>Retention</span>
-            <p>
-              Develop lifecycle-based engagement and re-engagement campaigns.
-            </p>
-          </div>
+    <!-- Finding 02 -->
+    <div class="finding-block f2 reveal">
+      <div class="finding-content">
+        <p class="finding-number">Finding 02</p>
+        <h3 class="finding-title">Customer segmentation was underutilized</h3>
+        <ul class="finding-list">
+          <li>"Others" segment generated the highest revenue at ~$1.12M</li>
+          <li>High-value "Champion" customers were not given differentiated treatment</li>
+          <li>RFM segments were not integrated into marketing or pricing decisions</li>
+        </ul>
+        <div class="finding-impact">
+          <strong>Business impact:</strong> High-value customers were treated similarly to lower-value segments, limiting retention and upsell opportunities at the top of the customer pyramid.
         </div>
       </div>
-    </section>
+      <div class="finding-image placeholder">
+        <img src="../img/of-rfm-dashboard.jpg" alt="RFM customer segmentation dashboard" onerror="this.parentNode.innerHTML='<span>of-rfm-dashboard.jpg</span>'" />
+      </div>
+    </div>
 
-    <!-- FINAL INSIGHT -->
-    <section class="case-section">
-      <div class="container">
-        <h2>Final Insight</h2>
-
-        <div class="case-text">
-          <p>
-            The core issue was not weak sales performance.
-          </p>
-
-          <p>
-            The business was growing, but the system behind that growth was not
-            optimized for long-term profitability or customer value.
-          </p>
-
-          <p>
-            This project focused on identifying operational trade-offs, root causes,
-            and strategic opportunities through a product and business analysis mindset.
-          </p>
-        </div>
-
-        <div class="back-link">
-          <a href="../index.html#projects">← Back to Portfolio</a>
+    <!-- Finding 03 -->
+    <div class="finding-block f3 reveal">
+      <div class="finding-content">
+        <p class="finding-number">Finding 03</p>
+        <h3 class="finding-title">Delivery performance was weakening customer experience</h3>
+        <ul class="finding-list">
+          <li>Late order rates reached 35–45% across regions</li>
+          <li>Southeast Asia experienced the highest delivery delays</li>
+          <li>Standard shipping consistently underperformed vs other tiers</li>
+        </ul>
+        <div class="finding-impact">
+          <strong>Business impact:</strong> Operational efficiency was prioritized over customer experience, increasing churn risk especially among high-value customer segments that expect reliable fulfillment.
         </div>
       </div>
-    </section>
-  </main>
+      <div class="finding-image placeholder">
+        <img src="../img/of-fulfillment-dashboard.jpg" alt="Fulfillment and delivery performance dashboard" onerror="this.parentNode.innerHTML='<span>of-fulfillment-dashboard.jpg</span>'" />
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════ RECOMMENDATIONS ════════════════ -->
+<section class="section" id="recommendations">
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="section-tag">Section 03 · Recommendations</div>
+      <h2 class="section-title">Four priority actions</h2>
+      <p class="section-lead">Actions mapped to each structural problem identified — prioritized by potential impact on profitability and retention.</p>
+    </div>
+
+    <div class="reco-grid reveal">
+      <div class="reco-card">
+        <div class="reco-label">Pricing</div>
+        <p class="reco-text">Introduce discount thresholds at the 40% level. Track profit-per-order alongside revenue to make margin erosion visible in reporting. Reward high-margin products with lower discount exposure.</p>
+      </div>
+      <div class="reco-card">
+        <div class="reco-label">Customer Strategy</div>
+        <p class="reco-text">Prioritize loyalty and upsell campaigns for Champion and high-value segments. Differentiate communication, offers, and service levels by RFM tier — not a one-size-fits-all approach.</p>
+      </div>
+      <div class="reco-card">
+        <div class="reco-label">Operations</div>
+        <p class="reco-text">Introduce priority shipping lanes for high-value customers in Southeast Asia. Review standard shipping SLA performance and investigate root causes of delivery delays by region.</p>
+      </div>
+      <div class="reco-card">
+        <div class="reco-label">Retention</div>
+        <p class="reco-text">Develop lifecycle-based engagement campaigns. Create re-engagement flows for lapsed Champions and at-risk segments before they fully churn out of the active customer pool.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════ FINAL INSIGHT ════════════════ -->
+<section class="section" id="insight">
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="section-tag">Section 04 · Final Insight</div>
+      <h2 class="section-title">The problem was not weak sales — it was an unoptimized system</h2>
+    </div>
+
+    <div class="final-card reveal">
+      <p>
+        <strong>O&amp;F was growing.</strong> Revenue was up, markets were expanding, and customer acquisition was working. The core issue was not at the top of the funnel.
+      </p>
+      <p>
+        The business was optimizing for <strong>revenue volume</strong> rather than <strong>sustainable profitability and customer value</strong>. Discount decisions were eroding margins. Fulfillment failures were eroding experience. Segmentation data existed but was not being used to drive differentiated treatment.
+      </p>
+      <p>
+        This project focused on identifying those operational trade-offs, tracing root causes across the customer-to-profit system, and building recommendations that target each layer separately — so that growth and quality can move together.
+      </p>
+    </div>
+
+    <div style="margin-top:20px" class="reveal">
+      <a href="../index.html#projects" class="link-chip">← Back to Featured Works</a>
+    </div>
+  </div>
+</section>
+
+</div><!-- end report-body -->
+
+<!-- ════════════════ FOOTER ════════════════ -->
+<footer class="site-footer">
+  <div class="container footer-inner">
+    <a href="../index.html" class="footer-brand">Giao <em>Duong</em></a>
+    <div class="footer-copy">O&amp;F Retail Case Study · Python · SQL · Tableau</div>
+  </div>
+</footer>
+
+<script>
+/* ── SCROLL REVEAL ── */
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add("visible");
+      obs.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.07 });
+document.querySelectorAll(".reveal").forEach(el => obs.observe(el));
+
+/* ── TOC ACTIVE ── */
+const sections = document.querySelectorAll(".section[id]");
+const tocLinks = document.querySelectorAll(".toc a");
+window.addEventListener("scroll", () => {
+  let cur = "";
+  sections.forEach(s => { if (window.scrollY >= s.offsetTop - 160) cur = s.id; });
+  tocLinks.forEach(a => a.classList.toggle("active", a.getAttribute("href") === "#" + cur));
+}, { passive: true });
+</script>
+
 </body>
 </html>
