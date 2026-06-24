@@ -1,1296 +1,719 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Credit Risk Portfolio Analysis | Giao Duong</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bank Loan Portfolio — Credit Risk Report 2021</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=DM+Serif+Display&display=swap" rel="stylesheet">
 <style>
-:root {
-  --bg:          #060608;
-  --surface:     #0e0e12;
-  --surface-2:   #141419;
-  --line:        rgba(255,255,255,0.07);
-  --line-soft:   rgba(255,255,255,0.04);
-  --text:        #f0f0f4;
-  --muted:       #8a8a9a;
-  --muted-2:     #5a5a6e;
-  --accent:      #ff6b1a;
-  --accent-dim:  rgba(255,107,26,0.15);
-  --accent-glow: rgba(255,107,26,0.35);
-  --danger:      #f0463a;
-  --danger-dim:  rgba(240,70,58,0.13);
-  --success:     #22c97a;
-  --success-dim: rgba(34,201,122,0.12);
-  --warning:     #f5a623;
-  --warning-dim: rgba(245,166,35,0.13);
-  --blue:        #4db8f0;
-  --blue-dim:    rgba(77,184,240,0.14);
-  --max:         1100px;
-  --r:           14px;
-  --r-sm:        8px;
-}
+  :root {
+    --navy: #0F2744;
+    --navy-mid: #1B3A5C;
+    --navy-light: #2D5F8A;
+    --slate: #4A6785;
+    --muted: #7A93AB;
+    --border: #D4DFE9;
+    --bg: #F4F7FA;
+    --surface: #FFFFFF;
+    --red: #C0392B;
+    --red-light: #FDECEB;
+    --red-mid: #E74C3C;
+    --amber: #D68910;
+    --amber-light: #FEF9E7;
+    --green: #1E8449;
+    --green-light: #EAFAF1;
+    --blue-accent: #2874A6;
+    --text: #0F2744;
+    --text-muted: #5D7A8C;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 14px;
+    line-height: 1.6;
+  }
 
-*,*::before,*::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; }
+  /* COVER */
+  .cover {
+    background: var(--navy);
+    color: white;
+    padding: 72px 60px 56px;
+    position: relative;
+    overflow: hidden;
+  }
+  .cover::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: repeating-linear-gradient(
+      -45deg,
+      transparent, transparent 40px,
+      rgba(255,255,255,0.015) 40px, rgba(255,255,255,0.015) 41px
+    );
+  }
+  .cover-eyebrow {
+    font-size: 11px; letter-spacing: 2.5px; text-transform: uppercase;
+    color: rgba(255,255,255,0.45); font-weight: 500; margin-bottom: 20px;
+  }
+  .cover-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 48px; font-weight: 400; line-height: 1.15;
+    margin-bottom: 12px; max-width: 640px;
+  }
+  .cover-title em { color: #5BA4CF; font-style: normal; }
+  .cover-sub {
+    font-size: 16px; color: rgba(255,255,255,0.55);
+    max-width: 520px; margin-bottom: 48px; font-weight: 300;
+  }
+  .cover-stats {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 8px; overflow: hidden;
+  }
+  .cover-stat {
+    padding: 20px 24px;
+    background: rgba(255,255,255,0.04);
+  }
+  .cover-stat-val {
+    font-size: 28px; font-weight: 600; color: white; line-height: 1;
+    margin-bottom: 6px;
+  }
+  .cover-stat-val.danger { color: #E74C3C; }
+  .cover-stat-val.safe { color: #58D68D; }
+  .cover-stat-label { font-size: 11px; color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: 1px; }
+  .cover-meta {
+    margin-top: 40px; font-size: 11px; color: rgba(255,255,255,0.25);
+    display: flex; gap: 24px;
+  }
 
-body {
-  font-family: "Inter", sans-serif;
-  background: var(--bg);
-  color: var(--text);
-  line-height: 1.6;
-  -webkit-font-smoothing: antialiased;
-}
+  /* NAV */
+  .toc {
+    background: var(--navy-mid);
+    padding: 0 60px;
+    display: flex; gap: 0;
+    position: sticky; top: 0; z-index: 100;
+  }
+  .toc a {
+    display: block; padding: 14px 18px;
+    font-size: 12px; font-weight: 500; color: rgba(255,255,255,0.5);
+    text-decoration: none; letter-spacing: 0.3px;
+    border-bottom: 2px solid transparent;
+    transition: all .2s;
+  }
+  .toc a:hover { color: white; }
+  .toc a.active { color: white; border-bottom-color: #5BA4CF; }
 
-/* ── FADE-IN ANIMATION ── */
-.reveal {
-  opacity: 0;
-  transform: translateY(22px);
-  transition: opacity .55s ease, transform .55s ease;
-}
-.reveal.visible {
-  opacity: 1;
-  transform: none;
-}
-.reveal-delay-1 { transition-delay: .08s; }
-.reveal-delay-2 { transition-delay: .16s; }
-.reveal-delay-3 { transition-delay: .24s; }
-.reveal-delay-4 { transition-delay: .32s; }
+  /* LAYOUT */
+  .report-body { max-width: 1080px; margin: 0 auto; padding: 0 40px 80px; }
 
-@media (prefers-reduced-motion: reduce) {
-  .reveal { opacity: 1; transform: none; transition: none; }
-}
+  /* SECTION STRUCTURE */
+  .section { padding: 52px 0 0; }
+  .section-header { margin-bottom: 32px; }
+  .section-tag {
+    display: inline-block;
+    font-size: 10px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase;
+    color: var(--blue-accent); margin-bottom: 10px;
+  }
+  .section-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 28px; font-weight: 400; line-height: 1.25;
+    color: var(--navy); margin-bottom: 10px;
+  }
+  .section-lead {
+    font-size: 15px; color: var(--text-muted); line-height: 1.7;
+    max-width: 680px; font-weight: 300;
+  }
+  .section-divider {
+    height: 1px; background: var(--border);
+    margin: 48px 0 0;
+  }
 
-/* ── LAYOUT ── */
-.container {
-  width: min(100% - 32px, var(--max));
-  margin-inline: auto;
-}
+  /* NARRATIVE CALLOUT */
+  .narrative {
+    border-left: 3px solid var(--blue-accent);
+    background: #EBF5FB;
+    padding: 14px 18px;
+    border-radius: 0 6px 6px 0;
+    margin: 20px 0;
+    font-size: 13.5px; line-height: 1.7; color: var(--navy-mid);
+  }
+  .narrative strong { color: var(--navy); }
+  .narrative.danger { border-color: var(--red); background: var(--red-light); color: #6E2020; }
+  .narrative.danger strong { color: var(--red); }
+  .narrative.warning { border-color: var(--amber); background: var(--amber-light); color: #6E4C00; }
+  .narrative.success { border-color: var(--green); background: var(--green-light); color: #0E5C2F; }
 
-/* ── HEADER ── */
-.site-header {
-  position: sticky;
-  top: 0; z-index: 100;
-  background: rgba(6,6,8,0.85);
-  backdrop-filter: blur(14px);
-  border-bottom: 1px solid var(--line);
-}
-.nav {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  min-height: 64px;
-}
-.brand {
-  font-family: "Inter", sans-serif;
-  font-size: 1rem;
-  font-weight: 800;
-  letter-spacing: -0.02em;
-  color: var(--text);
-  text-decoration: none;
-}
-.brand em { color: var(--accent); font-style: normal; }
-.menu { display: flex; gap: 24px; }
-.menu a {
-  font-size: 0.85rem;
-  color: var(--muted);
-  text-decoration: none;
-  transition: color .15s;
-}
-.menu a:hover { color: var(--accent); }
+  /* KPI GRID */
+  .kpi-row {
+    display: grid; gap: 12px;
+    margin-bottom: 28px;
+  }
+  .kpi-row-4 { grid-template-columns: repeat(4, 1fr); }
+  .kpi-row-8 { grid-template-columns: repeat(4, 1fr); }
+  .kpi-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 18px 20px;
+  }
+  .kpi-label { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); margin-bottom: 8px; }
+  .kpi-value { font-size: 26px; font-weight: 600; color: var(--navy); line-height: 1; }
+  .kpi-value.red { color: var(--red); }
+  .kpi-value.green { color: var(--green); }
+  .kpi-value.amber { color: var(--amber); }
+  .kpi-value.blue { color: var(--blue-accent); }
+  .kpi-sub { font-size: 11px; color: var(--muted); margin-top: 5px; }
+  .kpi-card.accent-red { border-top: 3px solid var(--red); }
+  .kpi-card.accent-green { border-top: 3px solid var(--green); }
+  .kpi-card.accent-blue { border-top: 3px solid var(--blue-accent); }
+  .kpi-card.accent-amber { border-top: 3px solid var(--amber); }
 
-/* ── HERO ── */
-.hero {
-  padding: 72px 0 52px;
-  position: relative;
-  overflow: hidden;
-}
-.hero-grid {
-  position: absolute; inset: 0;
-  background-image:
-    linear-gradient(rgba(255,107,26,0.05) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,107,26,0.05) 1px, transparent 1px);
-  background-size: 72px 72px;
-  mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, black 40%, transparent 100%);
-  pointer-events: none;
-}
-.hero-glow {
-  position: absolute;
-  top: -120px; left: 50%; transform: translateX(-50%);
-  width: 700px; height: 700px;
-  background: radial-gradient(circle, rgba(255,107,26,0.08) 0%, transparent 68%);
-  pointer-events: none;
-}
+  /* CHART CARD */
+  .chart-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 22px 24px;
+    margin-bottom: 16px;
+  }
+  .chart-card-title {
+    font-size: 13px; font-weight: 600; color: var(--navy);
+    margin-bottom: 4px;
+  }
+  .chart-card-sub {
+    font-size: 12px; color: var(--muted); margin-bottom: 18px;
+  }
+  .chart-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+  .chart-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+  .chart-wrap { position: relative; }
 
-.eyebrow {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--accent);
-  margin-bottom: 20px;
-}
-.eyebrow::before {
-  content: '';
-  display: block;
-  width: 20px; height: 1px;
-  background: var(--accent);
-}
+  /* LEGEND */
+  .legend { display: flex; flex-wrap: wrap; gap: 14px; margin-bottom: 14px; }
+  .legend-item { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--text-muted); }
+  .legend-box { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
 
-.hero-title {
-  font-family: "Inter", sans-serif;
-  font-size: clamp(2.2rem, 5vw, 3.6rem);
-  font-weight: 800;
-  line-height: 1.04;
-  letter-spacing: -0.04em;
-  margin-bottom: 20px;
-  max-width: 820px;
-}
-.hero-title mark {
-  background: none;
-  color: var(--accent);
-  position: relative;
-}
+  /* RISK BADGE */
+  .badge {
+    display: inline-block; font-size: 11px; font-weight: 600;
+    padding: 2px 8px; border-radius: 4px;
+  }
+  .badge-red { background: var(--red-light); color: var(--red); }
+  .badge-amber { background: var(--amber-light); color: var(--amber); }
+  .badge-green { background: var(--green-light); color: var(--green); }
 
-.hero-lead {
-  max-width: 680px;
-  color: var(--muted);
-  font-size: 0.98rem;
-  line-height: 1.65;
-  margin-bottom: 28px;
-}
+  /* MATRIX */
+  .matrix-wrap { overflow-x: auto; }
+  .matrix-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  .matrix-table th {
+    background: var(--navy); color: white;
+    padding: 10px 14px; text-align: center;
+    font-size: 11px; font-weight: 500; letter-spacing: 0.5px;
+  }
+  .matrix-table th:first-child { text-align: left; }
+  .matrix-table td {
+    padding: 10px 14px; text-align: center;
+    border-bottom: 1px solid var(--border);
+    font-weight: 600; font-size: 13px;
+  }
+  .matrix-table td:first-child { text-align: left; font-weight: 600; color: var(--navy); }
+  .matrix-table tr:hover td { background: #f0f5fa; }
 
-.hero-links {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-bottom: 44px;
-}
-.link-chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 6px 13px;
-  font-size: 0.8rem;
-  font-weight: 500;
-  border: 1px solid var(--line);
-  border-radius: 999px;
-  color: var(--muted);
-  text-decoration: none;
-  transition: all .15s;
-}
-.link-chip:hover { border-color: var(--accent); color: var(--accent); }
-.link-chip svg { width: 12px; height: 12px; }
+  /* RECOMMENDATION TABLE */
+  .reco-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .reco-table thead th {
+    background: var(--navy); color: white;
+    padding: 12px 16px; text-align: left;
+    font-size: 11px; font-weight: 500; letter-spacing: 0.8px; text-transform: uppercase;
+  }
+  .reco-table tbody tr { border-bottom: 1px solid var(--border); }
+  .reco-table tbody tr:hover td { background: #f7f9fc; }
+  .reco-table td { padding: 14px 16px; vertical-align: top; line-height: 1.6; }
+  .reco-table td:first-child { font-weight: 500; color: var(--navy); }
+  .reco-table .tag {
+    display: inline-block; font-size: 10px; font-weight: 600;
+    padding: 3px 8px; border-radius: 3px; margin-bottom: 4px;
+  }
 
-/* ── HERO STATS ── */
-.hero-stats {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 1px;
-  background: var(--line);
-  border: 1px solid var(--line);
-  border-radius: var(--r);
-  overflow: hidden;
-}
-.hero-stat {
-  background: var(--surface);
-  padding: 20px 22px;
-}
-.hero-stat-val {
-  font-family: "Inter", sans-serif;
-  font-size: 1.9rem;
-  font-weight: 800;
-  line-height: 1;
-  letter-spacing: -0.03em;
-  margin-bottom: 8px;
-}
-.hero-stat-val.safe   { color: var(--success); }
-.hero-stat-val.risk   { color: var(--danger); }
-.hero-stat-val.amber  { color: var(--warning); }
-.hero-stat-label { font-size: 0.73rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted-2); }
+  /* INSIGHT BOXES */
+  .insight-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 20px 0; }
+  .insight-box {
+    padding: 16px 18px; border-radius: 6px;
+    border: 1px solid var(--border);
+  }
+  .insight-box-num { font-size: 32px; font-weight: 700; line-height: 1; margin-bottom: 4px; }
+  .insight-box-label { font-size: 12px; color: var(--text-muted); }
+  .insight-box.red { background: var(--red-light); border-color: #F1948A; }
+  .insight-box.red .insight-box-num { color: var(--red); }
+  .insight-box.green { background: var(--green-light); border-color: #82E0AA; }
+  .insight-box.green .insight-box-num { color: var(--green); }
 
-/* ── STICKY BAND ── */
-#sticky-band {
-  position: sticky; top: 64px; z-index: 90;
-  background: rgba(14,14,18,0.95);
-  backdrop-filter: blur(12px);
-  border-bottom: 1px solid var(--line);
-  transform: translateY(-100%);
-  transition: transform .3s ease;
-  pointer-events: none;
-}
-#sticky-band.visible {
-  transform: translateY(0);
-  pointer-events: auto;
-}
-.band-inner {
-  display: flex;
-  align-items: center;
-  gap: 28px;
-  padding: 11px 0;
-  overflow-x: auto;
-}
-.band-kpi {
-  display: flex;
-  align-items: baseline;
-  gap: 7px;
-  white-space: nowrap;
-  flex-shrink: 0;
-}
-.band-kpi-val {
-  font-family: "Inter", sans-serif;
-  font-weight: 800;
-  font-size: 1.05rem;
-  letter-spacing: -0.02em;
-}
-.band-kpi-val.r { color: var(--danger); }
-.band-kpi-val.g { color: var(--success); }
-.band-kpi-val.a { color: var(--warning); }
-.band-kpi-val.b { color: var(--accent); }
-.band-kpi-label { font-size: 0.72rem; color: var(--muted-2); }
-.band-sep { width: 1px; height: 22px; background: var(--line); flex-shrink: 0; }
+  /* SCROLLBAR */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
 
-/* ── TOC ── */
-.toc {
-  position: sticky; top: 64px; z-index: 80;
-  background: rgba(6,6,8,0.88);
-  backdrop-filter: blur(12px);
-  border-bottom: 1px solid var(--line);
-}
-.toc-inner {
-  display: flex;
-  gap: 0;
-  overflow-x: auto;
-}
-.toc a {
-  display: inline-block;
-  padding: 13px 16px;
-  font-size: 0.82rem;
-  font-weight: 500;
-  white-space: nowrap;
-  color: var(--muted);
-  text-decoration: none;
-  border-bottom: 2px solid transparent;
-  transition: color .15s, border-color .15s;
-}
-.toc a:hover { color: var(--text); }
-.toc a.active { color: var(--accent); border-bottom-color: var(--accent); }
+  /* FOOTER */
+  .footer {
+    background: var(--navy); color: rgba(255,255,255,0.3);
+    text-align: center; padding: 28px;
+    font-size: 11px; margin-top: 60px;
+  }
 
-/* ── SECTIONS ── */
-.report-body { padding-bottom: 80px; }
+  /* PRINT */
+  @media print {
+    .toc { display: none; }
+    .cover { break-after: page; }
+    .section { break-inside: avoid; }
+  }
 
-.section { padding: 52px 0; }
+  /* PROGRESS BAR */
+  .progress-row { display: flex; align-items: center; gap: 10px; margin: 6px 0; }
+  .progress-label { font-size: 12px; color: var(--navy); width: 160px; flex-shrink: 0; text-align: right; }
+  .progress-bar-wrap { flex: 1; height: 8px; background: var(--border); border-radius: 4px; overflow: hidden; }
+  .progress-bar { height: 100%; border-radius: 4px; transition: width 1s ease; }
+  .progress-val { font-size: 12px; font-weight: 600; width: 44px; text-align: right; color: var(--navy); }
 
-.section-header { margin-bottom: 28px; }
-
-.section-tag {
-  display: inline-block;
-  font-size: 0.7rem;
-  font-weight: 700;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--accent);
-  margin-bottom: 10px;
-}
-
-.section-title {
-  font-family: "Inter", sans-serif;
-  font-size: clamp(1.3rem, 2.2vw, 1.75rem);
-  font-weight: 800;
-  letter-spacing: -0.03em;
-  line-height: 1.15;
-  margin-bottom: 12px;
-}
-
-.section-lead {
-  color: var(--muted);
-  font-size: 0.95rem;
-  line-height: 1.65;
-  max-width: 740px;
-}
-
-/* ── CARDS ── */
-.card {
-  background: var(--surface);
-  border: 1px solid var(--line);
-  border-radius: var(--r);
-}
-
-/* ── KPI GRID ── */
-.kpi-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 12px;
-  margin-bottom: 14px;
-}
-.kpi-card {
-  padding: 18px 20px;
-  background: var(--surface);
-  border: 1px solid var(--line);
-  border-radius: var(--r);
-  position: relative;
-  overflow: hidden;
-  transition: border-color .2s;
-}
-.kpi-card:hover { border-color: rgba(255,107,26,0.25); }
-.kpi-card::after {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 2px;
-  border-radius: 2px 2px 0 0;
-}
-.kpi-card.t-accent::after  { background: var(--accent); }
-.kpi-card.t-success::after { background: var(--success); }
-.kpi-card.t-danger::after  { background: var(--danger); }
-.kpi-card.t-warning::after { background: var(--warning); }
-.kpi-card.t-blue::after    { background: var(--blue); }
-
-.kpi-label {
-  font-size: 0.7rem;
-  font-weight: 600;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--muted-2);
-  margin-bottom: 10px;
-}
-.kpi-value {
-  font-family: "Inter", sans-serif;
-  font-size: 1.55rem;
-  font-weight: 800;
-  letter-spacing: -0.025em;
-  line-height: 1;
-  margin-bottom: 8px;
-}
-.kpi-value.red    { color: var(--danger); }
-.kpi-value.green  { color: var(--success); }
-.kpi-value.amber  { color: var(--warning); }
-.kpi-value.blue   { color: var(--accent); }
-.kpi-value.sky    { color: var(--blue); }
-.kpi-sub { font-size: 0.78rem; color: var(--muted); line-height: 1.45; }
-
-/* ── CHART CARD ── */
-.chart-card {
-  padding: 20px 22px;
-  background: var(--surface);
-  border: 1px solid var(--line);
-  border-radius: var(--r);
-  margin-bottom: 14px;
-}
-.chart-title {
-  font-size: 0.92rem;
-  font-weight: 700;
-  margin-bottom: 4px;
-}
-.chart-sub {
-  font-size: 0.83rem;
-  color: var(--muted);
-  margin-bottom: 14px;
-  line-height: 1.5;
-}
-.chart-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
-
-/* ── LEGEND ── */
-.legend { display: flex; flex-wrap: wrap; gap: 14px; margin-bottom: 12px; }
-.legend-item { display: flex; align-items: center; gap: 6px; font-size: 0.76rem; color: var(--muted); }
-.legend-swatch { width: 9px; height: 9px; border-radius: 2px; flex-shrink: 0; }
-.legend-line { width: 16px; height: 2px; border-radius: 999px; flex-shrink: 0; }
-
-/* ── NARRATIVE ── */
-.narrative {
-  padding: 14px 16px 14px 18px;
-  border-radius: var(--r-sm);
-  border: 1px solid var(--line);
-  border-left: 3px solid var(--accent);
-  background: var(--accent-dim);
-  color: var(--muted);
-  font-size: 0.88rem;
-  line-height: 1.65;
-  margin: 14px 0;
-}
-.narrative strong { color: var(--text); }
-.narrative.danger  { border-left-color: var(--danger);  background: var(--danger-dim); }
-.narrative.success { border-left-color: var(--success); background: var(--success-dim); }
-.narrative.warning { border-left-color: var(--warning); background: var(--warning-dim); }
-
-/* ── PIPELINE ── */
-.pipeline-card {
-  padding: 22px;
-  background: var(--surface);
-  border: 1px solid var(--line);
-  border-radius: var(--r);
-}
-.pipeline {
-  display: grid;
-  grid-template-columns: repeat(6, 1fr);
-  gap: 0;
-  position: relative;
-}
-.pipeline::before {
-  content: '';
-  position: absolute;
-  top: 50%; left: 0; right: 0;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, var(--accent-glow), transparent);
-  transform: translateY(-50%);
-  z-index: 0;
-}
-.pipeline-step {
-  position: relative;
-  z-index: 1;
-  padding: 16px 10px;
-  text-align: center;
-  font-size: 0.8rem;
-  color: var(--muted);
-}
-.pipeline-step-num {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 32px; height: 32px;
-  border-radius: 50%;
-  background: var(--surface-2);
-  border: 1px solid var(--accent);
-  color: var(--accent);
-  font-size: 0.72rem;
-  font-weight: 800;
-  margin: 0 auto 8px;
-}
-.pipeline-step-label {
-  font-size: 0.76rem;
-  font-weight: 600;
-  color: var(--text);
-  margin-bottom: 3px;
-}
-.pipeline-step-desc { font-size: 0.7rem; color: var(--muted-2); }
-
-/* ── ASSUMPTION DETAILS ── */
-details.assumption-block {
-  background: var(--surface-2);
-  border: 1px solid var(--line);
-  border-radius: var(--r-sm);
-  margin-top: 14px;
-  overflow: hidden;
-}
-details.assumption-block summary {
-  padding: 12px 16px;
-  cursor: pointer;
-  font-size: 0.85rem;
-  font-weight: 600;
-  list-style: none;
-  color: var(--muted);
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  transition: color .15s;
-}
-details.assumption-block summary::-webkit-details-marker { display: none; }
-details.assumption-block summary::before {
-  content: '›';
-  display: inline-block;
-  font-size: 1.1rem;
-  line-height: 1;
-  transition: transform .2s;
-}
-details[open].assumption-block summary::before { transform: rotate(90deg); }
-details.assumption-block summary:hover { color: var(--text); }
-.assumption-body {
-  padding: 0 16px 16px;
-  font-size: 0.84rem;
-  color: var(--muted);
-  line-height: 1.65;
-}
-.assumption-body p + p { margin-top: 10px; }
-.assumption-body ul { padding-left: 18px; margin-top: 8px; }
-.assumption-body li { margin-top: 4px; }
-
-/* ── INSIGHT BOXES ── */
-.insight-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 14px 0; }
-.insight-box {
-  padding: 18px;
-  border-radius: var(--r);
-  border: 1px solid var(--line);
-}
-.insight-box.green { background: var(--success-dim); border-color: rgba(34,201,122,0.2); }
-.insight-box.red   { background: var(--danger-dim);  border-color: rgba(240,70,58,0.2); }
-.insight-num {
-  font-family: "Inter", sans-serif;
-  font-size: 2rem;
-  font-weight: 800;
-  letter-spacing: -0.03em;
-  margin-bottom: 6px;
-}
-.insight-box.green .insight-num { color: var(--success); }
-.insight-box.red   .insight-num { color: var(--danger); }
-.insight-label { font-size: 0.8rem; color: var(--muted); line-height: 1.5; }
-
-/* ── LOAN STATUS BARS ── */
-.progress-row {
-  display: flex; align-items: center; gap: 10px; margin: 9px 0;
-}
-.progress-label { width: 120px; font-size: 0.82rem; color: var(--muted); flex-shrink: 0; }
-.progress-track {
-  flex: 1; height: 8px;
-  background: rgba(255,255,255,0.05);
-  border-radius: 999px; overflow: hidden;
-}
-.progress-fill { height: 100%; border-radius: 999px; }
-.progress-pct { width: 52px; text-align: right; font-size: 0.82rem; font-weight: 700; flex-shrink: 0; }
-
-/* ── HEAT-MAP MATRIX ── */
-.matrix-wrap { overflow-x: auto; }
-.matrix-table { width: 100%; border-collapse: collapse; min-width: 600px; }
-.matrix-table th {
-  padding: 11px 14px;
-  font-size: 0.7rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: var(--muted-2);
-  text-align: left;
-  border-bottom: 1px solid var(--line);
-}
-.matrix-table td {
-  padding: 11px 14px;
-  font-size: 0.85rem;
-  border-bottom: 1px solid var(--line-soft);
-  color: var(--muted);
-  vertical-align: middle;
-}
-.matrix-table td:first-child { color: var(--text); font-weight: 700; }
-.matrix-table tbody tr:hover td { background: rgba(255,255,255,0.02); }
-
-/* heat-cell */
-.heat-cell {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 68px;
-  padding: 5px 10px;
-  border-radius: 6px;
-  font-size: 0.82rem;
-  font-weight: 700;
-}
-
-/* ── RECO CARDS ── */
-.reco-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-  margin-bottom: 14px;
-}
-.reco-card {
-  padding: 18px 20px;
-  background: var(--surface);
-  border: 1px solid var(--line);
-  border-radius: var(--r);
-  border-top-width: 2px;
-  position: relative;
-}
-.reco-card.high    { border-top-color: var(--danger); }
-.reco-card.medium  { border-top-color: var(--warning); }
-.reco-priority {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  padding: 3px 9px;
-  border-radius: 999px;
-  font-size: 0.7rem;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  margin-bottom: 10px;
-}
-.reco-priority.high   { background: var(--danger-dim);  color: var(--danger); }
-.reco-priority.medium { background: var(--warning-dim); color: var(--warning); }
-.reco-title { font-size: 0.9rem; font-weight: 700; margin-bottom: 6px; }
-.reco-impact { font-size: 0.8rem; color: var(--muted); line-height: 1.55; margin-bottom: 10px; }
-.reco-action {
-  font-size: 0.78rem;
-  color: var(--muted-2);
-  padding: 9px 11px;
-  background: rgba(255,255,255,0.03);
-  border: 1px solid var(--line);
-  border-radius: var(--r-sm);
-  line-height: 1.5;
-}
-.reco-action span { color: var(--text); font-weight: 500; }
-.reco-metric {
-  margin-top: 8px;
-  font-size: 0.72rem;
-  color: var(--muted-2);
-}
-.reco-metric strong { color: var(--muted); }
-
-/* ── THRESHOLD CARDS ── */
-.threshold-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; margin: 14px 0; }
-.threshold-card {
-  padding: 20px;
-  background: var(--surface);
-  border: 1px solid var(--line);
-  border-radius: var(--r);
-  border-left: 3px solid;
-}
-.threshold-card.danger  { border-left-color: var(--danger); }
-.threshold-card.warning { border-left-color: var(--warning); }
-.threshold-card.accent  { border-left-color: var(--accent); }
-.threshold-eyebrow { font-size: 0.68rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted-2); margin-bottom: 8px; }
-.threshold-val {
-  font-family: "Inter", sans-serif;
-  font-size: 2rem;
-  font-weight: 800;
-  letter-spacing: -0.03em;
-  margin-bottom: 8px;
-}
-.threshold-desc { font-size: 0.8rem; color: var(--muted); line-height: 1.55; }
-
-/* ── FINAL NARRATIVE ── */
-.final-card {
-  padding: 24px;
-  background: linear-gradient(135deg, rgba(255,107,26,0.07) 0%, rgba(255,107,26,0.02) 100%);
-  border: 1px solid rgba(255,107,26,0.2);
-  border-radius: var(--r);
-}
-.final-card p { font-size: 0.95rem; color: var(--muted); line-height: 1.7; }
-.final-card p strong { color: var(--text); }
-
-/* ── MONTHLY DETAIL TABLE ── */
-.detail-table { width: 100%; border-collapse: collapse; min-width: 600px; }
-.detail-table th {
-  padding: 10px 14px;
-  font-size: 0.7rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: var(--muted-2);
-  text-align: left;
-  border-bottom: 1px solid var(--line);
-}
-.detail-table td {
-  padding: 10px 14px;
-  font-size: 0.83rem;
-  border-bottom: 1px solid var(--line-soft);
-  color: var(--muted);
-  vertical-align: middle;
-}
-.detail-table td:first-child { color: var(--text); font-weight: 600; }
-
-.risk-chip {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 3px 9px;
-  border-radius: 999px;
-  font-size: 0.75rem;
-  font-weight: 700;
-  min-width: 60px;
-}
-.risk-chip.high   { background: var(--danger-dim);  color: var(--danger); }
-.risk-chip.med    { background: var(--warning-dim); color: var(--warning); }
-.risk-chip.low    { background: var(--success-dim); color: var(--success); }
-.risk-chip.neutral { background: rgba(255,255,255,0.05); color: var(--muted-2); }
-
-/* ── FOOTER ── */
-.site-footer {
-  border-top: 1px solid var(--line);
-  padding: 32px 0;
-}
-.footer-inner {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 14px;
-}
-.footer-brand {
-  font-family: "Inter", sans-serif;
-  font-weight: 800;
-  font-size: 0.9rem;
-  color: var(--text);
-  text-decoration: none;
-}
-.footer-brand em { color: var(--accent); font-style: normal; }
-.footer-copy { font-size: 0.78rem; color: var(--muted-2); }
-.footer-stack { font-size: 0.75rem; color: var(--muted-2); }
-.footer-stack span { color: var(--muted); }
-
-/* ── RESPONSIVE ── */
-@media (max-width: 800px) {
-  .hero-stats, .kpi-grid { grid-template-columns: repeat(2, 1fr); }
-  .chart-grid-2, .insight-grid, .reco-grid, .threshold-grid { grid-template-columns: 1fr; }
-  .pipeline { grid-template-columns: repeat(3, 1fr); }
-  .pipeline::before { display: none; }
-  .band-inner { gap: 16px; }
-}
-@media (max-width: 480px) {
-  .hero-stats, .kpi-grid { grid-template-columns: 1fr; }
-  .hero-title { font-size: 2rem; }
-}
+  /* TREND ARROW */
+  .trend { font-size: 11px; font-weight: 600; }
+  .trend.up { color: var(--red); }
+  .trend.dn { color: var(--green); }
+  .trend.flat { color: var(--muted); }
 </style>
 </head>
-
 <body>
 
-<!-- ════════════════════ HEADER ════════════════════ -->
-<header class="site-header">
-  <div class="container nav">
-    <a href="../index.html" class="brand">Giao <em>Duong</em></a>
-    <nav class="menu">
-      <a href="../index.html#about">About</a>
-      <a href="../index.html#experience">Experience</a>
-      <a href="../index.html#projects">Featured Works</a>
-      <a href="../index.html#cv">CV</a>
-    </nav>
-  </div>
-</header>
-
-<!-- ════════════════════ HERO ════════════════════ -->
-<section class="hero">
-  <div class="hero-grid" aria-hidden="true"></div>
-  <div class="hero-glow" aria-hidden="true"></div>
-  <div class="container">
-
-    <p class="eyebrow reveal">Credit Risk Analytics · Portfolio Monitoring</p>
-
-    <h1 class="hero-title reveal reveal-delay-1">
-      Consumer Loan Portfolio:<br>
-      <mark>Credit Risk &amp; Performance</mark><br>Analysis
-    </h1>
-
-    <p class="hero-lead reveal reveal-delay-2">
-      An end-to-end credit risk analytics report across 38,576 consumer loans —
-      covering portfolio performance, bad loan concentration, monthly risk
-      movement, and actionable risk management recommendations.
-    </p>
-
-    <div class="hero-links reveal reveal-delay-3">
-      <a href="../index.html#projects" class="link-chip">
-        <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M7 1H1v10h10V5M7 1l4 4M7 1h4"/></svg>
-        Back to Portfolio
-      </a>
-      <a href="https://github.com/GracieDuong/giaoduong_portfolio" target="_blank" rel="noreferrer" class="link-chip">
-        <svg viewBox="0 0 12 12" fill="currentColor"><path d="M6 .5A5.5 5.5 0 0 0 .5 6c0 2.43 1.57 4.49 3.75 5.22.27.05.37-.12.37-.26v-.92C3.2 10.3 2.87 9.22 2.87 9.22c-.25-.63-.6-.8-.6-.8-.49-.33.04-.33.04-.33.54.04.83.56.83.56.48.82 1.27.58 1.58.44.05-.35.19-.58.34-.71-1.2-.14-2.46-.6-2.46-2.67 0-.59.21-1.07.56-1.44-.06-.14-.24-.68.05-1.42 0 0 .46-.15 1.5.56a5.2 5.2 0 0 1 2.73 0c1.04-.71 1.5-.56 1.5-.56.3.74.11 1.28.05 1.42.35.37.56.85.56 1.44 0 2.07-1.26 2.53-2.46 2.67.19.17.37.5.37 1.01v1.5c0 .14.1.31.38.26A5.5 5.5 0 0 0 11.5 6 5.5 5.5 0 0 0 6 .5Z"/></svg>
-        GitHub Repository
-      </a>
-      <a href="https://github.com/GracieDuong/giaoduong_portfolio/blob/main/sql/bank_loan_report_final.sql" target="_blank" rel="noreferrer" class="link-chip">
-        SQL Queries
-      </a>
+<!-- ═══════════════════════════════ COVER ═══════════════════════════════ -->
+<div class="cover">
+  <div class="cover-eyebrow">Credit Risk Analytics · Full-Year Report</div>
+  <h1 class="cover-title">2021 Loan Portfolio:<br><em>Strong growth, risk demands attention</em></h1>
+  <p class="cover-sub">A comprehensive analysis of 38,576 loans — covering portfolio performance, credit risk segmentation, and policy recommendations.</p>
+  <div class="cover-stats">
+    <div class="cover-stat">
+      <div class="cover-stat-val">38,576</div>
+      <div class="cover-stat-label">Total Applications</div>
     </div>
-
-    <div class="hero-stats reveal reveal-delay-4">
-      <div class="hero-stat">
-        <div class="hero-stat-val" id="count-apps">0</div>
-        <div class="hero-stat-label">Loan Applications</div>
-      </div>
-      <div class="hero-stat">
-        <div class="hero-stat-val" id="count-funded">$0M</div>
-        <div class="hero-stat-label">Total Funded</div>
-      </div>
-      <div class="hero-stat">
-        <div class="hero-stat-val safe" id="count-recovery">0x</div>
-        <div class="hero-stat-label">Repayment Indicator</div>
-      </div>
-      <div class="hero-stat">
-        <div class="hero-stat-val risk" id="count-bad">0%</div>
-        <div class="hero-stat-label">Bad Loan Rate</div>
-      </div>
+    <div class="cover-stat">
+      <div class="cover-stat-val">$435.8M</div>
+      <div class="cover-stat-label">Total Funded</div>
     </div>
-
+    <div class="cover-stat">
+      <div class="cover-stat-val safe">1.086x</div>
+      <div class="cover-stat-label">Recovery Ratio</div>
+    </div>
+    <div class="cover-stat">
+      <div class="cover-stat-val danger">13.82%</div>
+      <div class="cover-stat-label">Bad Loan Rate</div>
+    </div>
   </div>
-</section>
-
-<!-- ════════════════════ STICKY BAND ════════════════════ -->
-<div id="sticky-band" aria-hidden="true">
-  <div class="container band-inner">
-    <div class="band-kpi"><span class="band-kpi-val b">38,576</span><span class="band-kpi-label">applications</span></div>
-    <div class="band-sep"></div>
-    <div class="band-kpi"><span class="band-kpi-val">$435.8M</span><span class="band-kpi-label">funded</span></div>
-    <div class="band-sep"></div>
-    <div class="band-kpi"><span class="band-kpi-val g">1.086x</span><span class="band-kpi-label">repayment indicator</span></div>
-    <div class="band-sep"></div>
-    <div class="band-kpi"><span class="band-kpi-val r">13.82%</span><span class="band-kpi-label">bad loan rate</span></div>
-    <div class="band-sep"></div>
-    <div class="band-kpi"><span class="band-kpi-val a">12.05%</span><span class="band-kpi-label">avg interest</span></div>
-    <div class="band-sep"></div>
-    <div class="band-kpi"><span class="band-kpi-val a">13.33%</span><span class="band-kpi-label">avg DTI</span></div>
+  <div class="cover-meta">
+    <span>Data: financial_loan_enriched.csv</span>
+    <span>Period: Jan 2021 – Dec 2021</span>
+    <span>Records: 38,576</span>
   </div>
 </div>
 
-<!-- ════════════════════ TOC ════════════════════ -->
+<!-- ═══════════════════════════════ TOC NAV ═══════════════════════════════ -->
 <nav class="toc">
-  <div class="container toc-inner">
-    <a href="#pipeline">Pipeline</a>
-    <a href="#s1">Portfolio Overview</a>
-    <a href="#s2">Risk Segmentation</a>
-    <a href="#s3">Monthly Trend</a>
-    <a href="#s4">Recommendations</a>
-  </div>
+  <a href="#s1" class="active">Portfolio Overview</a>
+  <a href="#s2">Risk Segmentation</a>
+  <a href="#s3">Monthly Trend</a>
+  <a href="#s4">Recommendations</a>
 </nav>
 
 <div class="report-body">
 
-<!-- ════════════════════ PIPELINE ════════════════════ -->
-<section class="section" id="pipeline">
-  <div class="container">
-    <div class="section-header reveal">
-      <div class="section-tag">Project Methodology</div>
-      <h2 class="section-title">Data Pipeline &amp; Assumptions</h2>
-      <p class="section-lead">A complete analytics workflow from raw loan data to risk KPI calculation and portfolio monitoring.</p>
-    </div>
-
-    <div class="pipeline-card reveal">
-      <div class="pipeline">
-        <div class="pipeline-step">
-          <div class="pipeline-step-num">01</div>
-          <div class="pipeline-step-label">Raw CSV</div>
-          <div class="pipeline-step-desc">Loan records source file</div>
-        </div>
-        <div class="pipeline-step">
-          <div class="pipeline-step-num">02</div>
-          <div class="pipeline-step-label">Data Cleaning & Validation</div>
-          <div class="pipeline-step-desc">Dedup, null handling, type casting</div>
-        </div>
-        <div class="pipeline-step">
-          <div class="pipeline-step-num">03</div>
-          <div class="pipeline-step-label">SQL Risk Feature Engineering</div>
-          <div class="pipeline-step-desc">DTI bands, grade flags, risk labels</div>
-        </div>
-        <div class="pipeline-step">
-          <div class="pipeline-step-num">04</div>
-          <div class="pipeline-step-label">Aggregated Metrics</div>
-          <div class="pipeline-step-desc">Monthly, grade, purpose cuts</div>
-        </div>
-        <div class="pipeline-step">
-          <div class="pipeline-step-num">05</div>
-          <div class="pipeline-step-label">Dashboard</div>
-          <div class="pipeline-step-desc">Chart.js · interactive HTML</div>
-        </div>
-      </div>
-    </div>
-
-    <details class="assumption-block reveal">
-      <summary>Data Assumptions &amp; Limitations</summary>
-      <div class="assumption-body">
-        <p>The dataset contains historical consumer loan applications including borrower information, loan status, funded amount, total payments received, interest rate, DTI, credit grade, loan term, and purpose.</p>
-        <p>The dataset does not include repayment schedules, Days Past Due (DPD), collection actions, or monthly loan performance snapshots. True DPD monitoring and vintage curve analysis cannot be performed directly.</p>
-        <p>This report uses the following as proxy indicators for portfolio risk:</p>
-        <ul>
-          <li>Loan status (Fully Paid / Current / Charged Off)</li>
-          <li>Bad loan rate by origination month as a risk trend proxy</li>
-          <li>Repayment indicator (received / funded) as a portfolio health signal</li>
-          <li>Grade, term, DTI, and purpose segmentation for concentration analysis</li>
-        </ul>
-      </div>
-    </details>
+<!-- ═══════════════════════════════ SECTION 1 ═══════════════════════════════ -->
+<div class="section" id="s1">
+  <div class="section-header">
+    <div class="section-tag">Section 01 · Portfolio Overview</div>
+    <h2 class="section-title">Portfolio growing strongly<br>with recovery exceeding expectations</h2>
+    <p class="section-lead">Across all 38,576 loans in 2021, total funded reached $435.8M with $473.1M collected — a recovery ratio of 1.086x signaling strong repayment performance. However, the 13.82% bad loan rate warrants close monitoring.</p>
   </div>
-</section>
 
-<!-- ════════════════════ S1: PORTFOLIO OVERVIEW ════════════════════ -->
-<section class="section" id="s1">
-  <div class="container">
-    <div class="section-header reveal">
-      <div class="section-tag">Section 01 · Portfolio Overview</div>
-      <h2 class="section-title">Healthy growth with emerging risk concentration</h2>
-      <p class="section-lead">38,576 loan applications across 2021, generating $435.8M in funded amount and $473.1M in total payments received. Strong repayment, but the 13.82% bad loan rate demands deeper segment-level monitoring.</p>
+  <div class="kpi-row kpi-row-4" style="grid-template-columns:repeat(4,1fr)">
+    <div class="kpi-card accent-blue">
+      <div class="kpi-label">Total Applications</div>
+      <div class="kpi-value blue" id="kv-apps">38,576</div>
+      <div class="kpi-sub">Full 2021 portfolio</div>
     </div>
-
-    <div class="kpi-grid reveal">
-      <div class="kpi-card t-accent">
-        <div class="kpi-label">Total Applications</div>
-        <div class="kpi-value blue">38,576</div>
-        <div class="kpi-sub">Full-year 2021 portfolio</div>
-      </div>
-      <div class="kpi-card t-blue">
-        <div class="kpi-label">Total Funded Amount</div>
-        <div class="kpi-value sky">$435.8M</div>
-        <div class="kpi-sub">Total loan origination value</div>
-      </div>
-      <div class="kpi-card t-blue">
-        <div class="kpi-label">Total Received</div>
-        <div class="kpi-value sky">$473.1M</div>
-        <div class="kpi-sub">Principal, interest &amp; fees</div>
-      </div>
-      <div class="kpi-card t-success">
-        <div class="kpi-label">Repayment Indicator</div>
-        <div class="kpi-value green">1.086x</div>
-        <div class="kpi-sub">Received / funded</div>
-      </div>
+    <div class="kpi-card accent-blue">
+      <div class="kpi-label">Total Funded Amount</div>
+      <div class="kpi-value">$435.8M</div>
+      <div class="kpi-sub">Total capital disbursed</div>
     </div>
-
-    <div class="kpi-grid reveal">
-      <div class="kpi-card t-warning">
-        <div class="kpi-label">Avg Interest Rate</div>
-        <div class="kpi-value amber">12.05%</div>
-        <div class="kpi-sub">Portfolio-wide average</div>
-      </div>
-      <div class="kpi-card t-warning">
-        <div class="kpi-label">Avg DTI</div>
-        <div class="kpi-value amber">13.33%</div>
-        <div class="kpi-sub">Debt-to-income ratio</div>
-      </div>
-      <div class="kpi-card t-success">
-        <div class="kpi-label">Good Loan Rate</div>
-        <div class="kpi-value green">86.18%</div>
-        <div class="kpi-sub">Fully Paid + Current</div>
-      </div>
-      <div class="kpi-card t-danger">
-        <div class="kpi-label">Bad Loan Rate</div>
-        <div class="kpi-value red">13.82%</div>
-        <div class="kpi-sub">Charged Off</div>
-      </div>
+    <div class="kpi-card accent-blue">
+      <div class="kpi-label">Total Amount Received</div>
+      <div class="kpi-value">$473.1M</div>
+      <div class="kpi-sub">Total actual collections</div>
     </div>
-
-    <div class="narrative success reveal">
-      <strong>Repayment indicator context:</strong>
-      The 1.086x indicator means total payments received exceeded total funded amount, reflecting
-      principal repayment plus interest and fees. This is a portfolio-level health signal,
-      not a recovery rate on defaulted loans.
+    <div class="kpi-card accent-green">
+      <div class="kpi-label">Recovery Ratio</div>
+      <div class="kpi-value green">1.086x</div>
+      <div class="kpi-sub">Received / Funded</div>
     </div>
+  </div>
 
-    <div class="chart-card reveal">
-      <div class="chart-title">Monthly Portfolio Growth</div>
-      <div class="chart-sub">Loan applications and funded amount both increased steadily throughout 2021.</div>
+  <div class="kpi-row" style="grid-template-columns:repeat(4,1fr)">
+    <div class="kpi-card accent-amber">
+      <div class="kpi-label">Avg Interest Rate</div>
+      <div class="kpi-value amber">12.05%</div>
+      <div class="kpi-sub">Portfolio-wide average</div>
+    </div>
+    <div class="kpi-card accent-amber">
+      <div class="kpi-label">Avg DTI</div>
+      <div class="kpi-value amber">13.33%</div>
+      <div class="kpi-sub">Debt-to-Income ratio</div>
+    </div>
+    <div class="kpi-card accent-green">
+      <div class="kpi-label">Good Loan Rate</div>
+      <div class="kpi-value green">86.18%</div>
+      <div class="kpi-sub">Fully Paid + Current</div>
+    </div>
+    <div class="kpi-card accent-red">
+      <div class="kpi-label">Bad Loan Rate</div>
+      <div class="kpi-value red">13.82%</div>
+      <div class="kpi-sub">Charged Off</div>
+    </div>
+  </div>
+
+  <div class="narrative success">
+    <strong>Recovery Ratio 1.086x</strong> — Total collections ($473.1M) exceed total funded ($435.8M), reflecting interest and fees fully captured even with a portion of the portfolio charged off. This is a healthy portfolio signal.
+  </div>
+
+  <!-- Monthly trend -->
+  <div class="chart-card">
+    <div class="chart-card-title">Monthly Growth Trend</div>
+    <div class="chart-card-sub">Loan count and funded amount grew consistently from January to December, reflecting controlled portfolio expansion.</div>
+    <div class="legend">
+      <div class="legend-item"><div class="legend-box" style="background:#1B3A5C"></div>Loan count (left axis)</div>
+      <div class="legend-item"><div class="legend-box" style="background:#2874A6;border-radius:0;height:3px;width:16px"></div>Funded amount $M (right axis)</div>
+    </div>
+    <div class="chart-wrap" style="height:240px">
+      <canvas id="c-growth" role="img" aria-label="Monthly loan applications and funded amount growth chart, Jan–Dec 2021">Loan count grows from 2,332 (January) to 4,314 (December). Funded amount rises from $25M to $54M.</canvas>
+    </div>
+  </div>
+
+  <!-- Good vs Bad breakdown -->
+  <div class="chart-grid-2">
+    <div class="chart-card" style="margin-bottom:0">
+      <div class="chart-card-title">Good vs Bad Loan Distribution</div>
+      <div class="chart-card-sub">By loan count</div>
       <div class="legend">
-        <div class="legend-item"><div class="legend-swatch" style="background:var(--accent)"></div>Loan applications</div>
-        <div class="legend-item"><div class="legend-line" style="background:var(--blue)"></div>Funded amount ($M)</div>
+        <div class="legend-item"><div class="legend-box" style="background:#1E8449"></div>Good Loan — 86.18% (33,243)</div>
+        <div class="legend-item"><div class="legend-box" style="background:#C0392B"></div>Bad Loan — 13.82% (5,333)</div>
       </div>
-      <div style="height:230px; position:relative">
-        <canvas id="c-growth" role="img" aria-label="Loan applications grew from 2,332 in January to 4,314 in December. Funded amount rose from $25M to $54M."></canvas>
-      </div>
-    </div>
-
-    <div class="chart-grid-2 reveal">
-      <div class="chart-card" style="margin-bottom:0">
-        <div class="chart-title">Good vs Bad Loan Distribution</div>
-        <div class="chart-sub">By number of applications</div>
-        <div class="legend">
-          <div class="legend-item"><div class="legend-swatch" style="background:var(--success)"></div>Good — 86.18% (33,243)</div>
-          <div class="legend-item"><div class="legend-swatch" style="background:var(--danger)"></div>Bad — 13.82% (5,333)</div>
-        </div>
-        <div style="height:210px; position:relative">
-          <canvas id="c-goodbad-donut" role="img" aria-label="86.18% good loans, 13.82% bad loans."></canvas>
-        </div>
-      </div>
-      <div class="chart-card" style="margin-bottom:0">
-        <div class="chart-title">Funded vs Received: Good vs Bad</div>
-        <div class="chart-sub">Bad loans show a $28.2M funding-received gap</div>
-        <div class="legend">
-          <div class="legend-item"><div class="legend-swatch" style="background:var(--success)"></div>Good Loan</div>
-          <div class="legend-item"><div class="legend-swatch" style="background:var(--danger)"></div>Bad Loan</div>
-        </div>
-        <div style="height:210px; position:relative">
-          <canvas id="c-goodbad-bar" role="img" aria-label="Good: $370M funded, $436M received. Bad: $66M funded, $37M received."></canvas>
-        </div>
+      <div class="chart-wrap" style="height:200px">
+        <canvas id="c-goodbad-donut" role="img" aria-label="Donut chart showing good vs bad loan split">86.18% good loan, 13.82% bad loan.</canvas>
       </div>
     </div>
-
-    <div class="narrative danger reveal">
-      <strong>Estimated loss exposure:</strong>
-      Bad loans show a funding-received gap of ~$28.2M ($65.5M funded vs $37.3M received).
-      43% of bad loan capital was not recovered, underscoring the need for stronger
-      pre-origination controls in high-risk segments.
-    </div>
-
-    <div class="chart-card reveal">
-      <div class="chart-title">Funded Amount by Loan Purpose</div>
-      <div class="chart-sub">Debt consolidation accounts for more than 53% of total funded amount.</div>
-      <div style="height:240px; position:relative">
-        <canvas id="c-purpose-vol" role="img" aria-label="Debt consolidation leads with $232.5M funded."></canvas>
+    <div class="chart-card" style="margin-bottom:0">
+      <div class="chart-card-title">Good vs Bad Capital Comparison</div>
+      <div class="chart-card-sub">Funded Amount and Amount Received ($M)</div>
+      <div class="legend">
+        <div class="legend-item"><div class="legend-box" style="background:#1E8449"></div>Good Loan</div>
+        <div class="legend-item"><div class="legend-box" style="background:#C0392B"></div>Bad Loan</div>
+      </div>
+      <div class="chart-wrap" style="height:200px">
+        <canvas id="c-goodbad-bar" role="img" aria-label="Bar chart comparing funded and received amounts for good vs bad loans">Good loan funded $370M, received $436M. Bad loan funded $66M, received $37M.</canvas>
       </div>
     </div>
+  </div>
 
-    <div class="chart-card reveal">
-      <div class="chart-title">Loan Status Breakdown</div>
-      <div class="chart-sub">Fully Paid, Current, and Charged Off distribution across the full portfolio.</div>
+  <div class="narrative danger" style="margin-top:16px">
+    <strong>Bad Loans resulted in $28.2M in unrecovered capital:</strong> $65.5M was funded to bad loans but only $37.3M was collected — meaning 43% of bad loan capital was lost. This is the portfolio's true credit loss and warrants deep segment-level analysis.
+  </div>
+
+  <!-- By Purpose -->
+  <div class="chart-card">
+    <div class="chart-card-title">Funded Amount by Loan Purpose (Top 8)</div>
+    <div class="chart-card-sub">Debt consolidation dominates — over 53% of total funded amount</div>
+    <div class="chart-wrap" style="height:230px">
+      <canvas id="c-purpose-vol" role="img" aria-label="Horizontal bar chart of funded amount by loan purpose">Debt consolidation leads with $232.5M.</canvas>
+    </div>
+  </div>
+
+  <!-- Loan Status Summary -->
+  <div class="chart-card">
+    <div class="chart-card-title">Loan Status Distribution</div>
+    <div class="chart-card-sub">Three statuses: Fully Paid (completed), Current (active), Charged Off (defaulted)</div>
+    <div class="chart-wrap" style="height:80px">
+      <canvas id="c-status-bar" role="img" aria-label="Horizontal bar chart of loan status distribution">Fully Paid 83.3%, Charged Off 13.8%, Current 2.9%.</canvas>
+    </div>
+    <div style="margin-top:16px">
       <div class="progress-row">
         <div class="progress-label">Fully Paid</div>
-        <div class="progress-track"><div class="progress-fill" style="width:83.35%; background:var(--success)"></div></div>
-        <div class="progress-pct" style="color:var(--success)">83.3%</div>
+        <div class="progress-bar-wrap"><div class="progress-bar" style="width:83.35%;background:#1E8449"></div></div>
+        <div class="progress-val" style="color:#1E8449">83.3%</div>
       </div>
       <div class="progress-row">
         <div class="progress-label">Current</div>
-        <div class="progress-track"><div class="progress-fill" style="width:2.85%; background:var(--blue)"></div></div>
-        <div class="progress-pct" style="color:var(--blue)">2.9%</div>
+        <div class="progress-bar-wrap"><div class="progress-bar" style="width:2.85%;background:#2874A6"></div></div>
+        <div class="progress-val" style="color:#2874A6">2.9%</div>
       </div>
       <div class="progress-row">
         <div class="progress-label">Charged Off</div>
-        <div class="progress-track"><div class="progress-fill" style="width:13.82%; background:var(--danger)"></div></div>
-        <div class="progress-pct" style="color:var(--danger)">13.8%</div>
+        <div class="progress-bar-wrap"><div class="progress-bar" style="width:13.82%;background:#C0392B"></div></div>
+        <div class="progress-val" style="color:#C0392B">13.8%</div>
       </div>
     </div>
   </div>
-</section>
-
-<!-- ════════════════════ S2: RISK SEGMENTATION ════════════════════ -->
-<section class="section" id="s2">
-  <div class="container">
-    <div class="section-header reveal">
-      <div class="section-tag">Section 02 · Risk Segmentation</div>
-      <h2 class="section-title">Risk is concentrated — four dimensions reveal the pattern</h2>
-      <p class="section-lead">Grade, term, DTI, interest rate, and loan purpose all show clear concentration of bad loan risk. Grade F/G and 60-month loans are the two largest risk zones.</p>
-    </div>
-
-    <div class="chart-grid-2 reveal">
-      <div class="chart-card" style="margin-bottom:0">
-        <div class="chart-title">Bad Loan Rate by Credit Grade</div>
-        <div class="chart-sub">Sharp gradient from Grade A (5.7%) to Grade G (31.3%).</div>
-        <div class="legend">
-          <div class="legend-item"><div class="legend-swatch" style="background:var(--success)"></div>Low</div>
-          <div class="legend-item"><div class="legend-swatch" style="background:var(--warning)"></div>Medium</div>
-          <div class="legend-item"><div class="legend-swatch" style="background:var(--danger)"></div>High</div>
-        </div>
-        <div style="height:240px; position:relative">
-          <canvas id="c-grade" role="img" aria-label="Bad loan rate rises from 5.7% in Grade A to 31.31% in Grade G."></canvas>
-        </div>
-      </div>
-      <div class="chart-card" style="margin-bottom:0">
-        <div class="chart-title">Loan Volume by Credit Grade</div>
-        <div class="chart-sub">Most volume sits in A–B, but C–G requires close monitoring.</div>
-        <div class="legend">
-          <div class="legend-item"><div class="legend-swatch" style="background:var(--accent)"></div>Loan count</div>
-        </div>
-        <div style="height:240px; position:relative">
-          <canvas id="c-grade-vol" role="img" aria-label="Grade B has the most loans (11,674). Grade G has 313."></canvas>
-        </div>
-      </div>
-    </div>
-
-    <div class="narrative danger reveal">
-      <strong>Grades F &amp; G exceed 30% bad loan rate</strong> — while representing just ~3.5% of applications, they carry the portfolio's highest default concentration. Every third Grade G loan is charged off.
-    </div>
-
-    <div class="chart-card reveal">
-      <div class="chart-title">Bad Loan Rate by Loan Term</div>
-      <div class="chart-sub">60-month loans carry more than twice the risk of 36-month loans.</div>
-      <div class="insight-grid">
-        <div class="insight-box green">
-          <div class="insight-num">10.71%</div>
-          <div class="insight-label">36-month loans · 28,237 applications · $273M funded</div>
-        </div>
-        <div class="insight-box red">
-          <div class="insight-num">22.34%</div>
-          <div class="insight-label">60-month loans · 10,339 applications · $163M funded</div>
-        </div>
-      </div>
-      <div class="narrative warning">
-        <strong>Policy implication:</strong> Longer loan terms create higher risk exposure over time and should be monitored with a dedicated framework separate from short-term loans.
-      </div>
-    </div>
-
-    <div class="chart-grid-2 reveal">
-      <div class="chart-card" style="margin-bottom:0">
-        <div class="chart-title">Bad Loan Rate by DTI Band</div>
-        <div class="chart-sub">Higher DTI → weaker repayment capacity → higher default risk.</div>
-        <div class="legend">
-          <div class="legend-item"><div class="legend-swatch" style="background:var(--success)"></div>Low DTI (&lt;10%)</div>
-          <div class="legend-item"><div class="legend-swatch" style="background:var(--warning)"></div>Medium (10–20%)</div>
-          <div class="legend-item"><div class="legend-swatch" style="background:var(--danger)"></div>High (&gt;20%)</div>
-        </div>
-        <div style="height:210px; position:relative">
-          <canvas id="c-dti" role="img" aria-label="DTI bad loan rate: Low 12.0%, Medium 14.4%, High 15.6%."></canvas>
-        </div>
-      </div>
-      <div class="chart-card" style="margin-bottom:0">
-        <div class="chart-title">Bad Loan Rate by Interest Rate Band</div>
-        <div class="chart-sub">High interest bands amplify and reflect existing credit risk.</div>
-        <div class="legend">
-          <div class="legend-item"><div class="legend-swatch" style="background:var(--success)"></div>Low (&lt;10%)</div>
-          <div class="legend-item"><div class="legend-swatch" style="background:var(--warning)"></div>Medium (10–15%)</div>
-          <div class="legend-item"><div class="legend-swatch" style="background:var(--danger)"></div>High (&gt;15%)</div>
-        </div>
-        <div style="height:210px; position:relative">
-          <canvas id="c-intband" role="img" aria-label="Interest rate bad loan rate: Low 6.25%, Medium 13.94%, High 24.17%."></canvas>
-        </div>
-      </div>
-    </div>
-
-    <div class="chart-card reveal">
-      <div class="chart-title">Bad Loan Rate by Loan Purpose</div>
-      <div class="chart-sub">Small business loans carry the highest bad loan rate. Wedding and major purchase are the safest.</div>
-      <div class="legend">
-        <div class="legend-item"><div class="legend-swatch" style="background:var(--danger)"></div>&gt;20% High</div>
-        <div class="legend-item"><div class="legend-swatch" style="background:var(--warning)"></div>14–20% Medium</div>
-        <div class="legend-item"><div class="legend-swatch" style="background:var(--success)"></div>&lt;14% Lower</div>
-      </div>
-      <div style="height:310px; position:relative">
-        <canvas id="c-purpose-risk" role="img" aria-label="Small business: 25.62% bad loan rate. Wedding: 9.27%."></canvas>
-      </div>
-    </div>
-
-    <div class="chart-card reveal">
-      <div class="chart-title">Risk Heat Map — Credit Grade × Loan Term</div>
-      <div class="chart-sub">Cell color intensity reflects bad loan rate. Darker red = higher risk concentration.</div>
-      <div class="matrix-wrap">
-        <table class="matrix-table">
-          <thead>
-            <tr>
-              <th>Grade</th>
-              <th>36 Months</th>
-              <th>60 Months</th>
-              <th>Risk Level</th>
-            </tr>
-          </thead>
-          <tbody id="matrix-body"></tbody>
-        </table>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ════════════════════ S3: MONTHLY TREND ════════════════════ -->
-<section class="section" id="s3">
-  <div class="container">
-    <div class="section-header reveal">
-      <div class="section-tag">Section 03 · Monthly Risk Monitoring</div>
-      <h2 class="section-title">Risk shows seasonal patterns — May and December are the hotspots</h2>
-      <p class="section-lead">Bad loan rate fluctuated between 11.58% and 15.08% across 2021 origination months. Note: this should be treated as an issue-month risk proxy, not a true vintage default curve, as the dataset lacks DPD snapshots.</p>
-    </div>
-
-    <div class="chart-card reveal">
-      <div class="chart-title">Bad Loan Rate &amp; Month-over-Month Change</div>
-      <div class="chart-sub">Reference line at portfolio average (13.82%). MoM bars indicate direction of movement.</div>
-      <div class="legend">
-        <div class="legend-item"><div class="legend-line" style="background:var(--danger)"></div>Bad loan rate (%)</div>
-        <div class="legend-item"><div class="legend-swatch" style="background:var(--danger)"></div>MoM increase</div>
-        <div class="legend-item"><div class="legend-swatch" style="background:var(--success)"></div>MoM decrease</div>
-        <div class="legend-item"><div class="legend-line" style="background:var(--muted-2);border-top:1px dashed var(--muted-2);height:0"></div>Portfolio avg 13.82%</div>
-      </div>
-      <div style="height:260px; position:relative">
-        <canvas id="c-trend" role="img" aria-label="Bad loan rate between 11.58% and 15.08%, highest in May and December."></canvas>
-      </div>
-    </div>
-
-    <div class="chart-card reveal">
-      <div class="chart-title">Funded Amount vs Bad Loan Rate</div>
-      <div class="chart-sub">Portfolio volume grew consistently. Risk quality did not improve at the same pace.</div>
-      <div class="legend">
-        <div class="legend-item"><div class="legend-swatch" style="background:var(--accent)"></div>Funded amount ($M)</div>
-        <div class="legend-item"><div class="legend-line" style="background:var(--danger)"></div>Bad loan rate (%)</div>
-      </div>
-      <div style="height:240px; position:relative">
-        <canvas id="c-funded-trend" role="img" aria-label="Funded amount $25M to $54M. Bad loan rate 11.58% to 15.08%."></canvas>
-      </div>
-    </div>
-
-    <div class="chart-card reveal">
-      <div class="chart-title">Monthly Risk Detail</div>
-      <div class="chart-sub">Applications, estimated bad loans, bad rate, MoM change, and funded amount by month.</div>
-      <div class="matrix-wrap">
-        <table class="detail-table">
-          <thead>
-            <tr>
-              <th>Month</th>
-              <th>Applications</th>
-              <th>Est. Bad Loans</th>
-              <th>Bad Rate</th>
-              <th>MoM Change</th>
-              <th>Funded ($M)</th>
-            </tr>
-          </thead>
-          <tbody id="monthly-detail-body"></tbody>
-        </table>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ════════════════════ S4: RECOMMENDATIONS ════════════════════ -->
-<section class="section" id="s4">
-  <div class="container">
-    <div class="section-header reveal">
-      <div class="section-tag">Section 04 · Recommendations</div>
-      <h2 class="section-title">Four priority actions for risk control</h2>
-      <p class="section-lead">Based on bad loan rate concentration and capital at risk, four actions are identified — from tighter origination controls to automated monitoring triggers.</p>
-    </div>
-
-    <div class="reco-grid reveal">
-      <div class="reco-card high">
-        <div class="reco-priority high">● High Priority</div>
-        <div class="reco-title">60-month loans: 22.34% bad loan rate</div>
-        <div class="reco-impact">Long-term exposure with $163M in funded amount and double the default risk of 36-month loans.</div>
-        <div class="reco-action"><span>Action:</span> Apply stricter origination criteria for 60-month loans. Monitor this segment separately from the overall portfolio with its own risk dashboard.</div>
-        <div class="reco-metric"><strong>Monitor:</strong> Bad rate by term (monthly)</div>
-      </div>
-
-      <div class="reco-card high">
-        <div class="reco-priority high">● High Priority</div>
-        <div class="reco-title">Grades F &amp; G exceed 30% bad loan rate</div>
-        <div class="reco-impact">1 in 3 Grade G loans defaults. Highest credit risk concentration in the portfolio.</div>
-        <div class="reco-action"><span>Action:</span> Limit new exposure to Grades F–G. Introduce tiered approval criteria and consider collateral requirements for Grade E and below.</div>
-        <div class="reco-metric"><strong>Monitor:</strong> Bad rate by grade (quarterly)</div>
-      </div>
-
-      <div class="reco-card medium">
-        <div class="reco-priority medium">● Medium Priority</div>
-        <div class="reco-title">Small business loans: 25.62% bad loan rate</div>
-        <div class="reco-impact">Highest bad loan rate by purpose. Segment-level concentration driven by SME business cycle volatility.</div>
-        <div class="reco-action"><span>Action:</span> Build a separate SME credit review pipeline. Add revenue verification and industry-specific underwriting rules.</div>
-        <div class="reco-metric"><strong>Monitor:</strong> Bad rate by purpose (monthly)</div>
-      </div>
-
-      <div class="reco-card medium">
-        <div class="reco-priority medium">● Medium Priority</div>
-        <div class="reco-title">High DTI borrowers show elevated risk</div>
-        <div class="reco-impact">High DTI band at 15.6% — 30% above the Low DTI band — indicating weaker repayment capacity under financial stress.</div>
-        <div class="reco-action"><span>Action:</span> Introduce DTI trigger rules in the scoring system. Automate early-warning alerts when DTI exceeds 20%.</div>
-        <div class="reco-metric"><strong>Monitor:</strong> Bad rate by DTI band (monthly)</div>
-      </div>
-    </div>
-
-    <div class="threshold-grid reveal">
-      <div class="threshold-card danger">
-        <div class="threshold-eyebrow">Alert Threshold</div>
-        <div class="threshold-val" style="color:var(--danger)">&gt;15%</div>
-        <div class="threshold-desc">Portfolio-wide bad loan rate — triggers urgent risk review process.</div>
-      </div>
-      <div class="threshold-card warning">
-        <div class="threshold-eyebrow">Watch Threshold</div>
-        <div class="threshold-val" style="color:var(--warning)">&gt;2pp</div>
-        <div class="threshold-desc">MoM bad rate change — triggers deep-dive origination analysis.</div>
-      </div>
-      <div class="threshold-card accent">
-        <div class="threshold-eyebrow">Repayment Target</div>
-        <div class="threshold-val" style="color:var(--accent)">&gt;1.05x</div>
-        <div class="threshold-desc">Below this level, pricing and repayment quality should be reviewed.</div>
-      </div>
-    </div>
-
-    <div class="final-card reveal">
-      <p>
-        <strong>The core finding:</strong> The 2021 portfolio is fundamentally healthy —
-        steady growth, 1.086x repayment indicator, and 86.18% good loan rate.
-        The challenge is that risk is not uniformly distributed.
-        The same portfolio that produces 5.7% bad loan rate in Grade A produces 31.3% in Grade G.
-        The business response is not to slow down origination, but to
-        <strong>apply more granular risk controls by grade, term, purpose, and DTI</strong>
-        — so that growth and quality move together.
-      </p>
-    </div>
-  </div>
-</section>
-
 </div>
 
-<!-- ════════════════════ FOOTER ════════════════════ -->
-<footer class="site-footer">
-  <div class="container footer-inner">
-    <a href="../index.html" class="footer-brand">Giao <em>Duong</em></a>
-    <div class="footer-copy">Credit Risk Portfolio Analysis · 38,576 loan records · 2021</div>
-    <div class="footer-stack">Built with <span>HTML · CSS · JavaScript · Chart.js</span></div>
-  </div>
-</footer>
+<div class="section-divider"></div>
 
+<!-- ═══════════════════════════════ SECTION 2 ═══════════════════════════════ -->
+<div class="section" id="s2">
+  <div class="section-header">
+    <div class="section-tag">Section 02 · Risk Segmentation</div>
+    <h2 class="section-title">Risk is unevenly distributed —<br>concentrated across 4 key dimensions</h2>
+    <p class="section-lead">Breaking down bad loan rate by credit grade, term, DTI, and interest rate reveals clear risk concentrations. Grade G and 60-month loans are the two largest red flags.</p>
+  </div>
+
+  <!-- Grade analysis -->
+  <div class="chart-grid-2">
+    <div class="chart-card" style="margin-bottom:0">
+      <div class="chart-card-title">Bad Loan Rate by Credit Grade</div>
+      <div class="chart-card-sub">Clear gradient from A (safe) to G (very high risk)</div>
+      <div class="chart-wrap" style="height:240px">
+        <canvas id="c-grade" role="img" aria-label="Bad loan rate by grade A through G, ranging from 5.7% to 31.3%">Grade A: 5.7%, Grade G: 31.3%.</canvas>
+      </div>
+    </div>
+    <div class="chart-card" style="margin-bottom:0">
+      <div class="chart-card-title">Loan Volume by Credit Grade</div>
+      <div class="chart-card-sub">Most of the portfolio is Grade A-B — but C-G requires close monitoring</div>
+      <div class="chart-wrap" style="height:240px">
+        <canvas id="c-grade-vol" role="img" aria-label="Loan volume by grade A through G">Grade B has the most loans (11,674), Grade G the fewest (313).</canvas>
+      </div>
+    </div>
+  </div>
+
+  <div class="narrative danger" style="margin-top:16px">
+    <strong>Grades F &amp; G exceed 30% bad loan rate:</strong> While Grade A sits at just 5.7%, Grade F reaches 30.25% and Grade G 31.31% — meaning 1 in every 3 Grade G loans is charged off. Although F+G represent only 3.5% of the portfolio by count, this is the highest-concentration risk zone.
+  </div>
+
+  <!-- Term analysis -->
+  <div class="chart-card">
+    <div class="chart-card-title">Bad Loan Rate by Term — 36 Months vs 60 Months</div>
+    <div class="chart-card-sub">Longer-term loans carry more than double the risk</div>
+    <div class="insight-grid">
+      <div class="insight-box green">
+        <div class="insight-box-num">10.71%</div>
+        <div class="insight-box-label">36 months — 28,237 loans · $273M funded</div>
+      </div>
+      <div class="insight-box red">
+        <div class="insight-box-num">22.34%</div>
+        <div class="insight-box-label">60 months — 10,339 loans · $163M funded</div>
+      </div>
+    </div>
+    <div class="narrative warning">
+      <strong>60-month loans carry a bad loan rate 2.09× higher</strong> than 36-month loans (22.34% vs 10.71%). With $163M funded in 60-month loans, this segment requires a dedicated monitoring framework.
+    </div>
+  </div>
+
+  <!-- DTI & Int Rate -->
+  <div class="chart-grid-2">
+    <div class="chart-card" style="margin-bottom:0">
+      <div class="chart-card-title">Bad Loan Rate by DTI Band</div>
+      <div class="chart-card-sub">Lower repayment capacity → higher default risk</div>
+      <div class="chart-wrap" style="height:200px">
+        <canvas id="c-dti" role="img" aria-label="Bad Loan Rate theo DTI band: Low 12%, Medium 14.4%, High 15.6%">Low DTI: 12.0%, Medium DTI: 14.4%, High DTI: 15.6%.</canvas>
+      </div>
+    </div>
+    <div class="chart-card" style="margin-bottom:0">
+      <div class="chart-card-title">Bad Loan Rate by Interest Rate Band</div>
+      <div class="chart-card-sub">High interest rates reflect and amplify credit risk</div>
+      <div class="chart-wrap" style="height:200px">
+        <canvas id="c-intband" role="img" aria-label="Bad Loan Rate theo interest rate band: Low 6.25%, Medium 13.94%, High 24.17%">Low interest: 6.25%, High interest: 24.17%.</canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- Purpose Risk -->
+  <div class="chart-card" style="margin-top:16px">
+    <div class="chart-card-title">Bad Loan Rate by Loan Purpose</div>
+    <div class="chart-card-sub">Small Business leads in risk — Wedding and Major Purchase are safest</div>
+    <div class="chart-wrap" style="height:300px">
+      <canvas id="c-purpose-risk" role="img" aria-label="Bad loan rate by loan purpose, small business highest at 25.6%">Small business: 25.6%, Wedding: 9.27%.</canvas>
+    </div>
+  </div>
+
+  <!-- Matrix -->
+  <div class="chart-card">
+    <div class="chart-card-title">Risk Matrix — Grade × Term (%)</div>
+    <div class="chart-card-sub">Low grade + long term = extreme risk zone. Color coding: <span class="badge badge-green">Green &lt;15%</span> <span class="badge badge-amber">Amber 15–25%</span> <span class="badge badge-red">Red &gt;25%</span></div>
+    <div class="matrix-wrap">
+      <table class="matrix-table" id="matrix-table">
+        <thead>
+          <tr>
+            <th>Grade</th>
+            <th>36 months</th>
+            <th>60 months</th>
+            <th>Assessment</th>
+          </tr>
+        </thead>
+        <tbody id="matrix-body"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div class="section-divider"></div>
+
+<!-- ═══════════════════════════════ SECTION 3 ═══════════════════════════════ -->
+<div class="section" id="s3">
+  <div class="section-header">
+    <div class="section-tag">Section 03 · Monthly Risk Trend</div>
+    <h2 class="section-title">Portfolio risk shows seasonal patterns —<br>May and December are the hotspots</h2>
+    <p class="section-lead">Tracking bad loan rate by origination month reveals a 3.5 pp swing across 2021. February was the lowest (11.58%), with May and December peaking at ~15%. Note <em>vintage bias</em> — recent vintages may not yet have had time to charge off.</p>
+  </div>
+
+  <!-- Monthly bad rate trend -->
+  <div class="chart-card">
+    <div class="chart-card-title">Bad Loan Rate &amp; MoM Change by Month</div>
+    <div class="chart-card-sub">Line: bad loan rate (%). Bars: MoM change (percentage points)</div>
+    <div class="legend">
+      <div class="legend-item"><div class="legend-box" style="background:#C0392B;border-radius:0;height:2px;width:16px"></div>Bad loan rate % (left axis)</div>
+      <div class="legend-item"><div class="legend-box" style="background:#2874A6"></div>MoM change pp (right axis)</div>
+    </div>
+    <div class="chart-wrap" style="height:260px">
+      <canvas id="c-trend" role="img" aria-label="Monthly bad loan rate trend with MoM change overlay">Bad loan rate fluctuates between 11.58% and 15.08% across 2021.</canvas>
+    </div>
+  </div>
+
+  <!-- Monthly funded + bad rate -->
+  <div class="chart-card">
+    <div class="chart-card-title">Funded Amount ($M) vs Bad Loan Rate (%)</div>
+    <div class="chart-card-sub">Portfolio grows strongly but bad rate does not fall in tandem — year-end acceleration in volume warrants quality control</div>
+    <div class="legend">
+      <div class="legend-item"><div class="legend-box" style="background:rgba(40,116,166,0.3)"></div>Funded amount $M</div>
+      <div class="legend-item"><div class="legend-box" style="background:#E74C3C;border-radius:0;height:2px;width:16px"></div>Bad Loan Rate %</div>
+    </div>
+    <div class="chart-wrap" style="height:240px">
+      <canvas id="c-funded-trend" role="img" aria-label="Funded amount and bad loan rate by month, dual-axis chart">Funded amount grows from $25M to $54M; bad loan rate fluctuates between 11.6% and 15.1%.</canvas>
+    </div>
+  </div>
+
+  <!-- MoM table -->
+  <div class="chart-card">
+    <div class="chart-card-title">Monthly Risk Detail</div>
+    <div class="chart-card-sub">Full monthly breakdown: applications, bad loans, bad rate, MoM change, funded amount</div>
+    <div class="matrix-wrap">
+      <table class="matrix-table" style="font-size:12px" id="monthly-detail-table">
+        <thead>
+          <tr>
+            <th style="text-align:left">Month</th>
+            <th>Applications</th>
+            <th>Bad Loans</th>
+            <th>Bad Rate</th>
+            <th>MoM Change</th>
+            <th>Funded ($M)</th>
+          </tr>
+        </thead>
+        <tbody id="monthly-detail-body"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div class="section-divider"></div>
+
+<!-- ═══════════════════════════════ SECTION 4 ═══════════════════════════════ -->
+<div class="section" id="s4">
+  <div class="section-header">
+    <div class="section-tag">Section 04 · Recommendations</div>
+    <h2 class="section-title">Four priority actions<br>to manage credit risk</h2>
+    <p class="section-lead">Based on the full portfolio analysis, four key findings require concrete policy actions — ranging from tiered approval frameworks to automated monitoring triggers.</p>
+  </div>
+
+  <div class="chart-card">
+    <div class="chart-card-title">Risk Management Recommendations</div>
+    <div class="chart-card-sub">Ordered by priority — based on bad loan rate and capital at risk</div>
+    <table class="reco-table">
+      <thead>
+        <tr>
+          <th style="width:22%">Finding</th>
+          <th style="width:10%">Severity</th>
+          <th style="width:26%">Risk Implication</th>
+          <th style="width:28%">Recommended Action</th>
+          <th style="width:14%">Metric to Monitor</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>60-month loans: bad rate <strong>22.34%</strong> — 2.09× higher than 36-month loans</td>
+          <td><span class="badge badge-red">High</span></td>
+          <td>$163M long-term exposure with elevated default rates — recovery is harder when the economic cycle turns</td>
+          <td>Monitor 60-month portfolio separately; apply stricter origination criteria for long-term loans; review maximum limits</td>
+          <td>Bad rate by term (monthly)</td>
+        </tr>
+        <tr>
+          <td>Grades F &amp; G: bad rate exceeds <strong>30%</strong> — 1 in every 3 loans defaults</td>
+          <td><span class="badge badge-red">High</span></td>
+          <td>Credit risk concentration; impacts NII and loan loss provisions if the segment is expanded</td>
+          <td>Implement tiered approval policy; cap credit limits for Grade E-G; consider requiring collateral</td>
+          <td>Bad rate by grade (quarterly)</td>
+        </tr>
+        <tr>
+          <td>Small Business: bad rate <strong>25.6%</strong> — highest of all loan purposes</td>
+          <td><span class="badge badge-amber">Medium</span></td>
+          <td>Industry-level risk concentration; high volatility driven by SME business cycles</td>
+          <td>Review SME lending policy; create a dedicated analysis pipeline; add revenue verification requirements</td>
+          <td>Bad rate by purpose (monthly)</td>
+        </tr>
+        <tr>
+          <td>High DTI Band: bad rate <strong>15.6%</strong> — 30% higher than the Low DTI band</td>
+          <td><span class="badge badge-amber">Medium</span></td>
+          <td>High DTI reflects weak repayment capacity; risk escalates when interest rates fluctuate</td>
+          <td>Set DTI trigger rules in the scoring system; auto-alert when DTI exceeds 20% threshold</td>
+          <td>Bad rate by DTI (monthly)</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="chart-card" style="margin-top:0">
+    <div class="chart-card-title">Summary Dashboard — Risk Thresholds to Monitor</div>
+    <div class="chart-card-sub">Recommended KPI thresholds for monthly monitoring</div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px">
+      <div style="padding:16px;border:1px solid var(--border);border-radius:6px;border-left:4px solid var(--red)">
+        <div style="font-size:11px;color:var(--muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:1px">Alert Threshold</div>
+        <div style="font-size:22px;font-weight:700;color:var(--red)">&gt;15%</div>
+        <div style="font-size:12px;color:var(--text-muted)">Portfolio-wide bad loan rate — triggers emergency review</div>
+      </div>
+      <div style="padding:16px;border:1px solid var(--border);border-radius:6px;border-left:4px solid var(--amber)">
+        <div style="font-size:11px;color:var(--muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:1px">Watch Threshold</div>
+        <div style="font-size:22px;font-weight:700;color:var(--amber)">&gt;2pp</div>
+        <div style="font-size:12px;color:var(--text-muted)">MoM bad rate change — triggers deep-dive analysis</div>
+      </div>
+      <div style="padding:16px;border:1px solid var(--border);border-radius:6px;border-left:4px solid var(--blue-accent)">
+        <div style="font-size:11px;color:var(--muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:1px">Recovery Target</div>
+        <div style="font-size:22px;font-weight:700;color:var(--blue-accent)">&gt;1.05x</div>
+        <div style="font-size:12px;color:var(--text-muted)">Recovery ratio — below this level, pricing needs review</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Summary visual narrative -->
+  <div class="narrative" style="margin-top:8px">
+    <strong>The data story in summary:</strong> The 2021 portfolio has solid foundations — steady growth, a 1.086x recovery ratio, and 86.18% good loans. The challenge is extreme risk polarization: Grade A sits at 5.7% bad rate while Grade G reaches 31.3%. The priority action is implementing <strong>tiered policy by grade and term</strong>, combined with <strong>automated DTI and purpose monitoring</strong> to detect risk drift early.
+  </div>
+</div>
+
+</div><!-- end report-body -->
+
+<div class="footer">
+  Bank Loan Portfolio Credit Risk Report · Data: financial_loan_enriched.csv · 38,576 records · Period: 2021
+</div>
+
+<!-- ═══════════════════════════════ SCRIPTS ═══════════════════════════════ -->
 <script>
-/* ── DATA ── */
 const D = {
-  monthly:{
+  monthly: {
     labels:["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"],
     apps:[2332,2279,2627,2755,2911,3184,3366,3441,3536,3796,4035,4314],
     funded:[25.03,24.65,28.88,29.80,31.74,34.16,35.81,38.15,40.91,44.89,47.75,53.98],
@@ -1300,12 +723,28 @@ const D = {
   grade:{
     labels:["A","B","C","D","E","F","G"],
     total:[9689,11674,7904,5182,2786,1028,313],
-    bad_rate:[5.70,11.50,16.02,20.69,24.80,30.25,31.31]
+    bad:[552,1343,1266,1072,691,311,98],
+    bad_rate:[5.70,11.50,16.02,20.69,24.80,30.25,31.31],
+    funded:[84.25,130.70,87.46,63.92,44.17,18.91,6.35]
   },
-  dti:{ labels:["Low DTI","Medium DTI","High DTI"], bad_rate:[12.00,14.39,15.60] },
-  int_band:{ labels:["Low Interest","Medium Interest","High Interest"], bad_rate:[6.25,13.94,24.17] },
+  term:{
+    labels:["36 months","60 months"],
+    total:[28237,10339],
+    bad_rate:[10.71,22.34],
+    funded:[273.04,162.72]
+  },
+  dti:{
+    labels:["Low DTI","Medium DTI","High DTI"],
+    total:[12803,18504,7269],
+    bad_rate:[12.00,14.39,15.60]
+  },
+  int_band:{
+    labels:["Low Interest","Medium Interest","High Interest"],
+    total:[11652,18594,8330],
+    bad_rate:[6.25,13.94,24.17]
+  },
   purpose_risk:{
-    labels:["Small business","Renewable energy","Educational","House","Moving","Medical","Other","Vacation","Debt consolidation","Home improvement","Car","Credit card","Major purchase","Wedding"],
+    labels:["Small business","Renewable energy","Educational","House","Moving","Medical","Other","Vacation","Debt consol.","Home improve.","Car","Credit card","Major purchase","Wedding"],
     bad_rate:[25.62,18.09,15.87,15.57,15.03,14.99,15.35,14.20,14.55,11.37,10.35,10.16,9.76,9.27],
     total:[1776,94,315,366,559,667,3824,352,18214,2876,1497,4998,2110,928]
   },
@@ -1324,389 +763,212 @@ const D = {
   }
 };
 
-/* ── CHART DEFAULTS ── */
-const MUTED="#8a8a9a", GRID="rgba(255,255,255,0.06)";
-const ACCENT="#ff6b1a", ACCENT_DIM="rgba(255,107,26,0.18)";
-const DANGER="#f0463a", DANGER_DIM="rgba(240,70,58,0.16)";
-const SUCCESS="#22c97a", SUCCESS_DIM="rgba(34,201,122,0.15)";
-const WARNING="#f5a623", WARNING_DIM="rgba(245,166,35,0.16)";
-const BLUE="#4db8f0", BLUE_DIM="rgba(77,184,240,0.16)";
+const NAVY="#0F2744", BLUE="#2874A6", BLUE_LIGHT="#5BA4CF";
+const RED="#C0392B", RED_MID="#E74C3C", AMBER="#D68910", GREEN="#1E8449";
+const MUTED="#7A93AB";
 
-const BASE_OPTS = {
-  responsive:true, maintainAspectRatio:false,
-  layout:{padding:{top:8}},
-  plugins:{
-    legend:{display:false},
-    tooltip:{
-      backgroundColor:"#111115",
-      titleColor:"#f0f0f4",
-      bodyColor:"#8a8a9a",
-      borderColor:"rgba(255,107,26,0.3)",
-      borderWidth:1,
-      padding:10,
-      cornerRadius:8
-    }
-  },
-  scales:{
-    x:{ticks:{color:MUTED,font:{size:11}}, grid:{display:false}},
-    y:{ticks:{color:MUTED,font:{size:11}}, grid:{color:GRID}}
-  }
-};
-
-function chart(id, type, labels, datasets, extra={}) {
-  const el = document.getElementById(id);
-  if (!el) return;
-  return new Chart(el, {
+function mkChart(id, type, labels, datasets, extraOpts={}){
+  const ctx=document.getElementById(id);
+  if(!ctx) return;
+  return new Chart(ctx,{
     type, data:{labels, datasets},
-    options:{...BASE_OPTS, ...extra,
-      scales:{...BASE_OPTS.scales, ...(extra.scales||{})},
-      plugins:{...BASE_OPTS.plugins, ...(extra.plugins||{})}
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      plugins:{legend:{display:false}},
+      scales:{
+        x:{ticks:{font:{size:11},color:MUTED},grid:{display:false}},
+        y:{ticks:{font:{size:11},color:MUTED},grid:{color:"rgba(212,223,233,0.6)"}}
+      },
+      layout:{padding:{top:8}},
+      ...extraOpts
     }
   });
 }
 
-/* ── COUNTER ANIMATION ── */
-function animateCount(el, target, prefix="", suffix="", decimals=0, duration=1400) {
-  let start = null;
-  const step = ts => {
-    if (!start) start = ts;
-    const p = Math.min((ts - start) / duration, 1);
-    const ease = 1 - Math.pow(1 - p, 3);
-    const val = ease * target;
-    el.textContent = prefix + (decimals ? val.toFixed(decimals) : Math.round(val).toLocaleString()) + suffix;
-    if (p < 1) requestAnimationFrame(step);
-  };
-  requestAnimationFrame(step);
-}
-
-/* ── SCROLL REVEAL ── */
-const revealObs = new IntersectionObserver(entries => {
-  entries.forEach(e => {
-    if (e.isIntersecting) {
-      e.target.classList.add("visible");
-      revealObs.unobserve(e.target);
-    }
-  });
-}, { threshold: 0.08 });
-
-document.querySelectorAll(".reveal").forEach(el => revealObs.observe(el));
-
-/* ── HERO COUNTER TRIGGER ── */
-let countersRun = false;
-const heroObs = new IntersectionObserver(entries => {
-  if (entries[0].isIntersecting && !countersRun) {
-    countersRun = true;
-    animateCount(document.getElementById("count-apps"), 38576, "", "");
-    animateCount(document.getElementById("count-funded"), 435.8, "$", "M", 1);
-    animateCount(document.getElementById("count-recovery"), 1.086, "", "x", 3);
-    animateCount(document.getElementById("count-bad"), 13.82, "", "%", 2);
-  }
-}, { threshold: 0.5 });
-heroObs.observe(document.querySelector(".hero-stats"));
-
-/* ── STICKY BAND ── */
-const heroStatEl = document.querySelector(".hero-stats");
-const bandEl = document.getElementById("sticky-band");
-const bandObs = new IntersectionObserver(entries => {
-  if (!entries[0].isIntersecting) {
-    bandEl.classList.add("visible");
-    bandEl.removeAttribute("aria-hidden");
-  } else {
-    bandEl.classList.remove("visible");
-    bandEl.setAttribute("aria-hidden","true");
-  }
-}, { threshold: 0 });
-bandObs.observe(heroStatEl);
-
-/* ── TOC ACTIVE ── */
-const sections = document.querySelectorAll(".section[id]");
-const tocLinks = document.querySelectorAll(".toc a");
-window.addEventListener("scroll", () => {
-  let cur = "";
-  sections.forEach(s => { if (window.scrollY >= s.offsetTop - 160) cur = s.id; });
-  tocLinks.forEach(a => a.classList.toggle("active", a.getAttribute("href") === "#" + cur));
-}, {passive:true});
-
-/* ═══════════════════════════ CHARTS ═══════════════════════════ */
-
-/* Growth */
-chart("c-growth","bar",D.monthly.labels,[
-  {
-    label:"Loan applications",
-    data:D.monthly.apps,
-    backgroundColor:ACCENT_DIM,
-    borderColor:ACCENT, borderWidth:1.5,
-    borderRadius:5, yAxisID:"y",
-    order:2
-  },
-  {
-    label:"Funded ($M)",
-    data:D.monthly.funded, type:"line",
-    borderColor:BLUE, backgroundColor:BLUE_DIM,
-    fill:true, tension:.35,
-    pointRadius:3.5, pointBackgroundColor:BLUE,
-    pointBorderColor:"#0e0e12", pointBorderWidth:2,
-    yAxisID:"y2", order:1
-  }
+/* Growth chart */
+mkChart("c-growth","bar",D.monthly.labels,[
+  {label:"Apps",data:D.monthly.apps,backgroundColor:NAVY,borderRadius:3,borderSkipped:false,yAxisID:"y",order:2},
+  {label:"Funded",data:D.monthly.funded,type:"line",borderColor:BLUE_LIGHT,backgroundColor:"transparent",tension:.4,pointRadius:4,pointBackgroundColor:BLUE_LIGHT,yAxisID:"y2",order:1}
 ],{
-  plugins:{
-    legend:{display:false},
-    tooltip:{callbacks:{label:c=> c.dataset.yAxisID==="y2" ? "Funded: $"+c.raw+"M" : "Applications: "+c.raw.toLocaleString()}}
-  },
   scales:{
-    x:{ticks:{color:MUTED},grid:{display:false}},
-    y:{ticks:{color:MUTED,callback:v=>v>=1000?v/1000+"K":v},grid:{color:GRID}},
-    y2:{position:"right",ticks:{color:BLUE,callback:v=>"$"+v+"M"},grid:{display:false}}
+    x:{ticks:{font:{size:11},color:MUTED},grid:{display:false}},
+    y:{ticks:{font:{size:11},color:MUTED,callback:v=>v>=1000?v/1000+"K":v},grid:{color:"rgba(212,223,233,0.5)"},title:{display:true,text:"Loan Count",font:{size:10},color:MUTED}},
+    y2:{position:"right",ticks:{font:{size:11},color:BLUE_LIGHT,callback:v=>"$"+v+"M"},grid:{display:false},title:{display:true,text:"Funded ($M)",font:{size:10},color:BLUE_LIGHT}}
   }
 });
 
-/* Donut */
+/* Good vs Bad donut */
 new Chart(document.getElementById("c-goodbad-donut"),{
   type:"doughnut",
-  data:{labels:["Good Loan","Bad Loan"],datasets:[{
-    data:[86.18,13.82],
-    backgroundColor:[SUCCESS,DANGER],
-    hoverBackgroundColor:["rgba(34,201,122,0.8)","rgba(240,70,58,0.8)"],
-    borderColor:"#0e0e12", borderWidth:4, hoverOffset:6
-  }]},
-  options:{
-    responsive:true, maintainAspectRatio:false, cutout:"68%",
-    plugins:{
-      legend:{display:true,position:"bottom",labels:{color:MUTED,boxWidth:9,boxHeight:9,usePointStyle:true,pointStyle:"circle",padding:18}},
-      tooltip:{callbacks:{label:c=>{
-        const cnt = c.label==="Good Loan"?"33,243 loans":"5,333 loans";
-        return c.label+": "+c.raw+"% ("+cnt+")";
-      }}}
-    }
-  }
+  data:{labels:["Good Loan","Bad Loan"],datasets:[{data:[86.18,13.82],backgroundColor:[GREEN,RED],borderWidth:3,borderColor:"#fff",hoverOffset:4}]},
+  options:{responsive:true,maintainAspectRatio:false,cutout:"65%",plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.label+": "+c.raw+"%"}}}}
 });
 
 /* Good vs Bad bar */
-chart("c-goodbad-bar","bar",["Good Loan","Bad Loan"],[
-  {label:"Funded",data:[370.22,65.53],backgroundColor:[SUCCESS_DIM,DANGER_DIM],borderColor:[SUCCESS,DANGER],borderWidth:1.5,borderRadius:5},
-  {label:"Received",data:[435.79,37.28],backgroundColor:["rgba(34,201,122,0.6)","rgba(240,70,58,0.6)"],borderColor:[SUCCESS,DANGER],borderWidth:1,borderRadius:5}
+mkChart("c-goodbad-bar","bar",["Good Loan","Bad Loan"],[
+  {label:"Funded",data:[370.22,65.53],backgroundColor:[GREEN+"55",RED+"55"],borderColor:[GREEN,RED],borderWidth:2,borderRadius:4,barPercentage:.4},
+  {label:"Received",data:[435.79,37.28],backgroundColor:[GREEN,RED],borderRadius:4,barPercentage:.4}
 ],{
-  plugins:{legend:{display:true,labels:{color:MUTED,boxWidth:9,boxHeight:9,usePointStyle:true,pointStyle:"circle"}},
-    tooltip:{callbacks:{label:c=>c.dataset.label+": $"+c.raw+"M"}}},
   scales:{
-    x:{ticks:{color:MUTED},grid:{display:false}},
-    y:{ticks:{color:MUTED,callback:v=>"$"+v+"M"},grid:{color:GRID}}
+    x:{ticks:{font:{size:11},color:MUTED},grid:{display:false}},
+    y:{ticks:{font:{size:11},color:MUTED,callback:v=>"$"+v+"M"},grid:{color:"rgba(212,223,233,0.5)"}}
   }
 });
 
-/* Purpose vol */
+/* Purpose volume */
 new Chart(document.getElementById("c-purpose-vol"),{
   type:"bar",
-  data:{labels:D.purpose_vol.labels,datasets:[{
-    data:D.purpose_vol.funded,
-    backgroundColor:D.purpose_vol.funded.map((_,i)=>`rgba(255,107,26,${0.35+i*0.08})`),
-    borderColor:ACCENT, borderWidth:1, borderRadius:5
-  }]},
-  options:{...BASE_OPTS,
-    indexAxis:"y",
-    plugins:{...BASE_OPTS.plugins,tooltip:{callbacks:{label:c=>"$"+c.raw+"M"}}},
+  data:{labels:D.purpose_vol.labels,datasets:[{data:D.purpose_vol.funded,backgroundColor:BLUE,borderRadius:3}]},
+  options:{
+    indexAxis:"y",responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>"$"+c.raw+"M"}}},
     scales:{
-      x:{ticks:{color:MUTED,callback:v=>"$"+v+"M"},grid:{color:GRID}},
-      y:{ticks:{color:MUTED,font:{size:11}},grid:{display:false}}
+      x:{ticks:{font:{size:11},color:MUTED,callback:v=>"$"+v+"M"},grid:{color:"rgba(212,223,233,0.5)"}},
+      y:{ticks:{font:{size:10},color:MUTED},grid:{display:false}}
     }
   }
 });
 
-/* Grade risk */
-const gradeC = [SUCCESS_DIM,"rgba(132,204,22,0.55)",WARNING_DIM,"rgba(249,115,22,0.55)",DANGER_DIM,"rgba(200,25,25,0.65)","rgba(140,10,10,0.7)"];
-const gradeB = [SUCCESS,"#84cc16",WARNING,"#f97316",DANGER,"#c81919","#8c0a0a"];
-chart("c-grade","bar",D.grade.labels,[{
-  data:D.grade.bad_rate,
-  backgroundColor:gradeC, borderColor:gradeB, borderWidth:1.5, borderRadius:5
-}],{
-  plugins:{tooltip:{callbacks:{label:c=>"Bad loan rate: "+c.raw+"%"}}},
+/* Grade bad rate */
+const gradeColors=["#1E8449","#58D68D","#F1C40F","#E67E22","#E74C3C","#A93226","#7B241C"];
+mkChart("c-grade","bar",D.grade.labels,[
+  {data:D.grade.bad_rate,backgroundColor:gradeColors,borderRadius:4,borderSkipped:false}
+],{
   scales:{
-    x:{ticks:{color:MUTED},grid:{display:false}},
-    y:{ticks:{color:MUTED,callback:v=>v+"%"},grid:{color:GRID},max:36}
-  }
+    x:{ticks:{font:{size:12},color:MUTED},grid:{display:false}},
+    y:{ticks:{font:{size:11},color:MUTED,callback:v=>v+"%"},grid:{color:"rgba(212,223,233,0.5)"},max:36}
+  },
+  plugins:{tooltip:{callbacks:{label:c=>c.raw+"%"}}}
 });
 
-/* Grade vol */
-chart("c-grade-vol","bar",D.grade.labels,[{
-  data:D.grade.total,
-  backgroundColor:ACCENT_DIM, borderColor:ACCENT, borderWidth:1.5, borderRadius:5
-}],{
-  plugins:{tooltip:{callbacks:{label:c=>c.raw.toLocaleString()+" loans"}}},
-  scales:{
-    x:{ticks:{color:MUTED},grid:{display:false}},
-    y:{ticks:{color:MUTED,callback:v=>v>=1000?v/1000+"K":v},grid:{color:GRID}}
-  }
-});
+/* Grade volume */
+mkChart("c-grade-vol","bar",D.grade.labels,[
+  {data:D.grade.total,backgroundColor:BLUE+"88",borderColor:BLUE,borderWidth:1,borderRadius:4}
+],{scales:{x:{ticks:{font:{size:12},color:MUTED},grid:{display:false}},y:{ticks:{font:{size:11},color:MUTED,callback:v=>v>=1000?v/1000+"K":v},grid:{color:"rgba(212,223,233,0.5)"}}}});
 
 /* DTI */
-chart("c-dti","bar",D.dti.labels,[{
-  data:D.dti.bad_rate,
-  backgroundColor:[SUCCESS_DIM,WARNING_DIM,DANGER_DIM],
-  borderColor:[SUCCESS,WARNING,DANGER], borderWidth:1.5, borderRadius:5
-}],{
-  plugins:{tooltip:{callbacks:{label:c=>"Bad loan rate: "+c.raw+"%"}}},
-  scales:{
-    x:{ticks:{color:MUTED},grid:{display:false}},
-    y:{ticks:{color:MUTED,callback:v=>v+"%"},grid:{color:GRID},min:9,max:18}
-  }
+mkChart("c-dti","bar",D.dti.labels,[
+  {data:D.dti.bad_rate,backgroundColor:[GREEN,AMBER,RED],borderRadius:5,borderSkipped:false,barThickness:52}
+],{
+  scales:{x:{ticks:{font:{size:11},color:MUTED},grid:{display:false}},y:{ticks:{font:{size:11},color:MUTED,callback:v=>v+"%"},grid:{color:"rgba(212,223,233,0.5)"},min:9,max:18}},
+  plugins:{tooltip:{callbacks:{label:c=>c.raw+"%"}}}
 });
 
-/* Interest rate band */
-chart("c-intband","bar",D.int_band.labels,[{
-  data:D.int_band.bad_rate,
-  backgroundColor:[SUCCESS_DIM,WARNING_DIM,DANGER_DIM],
-  borderColor:[SUCCESS,WARNING,DANGER], borderWidth:1.5, borderRadius:5
-}],{
-  plugins:{tooltip:{callbacks:{label:c=>"Bad loan rate: "+c.raw+"%"}}},
-  scales:{
-    x:{ticks:{color:MUTED},grid:{display:false}},
-    y:{ticks:{color:MUTED,callback:v=>v+"%"},grid:{color:GRID},max:28}
-  }
+/* Int band */
+mkChart("c-intband","bar",D.int_band.labels,[
+  {data:D.int_band.bad_rate,backgroundColor:[GREEN,AMBER,RED],borderRadius:5,borderSkipped:false,barThickness:52}
+],{
+  scales:{x:{ticks:{font:{size:11},color:MUTED},grid:{display:false}},y:{ticks:{font:{size:11},color:MUTED,callback:v=>v+"%"},grid:{color:"rgba(212,223,233,0.5)"},max:28}},
+  plugins:{tooltip:{callbacks:{label:c=>c.raw+"%"}}}
 });
 
 /* Purpose risk */
+const prColors=D.purpose_risk.bad_rate.map(v=>v>20?RED:v>14?AMBER:GREEN);
 new Chart(document.getElementById("c-purpose-risk"),{
   type:"bar",
-  data:{labels:D.purpose_risk.labels,datasets:[{
-    data:D.purpose_risk.bad_rate,
-    backgroundColor:D.purpose_risk.bad_rate.map(v=>v>20?DANGER_DIM:v>14?WARNING_DIM:SUCCESS_DIM),
-    borderColor:D.purpose_risk.bad_rate.map(v=>v>20?DANGER:v>14?WARNING:SUCCESS),
-    borderWidth:1, borderRadius:5
-  }]},
-  options:{...BASE_OPTS, indexAxis:"y",
-    plugins:{...BASE_OPTS.plugins, tooltip:{callbacks:{label:c=>"Bad loan rate: "+c.raw+"% ("+D.purpose_risk.total[c.dataIndex].toLocaleString()+" loans)"}}},
+  data:{labels:D.purpose_risk.labels,datasets:[{data:D.purpose_risk.bad_rate,backgroundColor:prColors,borderRadius:3}]},
+  options:{
+    indexAxis:"y",responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.raw+"%  ("+D.purpose_risk.total[c.dataIndex].toLocaleString()+" loans)"}}},
     scales:{
-      x:{ticks:{color:MUTED,callback:v=>v+"%"},grid:{color:GRID},max:30},
-      y:{ticks:{color:MUTED,font:{size:11}},grid:{display:false}}
+      x:{ticks:{font:{size:11},color:MUTED,callback:v=>v+"%"},grid:{color:"rgba(212,223,233,0.5)"},max:30},
+      y:{ticks:{font:{size:10},color:MUTED},grid:{display:false}}
     }
   }
 });
 
-/* Monthly trend — with annotation line */
+/* Monthly trend dual axis */
 new Chart(document.getElementById("c-trend"),{
   type:"bar",
   data:{
     labels:D.monthly.labels,
     datasets:[
-      {
-        label:"MoM change",
-        data:D.monthly.mom,
-        backgroundColor:D.monthly.mom.map(v=>v>0?DANGER_DIM:SUCCESS_DIM),
-        borderColor:D.monthly.mom.map(v=>v>0?DANGER:SUCCESS),
-        borderWidth:1.5, borderRadius:4, yAxisID:"y2"
-      },
-      {
-        label:"Bad loan rate",
-        data:D.monthly.bad_rate, type:"line",
-        borderColor:DANGER, backgroundColor:DANGER_DIM,
-        fill:true, tension:.35,
-        pointRadius:4, pointBackgroundColor:DANGER,
-        pointBorderColor:"#0e0e12", pointBorderWidth:2,
-        yAxisID:"y"
-      },
-      {
-        label:"Portfolio avg",
-        data:Array(12).fill(13.82), type:"line",
-        borderColor:"rgba(255,255,255,0.18)",
-        borderDash:[5,4], borderWidth:1.5,
-        pointRadius:0, fill:false, yAxisID:"y"
-      }
+      {label:"MoM change pp",data:D.monthly.mom,backgroundColor:D.monthly.mom.map(v=>v>0?"rgba(192,57,43,0.25)":"rgba(30,132,73,0.25)"),borderColor:D.monthly.mom.map(v=>v>0?RED:GREEN),borderWidth:1.5,borderRadius:3,yAxisID:"y2",order:2},
+      {label:"Bad Loan Rate",data:D.monthly.bad_rate,type:"line",borderColor:RED,backgroundColor:"rgba(192,57,43,0.05)",fill:true,tension:.4,pointRadius:5,pointBackgroundColor:RED,pointBorderColor:"#fff",pointBorderWidth:2,yAxisID:"y",order:1}
     ]
   },
   options:{
-    responsive:true, maintainAspectRatio:false,
-    layout:{padding:{top:8}},
-    plugins:{
-      legend:{display:false},
-      tooltip:{
-        backgroundColor:"#111115", titleColor:"#f0f0f4", bodyColor:"#8a8a9a",
-        borderColor:"rgba(255,107,26,0.3)", borderWidth:1, padding:10, cornerRadius:8,
-        callbacks:{
-          label:c => {
-            if (c.datasetIndex===2) return null;
-            if (c.dataset.yAxisID==="y2") return "MoM: "+(c.raw>0?"+":"")+c.raw+"pp";
-            return "Bad rate: "+c.raw+"%";
-          }
-        }
-      }
-    },
+    responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.dataset.label+": "+c.raw+(c.dataset.yAxisID==="y2"?" pp":"%")}}},
     scales:{
-      x:{ticks:{color:MUTED},grid:{display:false}},
-      y:{min:9,max:17,ticks:{color:DANGER,callback:v=>v+"%"},grid:{color:GRID}},
-      y2:{position:"right",min:-3,max:4,ticks:{color:ACCENT,callback:v=>(v>0?"+":"")+v+"pp"},grid:{display:false}}
+      x:{ticks:{font:{size:11},color:MUTED},grid:{display:false}},
+      y:{min:9,max:17,ticks:{font:{size:11},color:RED,callback:v=>v+"%"},grid:{color:"rgba(212,223,233,0.5)"}},
+      y2:{position:"right",min:-3,max:4,ticks:{font:{size:11},color:BLUE,callback:v=>(v>0?"+":"")+v+" pp"},grid:{display:false}}
     }
   }
 });
 
-/* Funded vs risk */
+/* Funded vs bad rate */
 new Chart(document.getElementById("c-funded-trend"),{
   type:"bar",
-  data:{labels:D.monthly.labels,datasets:[
-    {label:"Funded ($M)",data:D.monthly.funded,backgroundColor:ACCENT_DIM,borderColor:ACCENT,borderWidth:1.5,borderRadius:4,yAxisID:"y"},
-    {label:"Bad loan rate",data:D.monthly.bad_rate,type:"line",borderColor:DANGER,tension:.35,pointRadius:3.5,pointBackgroundColor:DANGER,pointBorderColor:"#0e0e12",pointBorderWidth:2,yAxisID:"y2"}
-  ]},
+  data:{
+    labels:D.monthly.labels,
+    datasets:[
+      {label:"Funded ($M)",data:D.monthly.funded,backgroundColor:"rgba(40,116,166,0.2)",borderColor:BLUE,borderWidth:1.5,borderRadius:3,yAxisID:"y",order:2},
+      {label:"Bad Loan Rate",data:D.monthly.bad_rate,type:"line",borderColor:RED_MID,backgroundColor:"transparent",tension:.4,pointRadius:4,pointBackgroundColor:RED_MID,yAxisID:"y2",order:1}
+    ]
+  },
   options:{
-    responsive:true, maintainAspectRatio:false, layout:{padding:{top:8}},
-    plugins:{
-      legend:{display:false},
-      tooltip:{
-        backgroundColor:"#111115",titleColor:"#f0f0f4",bodyColor:"#8a8a9a",
-        borderColor:"rgba(255,107,26,0.3)",borderWidth:1,padding:10,cornerRadius:8,
-        callbacks:{label:c=>c.dataset.yAxisID==="y"?"Funded: $"+c.raw+"M":"Bad rate: "+c.raw+"%"}
-      }
-    },
+    responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.dataset.label+": "+(c.dataset.yAxisID==="y"?"$"+c.raw+"M":c.raw+"%")}}},
     scales:{
-      x:{ticks:{color:MUTED},grid:{display:false}},
-      y:{ticks:{color:ACCENT,callback:v=>"$"+v+"M"},grid:{color:GRID}},
-      y2:{position:"right",min:9,max:17,ticks:{color:DANGER,callback:v=>v+"%"},grid:{display:false}}
+      x:{ticks:{font:{size:11},color:MUTED},grid:{display:false}},
+      y:{ticks:{font:{size:11},color:BLUE,callback:v=>"$"+v+"M"},grid:{color:"rgba(212,223,233,0.5)"}},
+      y2:{position:"right",min:9,max:17,ticks:{font:{size:11},color:RED,callback:v=>v+"%"},grid:{display:false}}
     }
   }
 });
 
-/* ── HEAT-MAP MATRIX ── */
-function heatColor(v) {
-  if (v >= 30) return { bg:"rgba(240,70,58,0.30)", text:"#f87171", border:"rgba(240,70,58,0.5)" };
-  if (v >= 25) return { bg:"rgba(240,70,58,0.20)", text:"#f0463a", border:"rgba(240,70,58,0.35)" };
-  if (v >= 20) return { bg:"rgba(245,166,35,0.22)", text:"#f5a623", border:"rgba(245,166,35,0.4)" };
-  if (v >= 15) return { bg:"rgba(245,166,35,0.14)", text:"#f5a623", border:"rgba(245,166,35,0.25)" };
-  if (v >= 10) return { bg:"rgba(34,201,122,0.14)", text:"#22c97a", border:"rgba(34,201,122,0.3)" };
-  return           { bg:"rgba(34,201,122,0.22)", text:"#22c97a", border:"rgba(34,201,122,0.4)" };
-}
-
+/* MATRIX TABLE */
 const grades=["A","B","C","D","E","F","G"];
-const gradeAssess={A:"Low risk",B:"Low–Medium",C:"Medium",D:"Medium–High",E:"High",F:"Very High",G:"Critical"};
+const terms=["36 months","60 months"];
+const riskLabel=(v)=>{
+  if(v>25) return `<span class="badge badge-red">${v.toFixed(1)}%</span>`;
+  if(v>15) return `<span class="badge badge-amber">${v.toFixed(1)}%</span>`;
+  return `<span class="badge badge-green">${v.toFixed(1)}%</span>`;
+};
+const gradeAssess={"A":"Low — safe segment","B":"Low–Medium","C":"Medium — monitor closely","D":"Medium–High","E":"High — limit expansion","F":"Very high — policy review required","G":"Extreme — priority control"};
+const assessColor={"A":"color:var(--green)","B":"color:var(--green)","C":"color:var(--amber)","D":"color:var(--amber)","E":"color:var(--red)","F":"color:var(--red)","G":"color:var(--red)"};
 const mb=document.getElementById("matrix-body");
 grades.forEach(g=>{
   const v36=D.matrix[`${g}||36 months`];
   const v60=D.matrix[`${g}||60 months`];
-  const c36=heatColor(v36), c60=heatColor(v60);
-  const assessColor = v60>=25?"var(--danger)": v60>=15?"var(--warning)":"var(--success)";
-  mb.innerHTML+=`
-    <tr>
-      <td>${g}</td>
-      <td><span class="heat-cell" style="background:${c36.bg};color:${c36.text};border:1px solid ${c36.border}">${v36.toFixed(1)}%</span></td>
-      <td><span class="heat-cell" style="background:${c60.bg};color:${c60.text};border:1px solid ${c60.border}">${v60.toFixed(1)}%</span></td>
-      <td style="color:${assessColor};font-weight:600;font-size:0.8rem">${gradeAssess[g]}</td>
-    </tr>`;
+  mb.innerHTML+=`<tr>
+    <td style="font-size:14px">${g}</td>
+    <td>${riskLabel(v36)}</td>
+    <td>${riskLabel(v60)}</td>
+    <td style="font-size:11px;${assessColor[g]};font-weight:500">${gradeAssess[g]}</td>
+  </tr>`;
 });
 
-/* ── MONTHLY DETAIL TABLE ── */
+/* MONTHLY DETAIL TABLE */
 const mdb=document.getElementById("monthly-detail-body");
+const momColor=(v)=>{
+  if(v===0) return "color:var(--muted)";
+  return v>0?"color:var(--red);font-weight:600":"color:var(--green);font-weight:600";
+};
+const momArrow=(v)=>v>0?"▲":"▼";
 D.monthly.labels.forEach((m,i)=>{
-  const rate=D.monthly.bad_rate[i], mom=D.monthly.mom[i];
-  const cls = rate>=15?"high": rate>=13.5?"med":"low";
-  const momCls = i===0?"neutral": mom>1?"high": mom>0?"med":"low";
-  const momStr = i===0?"—": (mom>0?"+":"")+mom.toFixed(2)+"pp";
-  const bad=Math.round(D.monthly.apps[i]*rate/100);
-  mdb.innerHTML+=`
-    <tr>
-      <td>${m}</td>
-      <td>${D.monthly.apps[i].toLocaleString()}</td>
-      <td>${bad.toLocaleString()}</td>
-      <td><span class="risk-chip ${cls}">${rate.toFixed(2)}%</span></td>
-      <td><span class="risk-chip ${momCls}">${momStr}</span></td>
-      <td>$${D.monthly.funded[i].toFixed(1)}M</td>
-    </tr>`;
+  const mom=D.monthly.mom[i];
+  const momStr=i===0?"—":(mom>0?"+":"")+mom.toFixed(2)+"pp";
+  const brColor=D.monthly.bad_rate[i]>14?"color:var(--red);font-weight:600":D.monthly.bad_rate[i]<12?"color:var(--green);font-weight:600":"color:var(--amber);font-weight:600";
+  mdb.innerHTML+=`<tr style="${i%2===0?"background:#f7f9fc":""}">
+    <td style="text-align:left;font-weight:500">${m}</td>
+    <td>${D.monthly.apps[i].toLocaleString()}</td>
+    <td>${Math.round(D.monthly.apps[i]*D.monthly.bad_rate[i]/100).toLocaleString()}</td>
+    <td style="${brColor}">${D.monthly.bad_rate[i].toFixed(2)}%</td>
+    <td style="${i===0?"color:var(--muted)":momColor(mom)}">${momStr}</td>
+    <td>$${D.monthly.funded[i].toFixed(1)}M</td>
+  </tr>`;
+});
+
+/* TOC active on scroll */
+const sections=document.querySelectorAll(".section[id]");
+const tocLinks=document.querySelectorAll(".toc a");
+window.addEventListener("scroll",()=>{
+  let cur="";
+  sections.forEach(s=>{if(window.scrollY>=s.offsetTop-100)cur=s.id;});
+  tocLinks.forEach(a=>{a.classList.toggle("active",a.getAttribute("href")==="#"+cur);});
 });
 </script>
 </body>
