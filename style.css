@@ -1601,52 +1601,6 @@ body {
     width: 100%;
   }
 }
-.project-links {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin: -26px 0 34px;
-  position: relative;
-  z-index: 2;
-}
-
-.project-link {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-
-  padding: 8px 15px;
-  border-radius: 999px;
-
-  border: 1px solid rgba(255,255,255,0.18);
-  background: rgba(255,255,255,0.05);
-
-  color: rgba(255,255,255,0.72);
-  font-size: 12px;
-  font-weight: 500;
-  text-decoration: none;
-
-  transition: all 0.2s ease;
-}
-
-.project-link:hover {
-  color: #ffffff;
-  border-color: #5ba4cf;
-  background: rgba(91,164,207,0.14);
-  transform: translateY(-1px);
-}
-
-.project-link.primary {
-  color: #ffffff;
-  border-color: #5ba4cf;
-  background: rgba(91,164,207,0.18);
-}
-
-@media (max-width: 600px) {
-  .project-link {
-    width: 100%;
-  }
-}
 /* =========================
    MOBILE FIX
 ========================= */
