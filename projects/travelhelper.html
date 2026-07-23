@@ -482,6 +482,64 @@ img { display: block; max-width: 100%; }
       <strong>Design decision:</strong> Splitting into two explicit BPMN pools (User + System) forced clarity on responsibility boundaries — what the user triggers vs what the system owns. This revealed gaps in error handling that a single-lane diagram would have missed.
     </div>
   </div>
+ <div class="table-wrap reveal d3">
+      <table class="table">
+        <thead>
+          <tr>
+            <th style="width:20%">Business Rule</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+
+        <tbody>
+
+          <tr>
+            <td>BR-01</td>
+            <td>
+              Destination, travel dates and budget must be provided before personalised recommendations are generated.
+            </td>
+          </tr>
+
+          <tr>
+            <td>BR-02</td>
+            <td>
+              Invalid or incomplete traveller information triggers a validation loop instead of restarting the booking.
+            </td>
+          </tr>
+
+          <tr>
+            <td>BR-03</td>
+            <td>
+              Payment failures allow up to three retry attempts while preserving the current booking session.
+            </td>
+          </tr>
+
+          <tr>
+            <td>BR-04</td>
+            <td>
+              Low-confidence recommendations or repeated failures are escalated to a human travel consultant.
+            </td>
+          </tr>
+
+          <tr>
+            <td>BR-05</td>
+            <td>
+              Booking confirmation is generated only after successful payment authorisation.
+            </td>
+          </tr>
+
+        </tbody>
+      </table>
+    </div>
+
+    <div class="narrative success reveal d3">
+      <strong>Business Value.</strong>
+      Modelling the workflow before designing the interface ensured that product decisions were
+      based on business requirements rather than UI assumptions. The BPMN also became a shared
+      reference for product managers, designers and developers throughout implementation.
+    </div>
+
+  </div>
 </section>
 
 <!-- ════════════════ INTERFACE DESIGN ════════════════ -->
