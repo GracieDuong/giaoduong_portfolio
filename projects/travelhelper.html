@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>TravelHelper Case Study | Giao Duong - Product & Business Analysis</title>
+<title>TravelHelper Case Study | Giao Duong</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet" />
@@ -31,7 +31,6 @@
   --r:          12px;
   --r-sm:       7px;
 }
-
 *,*::before,*::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; }
 body {
@@ -44,10 +43,10 @@ body {
 a { text-decoration: none; color: inherit; }
 img { display: block; max-width: 100%; }
 
-/* REVEAL ANIMATION */
+/* REVEAL */
 .reveal { opacity: 0; transform: translateY(22px); transition: opacity .55s ease, transform .55s ease; }
 .reveal.visible { opacity: 1; transform: none; }
-.d1 { transition-delay: .08s; } .d2 { transition-delay: .16s; } .d3 { transition-delay: .24s; }
+.d1 { transition-delay: .08s; } .d2 { transition-delay: .16s; }
 @media (prefers-reduced-motion: reduce) { .reveal { opacity: 1; transform: none; transition: none; } }
 
 /* LAYOUT */
@@ -114,7 +113,7 @@ img { display: block; max-width: 100%; }
   font-size: .96rem; line-height: 1.7; margin-bottom: 28px;
 }
 
-/* link chips */
+/* link chips — same as index */
 .hero-links { display: flex; flex-wrap: wrap; gap: 9px; margin-bottom: 44px; }
 .chip {
   display: inline-flex; align-items: center; gap: 6px;
@@ -144,9 +143,6 @@ img { display: block; max-width: 100%; }
 
 /* ── SECTION ── */
 .section { padding: 64px 0; border-top: 1px solid var(--line); }
-
-.section-header { margin-bottom: 32px; }
-
 .section-tag {
   display: inline-block; font-size: .68rem; font-weight: 700;
   letter-spacing: .2em; text-transform: uppercase; color: var(--accent); margin-bottom: 10px;
@@ -157,7 +153,7 @@ img { display: block; max-width: 100%; }
 }
 .section-lead {
   color: var(--muted); font-size: .94rem; line-height: 1.68;
-  max-width: 640px; margin-bottom: 0;
+  max-width: 640px; margin-bottom: 28px;
 }
 
 /* ── NARRATIVE ── */
@@ -166,7 +162,7 @@ img { display: block; max-width: 100%; }
   border-radius: var(--r-sm); border: 1px solid var(--line);
   border-left: 3px solid var(--accent);
   background: var(--accent-dim);
-  color: var(--muted); font-size: .88rem; line-height: 1.68; margin: 20px 0;
+  color: var(--muted); font-size: .88rem; line-height: 1.68; margin: 16px 0;
 }
 .narrative strong { color: var(--text); }
 .narrative.success { border-left-color: var(--success); background: var(--success-dim); }
@@ -185,216 +181,55 @@ img { display: block; max-width: 100%; }
   border-top: 1px solid var(--line);
 }
 
-/* ── METRICS GRID ── */
-.metrics-grid {
-  display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 12px; margin: 20px 0;
-}
-.metric-card {
-  background: var(--surface); border: 1px solid var(--line);
-  border-radius: var(--r-sm); padding: 18px 20px;
-  border-top: 2px solid var(--accent);
-}
-.metric-label {
-  font-size: .68rem; font-weight: 700; letter-spacing: .14em;
-  text-transform: uppercase; color: var(--accent); margin-bottom: 8px;
-}
-.metric-value {
-  font-size: 1.3rem; font-weight: 700; letter-spacing: -.02em;
-  margin-bottom: 3px; color: var(--text);
-}
-.metric-target {
-  font-size: .9rem; color: var(--accent); font-weight: 600; margin-bottom: 8px;
-}
-.metric-desc {
-  font-size: .75rem; color: var(--muted-2); line-height: 1.5;
-}
-
-/* ── TABLE ── */
-.table-wrap { overflow-x: auto; border-radius: var(--r); border: 1px solid var(--line); }
-.table {
-  width: 100%; border-collapse: collapse; min-width: 640px;
-  background: var(--surface);
-}
-.table thead tr { background: var(--surface-2); }
-.table th {
+/* ── ANALYSIS TABLE ── */
+.analysis-table-wrap { overflow-x: auto; border-radius: var(--r); border: 1px solid var(--line); }
+.analysis-table { width: 100%; border-collapse: collapse; min-width: 640px; }
+.analysis-table thead tr { background: var(--surface-2); }
+.analysis-table th {
   padding: 12px 16px; font-size: .7rem; font-weight: 700;
   text-transform: uppercase; letter-spacing: .12em;
   color: var(--muted-2); text-align: left;
   border-bottom: 1px solid var(--line);
 }
-.table td {
+.analysis-table td {
   padding: 13px 16px; font-size: .86rem; color: var(--muted);
   border-bottom: 1px solid var(--line-soft); vertical-align: top; line-height: 1.6;
 }
-.table td:first-child { color: var(--text); font-weight: 500; }
-.table tbody tr:hover td { background: rgba(255,255,255,0.015); }
-.table tbody tr:last-child td { border-bottom: none; }
+.analysis-table td:first-child { color: var(--text); font-weight: 500; }
+.analysis-table tbody tr:last-child td { border-bottom: none; }
+.analysis-table tbody tr:hover td { background: rgba(255,255,255,0.015); }
 
-/* ── PERSONA GRID ── */
-.personas-grid {
-  display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 12px; margin: 20px 0;
+/* ── WORKFLOW LIST ── */
+.workflow-list { display: flex; flex-direction: column; gap: 0; margin: 20px 0; }
+.workflow-step {
+  display: grid; grid-template-columns: 44px 1fr;
+  gap: 16px; padding: 18px 0; border-bottom: 1px solid var(--line);
+  align-items: start;
 }
-.persona-card {
+.workflow-step:first-child { border-top: 1px solid var(--line); }
+.workflow-num {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: var(--accent-dim); border: 1px solid var(--accent-mid);
+  display: flex; align-items: center; justify-content: center;
+  font-size: .75rem; font-weight: 700; color: var(--accent);
+  flex-shrink: 0; margin-top: 2px;
+}
+.workflow-label { font-size: .9rem; font-weight: 600; margin-bottom: 4px; }
+.workflow-desc { font-size: .84rem; color: var(--muted); line-height: 1.6; }
+
+/* ── PRINCIPLES ── */
+.principles-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 20px 0; }
+.principle-card {
   background: var(--surface); border: 1px solid var(--line);
-  border-radius: var(--r-sm); padding: 20px 22px;
+  border-radius: var(--r); padding: 20px 22px;
   border-top: 2px solid var(--accent);
 }
-.persona-name {
-  font-size: .95rem; font-weight: 700; margin-bottom: 14px;
-  color: var(--text);
-}
-.persona-field {
-  margin: 12px 0; padding-bottom: 12px;
-  border-bottom: 1px solid var(--line-soft);
-}
-.persona-field:last-child { border-bottom: none; margin: 12px 0 0 0; padding-bottom: 0; }
-.persona-field strong {
-  display: block; font-size: .68rem; font-weight: 700;
-  letter-spacing: .14em; text-transform: uppercase;
-  color: var(--accent); margin-bottom: 4px;
-}
-.persona-field span {
-  display: block; font-size: .82rem; color: var(--muted);
-  line-height: 1.5;
-}
-
-/* ── PRIORITY LIST ── */
-.priority-list { list-style: none; padding: 0; margin: 20px 0; }
-.priority-item {
-  padding: 14px 16px; margin: 8px 0; border-radius: var(--r-sm);
-  border-left: 3px solid; font-size: .88rem; color: var(--muted);
-  background: var(--surface);
-  border: 1px solid var(--line);
-  display: flex; gap: 10px; align-items: flex-start;
-}
-.must-have { border-left-color: var(--success); background: var(--success-dim); }
-.should-have { border-left-color: var(--warning); background: var(--warning-dim); }
-.could-have { border-left-color: var(--blue); background: var(--blue-dim); }
-.wont-have { border-left-color: var(--muted-2); background: rgba(138,138,154,0.1); }
-
-.priority-label {
-  font-weight: 700; font-size: .68rem; letter-spacing: .12em;
-  text-transform: uppercase; white-space: nowrap; flex-shrink: 0;
-  display: inline-block;
-}
-.must-have .priority-label { color: var(--success); }
-.should-have .priority-label { color: var(--warning); }
-.could-have .priority-label { color: var(--blue); }
-.wont-have .priority-label { color: var(--muted-2); }
-
-/* ── DECISION BOX ── */
-.decision-box {
-  background: var(--surface); border: 1px solid var(--line);
-  border-radius: var(--r-sm); padding: 22px; margin: 16px 0;
-  border-left: 3px solid var(--accent);
-}
-.decision-box h3 {
-  font-size: .95rem; font-weight: 700; margin-bottom: 16px;
-  color: var(--text);
-}
-.decision-row {
-  display: grid; grid-template-columns: 110px 1fr;
-  gap: 16px; margin: 12px 0; padding: 12px 0;
-  border-bottom: 1px solid var(--line-soft);
-}
-.decision-row:last-child { border-bottom: none; }
-.decision-label {
-  font-weight: 700; color: var(--accent);
-  font-size: .68rem; letter-spacing: .12em;
-  text-transform: uppercase; white-space: nowrap;
-}
-.decision-label + div {
-  font-size: .84rem; color: var(--muted); line-height: 1.6;
-}
-
-.decision-row ul {
-  list-style: none; padding: 0; margin: 0;
-}
-.decision-row li {
-  padding: 4px 0; padding-left: 18px; position: relative;
-  font-size: .84rem; color: var(--muted);
-}
-.decision-row li::before {
-  content: "→"; position: absolute; left: 0;
-  color: var(--accent); font-weight: bold;
-}
-
-.pros-cons {
-  display: grid; grid-template-columns: 1fr 1fr;
-  gap: 12px; margin: 14px 0;
-}
-.pros, .cons {
-  padding: 12px 14px; border-radius: var(--r-sm);
-  font-size: .82rem; border: 1px solid var(--line);
-  border-left: 3px solid;
-}
-.pros { border-left-color: var(--success); background: var(--success-dim); }
-.cons { border-left-color: var(--warning); background: var(--warning-dim); }
-.pros h4, .cons h4 { font-weight: 700; margin-bottom: 8px; font-size: .82rem; }
-.pros ul, .cons ul { list-style: none; padding: 0; }
-.pros li, .cons li {
-  padding: 3px 0; padding-left: 18px; position: relative;
-  font-size: .78rem; color: var(--muted);
-}
-.pros li::before { content: "✓"; position: absolute; left: 0; color: var(--success); font-weight: bold; }
-.cons li::before { content: "✗"; position: absolute; left: 0; color: var(--warning); font-weight: bold; }
-
-/* ── ROADMAP ── */
-.roadmap-grid {
-  display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 12px; margin: 20px 0;
-}
-.phase-card {
-  background: var(--surface); border: 1px solid var(--line);
-  border-radius: var(--r-sm); padding: 20px 22px;
-  border-top: 2px solid var(--accent);
-}
-.phase-card h3 {
-  font-size: .95rem; font-weight: 700; margin-bottom: 12px;
-  color: var(--text);
-}
-.phase-goal {
-  background: var(--accent-dim); padding: 10px 12px;
-  border-radius: var(--r-sm); font-size: .78rem;
-  color: var(--accent); font-weight: 600; margin-bottom: 14px;
-  border: 1px solid rgba(255,107,26,0.2);
-}
-.phase-card ul {
-  list-style: none; padding: 0;
-}
-.phase-card li {
-  padding: 6px 0; padding-left: 18px; position: relative;
-  font-size: .82rem; color: var(--muted);
-}
-.phase-card li::before { content: "→"; position: absolute; left: 0; color: var(--accent); font-weight: bold; }
-
-.phase-success {
-  margin-top: 14px; padding-top: 14px;
-  border-top: 1px solid var(--line-soft);
-  font-size: .75rem; color: var(--muted-2);
-}
-.phase-success strong { color: var(--accent); }
-
-/* ── KEY INSIGHTS ── */
-.insights-list {
-  display: flex; flex-direction: column; gap: 0;
-}
-.insight-item {
-  padding: 18px 0; border-bottom: 1px solid var(--line);
-}
-.insight-item:first-child { border-top: 1px solid var(--line); }
-.insight-num {
+.principle-label {
   font-size: .68rem; font-weight: 700; letter-spacing: .14em;
-  text-transform: uppercase; color: var(--accent); margin-bottom: 6px;
+  text-transform: uppercase; color: var(--accent); margin-bottom: 8px;
 }
-.insight-title {
-  font-size: .92rem; font-weight: 700; margin-bottom: 6px;
-}
-.insight-desc {
-  font-size: .84rem; color: var(--muted); line-height: 1.6;
-}
+.principle-title { font-size: .92rem; font-weight: 700; margin-bottom: 8px; }
+.principle-desc { font-size: .83rem; color: var(--muted); line-height: 1.6; }
 
 /* ── FINAL CARD ── */
 .final-card {
@@ -402,40 +237,9 @@ img { display: block; max-width: 100%; }
   background: linear-gradient(135deg, rgba(255,107,26,0.07), rgba(255,107,26,0.02));
   border: 1px solid rgba(255,107,26,0.2); border-radius: var(--r);
 }
-.final-card p {
-  font-size: .9rem; color: var(--muted); line-height: 1.75;
-  margin-bottom: 12px;
-}
+.final-card p { font-size: .94rem; color: var(--muted); line-height: 1.75; margin-bottom: 12px; }
 .final-card p:last-child { margin-bottom: 0; }
 .final-card p strong { color: var(--text); }
-
-/* ── BEFORE/AFTER ── */
-.comparison-grid {
-  display: grid; grid-template-columns: 1fr 1fr;
-  gap: 12px; margin: 20px 0;
-}
-.comparison-box {
-  background: var(--surface); border: 1px solid var(--line);
-  border-radius: var(--r-sm); padding: 20px; border-top: 2px solid;
-}
-.before-box { border-top-color: var(--warning); }
-.after-box { border-top-color: var(--success); }
-
-.comparison-box h3 {
-  font-size: .9rem; font-weight: 700; margin-bottom: 12px;
-}
-.before-box h3 { color: var(--warning); }
-.after-box h3 { color: var(--success); }
-
-.comparison-box ul {
-  list-style: none; padding: 0;
-}
-.comparison-box li {
-  padding: 6px 0; padding-left: 20px; position: relative;
-  font-size: .82rem; color: var(--muted);
-}
-.before-box li::before { content: "✗"; position: absolute; left: 0; color: var(--warning); font-weight: bold; }
-.after-box li::before { content: "✓"; position: absolute; left: 0; color: var(--success); font-weight: bold; }
 
 /* ── BACK ROW ── */
 .back-row {
@@ -453,16 +257,12 @@ img { display: block; max-width: 100%; }
 /* ── RESPONSIVE ── */
 @media (max-width: 800px) {
   .hero-meta { grid-template-columns: repeat(2, 1fr); }
-  .metrics-grid { grid-template-columns: 1fr; }
-  .personas-grid { grid-template-columns: 1fr; }
-  .roadmap-grid { grid-template-columns: 1fr; }
-  .comparison-grid { grid-template-columns: 1fr; }
-  .decision-row { grid-template-columns: 80px 1fr; }
-  .pros-cons { grid-template-columns: 1fr; }
+  .principles-grid { grid-template-columns: 1fr; }
+  .workflow-step { grid-template-columns: 36px 1fr; gap: 12px; }
 }
 @media (max-width: 480px) {
   .hero-title { font-size: 2rem; }
-  .hero-meta { grid-template-columns: 1fr; }
+  .hero-meta { grid-template-columns: 1fr 1fr; }
 }
 </style>
 </head>
@@ -487,17 +287,18 @@ img { display: block; max-width: 100%; }
   <div class="hero-glow" aria-hidden="true"></div>
   <div class="container">
 
-    <p class="eyebrow reveal">Product Thinking · Business Analysis · Metrics-Driven</p>
+    <p class="eyebrow reveal">Product Thinking · UX · Business Analysis</p>
 
     <h1 class="hero-title reveal d1">
-      TravelHelper —<br><mark>From Solution to Business Outcome</mark>
+      TravelHelper —<br><mark>AI Chatbot for Travel Decision Support</mark>
     </h1>
 
-    <p class="hero-subtitle reveal d1">Business Goals · Metrics · Personas · Decisions · Roadmap</p>
+    <p class="hero-subtitle reveal d1">Conversational UX · BPMN Workflow · Service Design</p>
 
     <p class="hero-lead reveal d2">
-      Transformed a solution-focused product brief into a comprehensive, business-focused PRD.
-      This case study demonstrates the difference between building features and solving business problems.
+      Designed an AI-assisted travel booking experience that reduces decision fatigue
+      and booking abandonment through structured conversational guidance,
+      exception handling, and human fallback support.
     </p>
 
     <div class="hero-links reveal d2">
@@ -524,7 +325,7 @@ img { display: block; max-width: 100%; }
         <div class="hero-meta-label">Tools</div>
       </div>
       <div class="hero-meta-item">
-        <div class="hero-meta-val">BPMN · Workflow</div>
+        <div class="hero-meta-val">BPMN · Conv. UX</div>
         <div class="hero-meta-label">Focus</div>
       </div>
     </div>
@@ -537,223 +338,87 @@ img { display: block; max-width: 100%; }
   <div class="container">
     <div class="img-block reveal">
       <img src="../img/travelhelper-figma-cover.jpg" alt="TravelHelper — Figma design overview" />
-      <div class="img-caption">TravelHelper Case Study — UI & Business Analysis (Figma)</div>
+      <div class="img-caption">TravelHelper — conversational interface design overview (Figma)</div>
     </div>
   </div>
 </section>
 
-<!-- ════════════════ SECTION 1: MINDSET SHIFT ════════════════ -->
-<section class="section" id="mindset">
+<!-- ════════════════ BACKGROUND ════════════════ -->
+<section class="section" id="background">
   <div class="container">
     <div class="section-header reveal">
-      <div class="section-tag">Section 01 · Mindset</div>
-      <h2 class="section-title">Solution Goal vs. Business Goal</h2>
-      <p class="section-lead">Most product briefs start with a solution. Professional product thinking starts with business outcomes.</p>
+      <div class="section-tag">Section 01 · Problem</div>
+      <h2 class="section-title">The problem with travel booking today</h2>
+      <p class="section-lead">Travel platforms don't help users decide — they hand them more data to sort through. The result is fatigue, abandonment, and fragmented planning across tabs.</p>
     </div>
 
-    <div class="comparison-grid reveal d1">
-      <div class="comparison-box before-box">
-        <h3>❌ Solution Thinking</h3>
-        <ul>
-          <li>Build a chatbot</li>
-          <li>Add payment processing</li>
-          <li>Create booking workflow</li>
-          <li>Design conversational UI</li>
-          <li>Success = features shipped</li>
-        </ul>
-      </div>
-      <div class="comparison-box after-box">
-        <h3>✅ Business Thinking</h3>
-        <ul>
-          <li>Reduce booking abandonment 33% → 20%</li>
-          <li>Increase completion rate 67% → 80%</li>
-          <li>Lower support costs 100 → 60 tickets/day</li>
-          <li>Improve CSAT 3.8 → 4.5</li>
-          <li>Success = metrics improved</li>
-        </ul>
-      </div>
+    <div class="narrative reveal d1">
+      <strong>The dataset here is behavioral, not numerical:</strong> user pain points in travel decision-making — choice overload, unclear system responses, payment failures, and no recovery path when things go wrong.
     </div>
 
-    <div class="narrative warning reveal d2">
-      <strong>Key insight:</strong> The difference is not in what you build, but in how you frame it. When you start with "reduce abandonment by X%" instead of "build a chatbot," every decision becomes clearer and more measurable.
+    <div class="principles-grid reveal d1">
+      <div class="principle-card">
+        <div class="principle-label">Pain point 01</div>
+        <div class="principle-title">Choice overload</div>
+        <div class="principle-desc">Users spend 20–30 minutes comparing options across multiple tabs. Too many filters, too little guidance — leading to decision fatigue and drop-off.</div>
+      </div>
+      <div class="principle-card">
+        <div class="principle-label">Pain point 02</div>
+        <div class="principle-title">System dead-ends</div>
+        <div class="principle-desc">When inputs are unclear or unsupported, most platforms silently fail or return no results. Users have no path forward and abandon the session.</div>
+      </div>
+      <div class="principle-card">
+        <div class="principle-label">Pain point 03</div>
+        <div class="principle-title">No human fallback</div>
+        <div class="principle-desc">Requests that exceed the system's capability — complex itineraries, edge cases, failed payments — have no escalation path, increasing operational friction.</div>
+      </div>
     </div>
   </div>
 </section>
 
-<!-- ════════════════ SECTION 2: BUSINESS GOALS ════════════════ -->
-<section class="section" id="business-goals">
+<!-- ════════════════ ANALYSIS TABLE ════════════════ -->
+<section class="section" id="analysis">
   <div class="container">
     <div class="section-header reveal">
-      <div class="section-tag">Section 02 · Business Goals</div>
-      <h2 class="section-title">Quantified business outcomes</h2>
-      <p class="section-lead">Every goal is measurable, with a current state and target. This is what drives product decisions.</p>
+      <div class="section-tag">Section 02 · Analysis</div>
+      <h2 class="section-title">From pain point to product response</h2>
+      <p class="section-lead">Each user problem was mapped to its impact on experience and to a specific product or service design response.</p>
     </div>
 
-    <div class="metrics-grid reveal d1">
-      <div class="metric-card">
-        <div class="metric-label">📈 Booking Completion</div>
-        <div class="metric-value">67%</div>
-        <div class="metric-target">→ 80%</div>
-        <div class="metric-desc">Primary revenue driver | +$2.5M ARR potential</div>
-      </div>
-      <div class="metric-card">
-        <div class="metric-label">⏱️ Avg Booking Time</div>
-        <div class="metric-value">24 min</div>
-        <div class="metric-target">→ 12 min</div>
-        <div class="metric-desc">50% reduction | Better UX</div>
-      </div>
-      <div class="metric-card">
-        <div class="metric-label">🎧 Support Tickets/Day</div>
-        <div class="metric-value">100</div>
-        <div class="metric-target">→ 60</div>
-        <div class="metric-desc">40% cost savings | Team efficiency</div>
-      </div>
-      <div class="metric-card">
-        <div class="metric-label">😊 Customer Satisfaction</div>
-        <div class="metric-value">3.8/5</div>
-        <div class="metric-target">→ 4.5/5</div>
-        <div class="metric-desc">Quality & retention</div>
-      </div>
-    </div>
-
-    <div class="narrative success reveal d2">
-      <strong>Impact calculation:</strong> If conversion improves from 67% → 80% with 50,000 monthly users, that's 6,500 additional bookings × $400 avg = <strong>$2.6M additional ARR</strong>. This justifies every engineering decision.
-    </div>
-  </div>
-</section>
-<!-- ════════════════ SECTION 3: BUSINESS PROCESS (BPMN) ════════════════ -->
-<section class="section" id="business-process">
-  <div class="container">
-
-    <div class="section-header reveal">
-      <div class="section-tag">Section 03 · Business Process</div>
-
-      <h2 class="section-title">
-        Designing the future booking workflow
-      </h2>
-    <div class="img-block reveal d2">
-      <img src="../img/travelhelper-bpmn.jpg"
-           alt="TravelHelper BPMN Workflow">
-
-      <div class="img-caption">
-        Figure 1. Future-state (TO-BE) booking workflow modelled using BPMN.
-      </div>
-    </div>
-
-    <div class="table-wrap reveal d3">
-      <table class="table">
+    <div class="analysis-table-wrap reveal d1">
+      <table class="analysis-table">
         <thead>
           <tr>
-            <th style="width:20%">Business Rule</th>
-            <th>Description</th>
-          </tr>
-        </thead>
-
-        <tbody>
-
-          <tr>
-            <td>BR-01</td>
-            <td>
-              Destination, travel dates and budget must be provided before personalised recommendations are generated.
-            </td>
-          </tr>
-
-          <tr>
-            <td>BR-02</td>
-            <td>
-              Invalid or incomplete traveller information triggers a validation loop instead of restarting the booking.
-            </td>
-          </tr>
-
-          <tr>
-            <td>BR-03</td>
-            <td>
-              Payment failures allow up to three retry attempts while preserving the current booking session.
-            </td>
-          </tr>
-
-          <tr>
-            <td>BR-04</td>
-            <td>
-              Low-confidence recommendations or repeated failures are escalated to a human travel consultant.
-            </td>
-          </tr>
-
-          <tr>
-            <td>BR-05</td>
-            <td>
-              Booking confirmation is generated only after successful payment authorisation.
-            </td>
-          </tr>
-
-        </tbody>
-      </table>
-    </div>
-
-    <div class="narrative success reveal d3">
-      <strong>Business Value.</strong>
-      Modelling the workflow before designing the interface ensured that product decisions were
-      based on business requirements rather than UI assumptions. The BPMN also became a shared
-      reference for product managers, designers and developers throughout implementation.
-    </div>
-
-  </div>
-</section>
-<!-- ════════════════ SECTION 4: SUCCESS METRICS ════════════════ -->
-<section class="section" id="success-metrics">
-  <div class="container">
-    <div class="section-header reveal">
-      <div class="section-tag">Section 04 · KPIs</div>
-      <h2 class="section-title">Success metrics (how we measure progress)</h2>
-      <p class="section-lead">Without metrics, you can't tell if your product is working. These KPIs ladder up to business goals.</p>
-    </div>
-
-    <div class="table-wrap reveal d1">
-      <table class="table">
-        <thead>
-          <tr>
-            <th style="width:28%">Metric</th>
-            <th style="width:15%">Current</th>
-            <th style="width:15%">Target</th>
-            <th style="width:42%">Why It Matters</th>
+            <th style="width:32%">User / Business Problem</th>
+            <th style="width:30%">Impact on Experience</th>
+            <th style="width:38%">Product / Service Response</th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td>Booking Conversion Rate</td>
-            <td>67%</td>
-            <td>80%</td>
-            <td>Each % = $500K ARR (primary revenue driver)</td>
+            <td>Users feel overwhelmed by too many travel options</td>
+            <td>Decision fatigue and slower booking decisions</td>
+            <td>Guided conversational prompts: destination, budget, purpose — narrow down before surfacing options</td>
           </tr>
           <tr>
-            <td>Chatbot Completion Rate</td>
-            <td>—</td>
-            <td>70%</td>
-            <td>% of users finishing recommendation flow</td>
+            <td>Unclear or incomplete user inputs</td>
+            <td>User frustration and drop-off risk</td>
+            <td>Input validation + re-prompt flow — no silent failure, always an actionable next step</td>
           </tr>
           <tr>
-            <td>Human Escalation Rate</td>
-            <td>—</td>
-            <td>&lt;15%</td>
-            <td>% of interactions needing human support</td>
+            <td>Payment failures during checkout</td>
+            <td>Booking abandonment at final step</td>
+            <td>Retry logic with a maximum of 3 attempts + alternative payment method suggestion</td>
           </tr>
           <tr>
-            <td>Avg Booking Time</td>
-            <td>24 min</td>
-            <td>12 min</td>
-            <td>User satisfaction proxy / UX quality</td>
+            <td>Lack of personalized recommendations</td>
+            <td>Lower engagement and conversion</td>
+            <td>Recommendation-based filtering via conversation, not keyword search bars</td>
           </tr>
           <tr>
-            <td>Support Cost per Booking</td>
-            <td>$8</td>
-            <td>$5</td>
-            <td>40% cost reduction (operational efficiency)</td>
-          </tr>
-          <tr>
-            <td>Customer Satisfaction (CSAT)</td>
-            <td>3.8/5</td>
-            <td>4.5/5</td>
-            <td>Correlates strongly with retention</td>
+            <td>Requests beyond chatbot capability</td>
+            <td>Increased operational friction, user distrust</td>
+            <td>Human handover workflow — escalation path with context transfer, no dead-end</td>
           </tr>
         </tbody>
       </table>
@@ -761,409 +426,98 @@ img { display: block; max-width: 100%; }
   </div>
 </section>
 
-<!-- ════════════════ SECTION 5: PERSONAS ════════════════ -->
-<section class="section" id="personas">
+<!-- ════════════════ WORKFLOW DESIGN ════════════════ -->
+<section class="section" id="workflow">
   <div class="container">
     <div class="section-header reveal">
-      <div class="section-tag">Section 05 · Users</div>
-      <h2 class="section-title">User personas &amp; segments</h2>
-      <p class="section-lead">Not all users have the same pain. Each persona gets a different experience within the same product.</p>
+      <div class="section-tag">Section 03 · Workflow</div>
+      <h2 class="section-title">BPMN workflow design</h2>
+      <p class="section-lead">A two-pool BPMN workflow separates what the user does from what the system handles — making validation, retry logic, and escalation paths explicit.</p>
     </div>
 
-    <div class="personas-grid reveal d1">
-      <div class="persona-card">
-        <div class="persona-name">👨‍💼 Business Traveler</div>
-        <div class="persona-field">
-          <strong>Pain Point</strong>
-          <span>Time scarcity — doesn't want 30 mins of research</span>
-        </div>
-        <div class="persona-field">
-          <strong>Current Friction</strong>
-          <span>Searches flights, cross-checks hotels, compares prices, abandons</span>
-        </div>
-        <div class="persona-field">
-          <strong>With TravelHelper</strong>
-          <span>Chatbot knows budget + preferences → 3 options → books in 4 mins</span>
-        </div>
-        <div class="persona-field">
-          <strong>Success Metric</strong>
-          <span>Booking time &lt; 5 mins, CSAT &gt; 4.5/5</span>
+    <div class="workflow-list reveal d1">
+      <div class="workflow-step">
+        <div class="workflow-num">01</div>
+        <div>
+          <div class="workflow-label">Input validation before recommendations</div>
+          <div class="workflow-desc">Every user input is validated before the system generates results. Incomplete or ambiguous inputs trigger a structured re-prompt, not a dead-end or empty state.</div>
         </div>
       </div>
+      <div class="workflow-step">
+        <div class="workflow-num">02</div>
+        <div>
+          <div class="workflow-label">Re-prompt loop instead of silent failure</div>
+          <div class="workflow-desc">When the system cannot process an input, it returns a specific re-prompt with context — guiding the user toward a valid input rather than returning nothing.</div>
+        </div>
+      </div>
+      <div class="workflow-step">
+        <div class="workflow-num">03</div>
+        <div>
+          <div class="workflow-label">Payment retry logic (max 3 attempts)</div>
+          <div class="workflow-desc">Failed payments trigger a retry loop with a maximum of 3 attempts. After the third failure, the system suggests an alternative payment method before escalating.</div>
+        </div>
+      </div>
+      <div class="workflow-step">
+        <div class="workflow-num">04</div>
+        <div>
+          <div class="workflow-label">Human escalation path with context transfer</div>
+          <div class="workflow-desc">Unsupported requests or repeated failures route to a human agent — with conversation context transferred so the user does not have to start over.</div>
+        </div>
+      </div>
+      <div class="workflow-step">
+        <div class="workflow-num">05</div>
+        <div>
+          <div class="workflow-label">Positive closure — confirmation and email</div>
+          <div class="workflow-desc">Successful bookings are confirmed with a summary in-chat and an email receipt — closing the loop and reinforcing trust in the system.</div>
+        </div>
+      </div>
+    </div>
 
-      <div class="persona-card">
-        <div class="persona-name">🎒 Backpacker</div>
-        <div class="persona-field">
-          <strong>Pain Point</strong>
-          <span>Cost anxiety — compares 20+ options, hesitates to spend</span>
-        </div>
-        <div class="persona-field">
-          <strong>Current Friction</strong>
-          <span>Opens 5 sites, reads reviews (1 hour), worried about best deal</span>
-        </div>
-        <div class="persona-field">
-          <strong>With TravelHelper</strong>
-          <span>Set budget → AI shows value options → highlights best deal → confident booking</span>
-        </div>
-        <div class="persona-field">
-          <strong>Success Metric</strong>
-          <span>Decision confidence &gt; 4/5, completion &gt; 75%</span>
-        </div>
-      </div>
+    <div class="img-block reveal d1">
+      <img src="../img/travelhelper-bpmn.jpg" alt="TravelHelper BPMN 2-pool workflow — validation, retry logic, escalation, and recovery paths" />
+      <div class="img-caption">Fig 1 — BPMN 2-pool workflow (User + TravelHelper System): validation, retry logic, human escalation, and recovery paths</div>
+    </div>
 
-      <div class="persona-card">
-        <div class="persona-name">👨‍👩‍👧‍👦 Family Planner</div>
-        <div class="persona-field">
-          <strong>Pain Point</strong>
-          <span>Complexity — needs kid-friendly hotels, activities, safety info</span>
-        </div>
-        <div class="persona-field">
-          <strong>Current Friction</strong>
-          <span>Asks family for suggestions, Googles reviews (2 hrs), worries about safety</span>
-        </div>
-        <div class="persona-field">
-          <strong>With TravelHelper</strong>
-          <span>Tell chatbot kids' ages → family-friendly recommendations → confident booking</span>
-        </div>
-        <div class="persona-field">
-          <strong>Success Metric</strong>
-          <span>Willing to try new destinations, CSAT &gt; 4.5/5</span>
-        </div>
-      </div>
+    <div class="narrative warning reveal">
+      <strong>Design decision:</strong> Splitting into two explicit BPMN pools (User + System) forced clarity on responsibility boundaries — what the user triggers vs what the system owns. This revealed gaps in error handling that a single-lane diagram would have missed.
     </div>
   </div>
 </section>
 
-<!-- ════════════════ SECTION 6: PRIORITIZATION ════════════════ -->
-<section class="section" id="prioritization">
+<!-- ════════════════ INTERFACE DESIGN ════════════════ -->
+<section class="section" id="interface">
   <div class="container">
     <div class="section-header reveal">
-      <div class="section-tag">Section 06 · Prioritization</div>
-      <h2 class="section-title">MoSCoW prioritization</h2>
-      <p class="section-lead">Clear prioritization forces hard choices. Every feature must ladder up to a business goal.</p>
+      <div class="section-tag">Section 04 · Interface</div>
+      <h2 class="section-title">Conversational interface principles</h2>
+      <p class="section-lead">The chatbot UI was designed around three principles — applied consistently across every screen and interaction state.</p>
     </div>
 
-    <ul class="priority-list reveal d1">
-      <li class="priority-item must-have">
-        <span class="priority-label">MUST HAVE</span>
-        <div>
-          <strong>AI Recommendation Engine</strong> — Core value prop, solves decision fatigue
-        </div>
-      </li>
-      <li class="priority-item must-have">
-        <span class="priority-label">MUST HAVE</span>
-        <div>
-          <strong>Payment Processing</strong> — Blocks launch without it (revenue requirement)
-        </div>
-      </li>
-      <li class="priority-item must-have">
-        <span class="priority-label">MUST HAVE</span>
-        <div>
-          <strong>Human Escalation</strong> — Critical for trust and edge cases
-        </div>
-      </li>
-      <li class="priority-item should-have">
-        <span class="priority-label">SHOULD HAVE</span>
-        <div>
-          <strong>Booking History</strong> — Increases repeat bookings and loyalty
-        </div>
-      </li>
-      <li class="priority-item should-have">
-        <span class="priority-label">SHOULD HAVE</span>
-        <div>
-          <strong>Recently Viewed</strong> — Reduces cognitive load on repeat visits
-        </div>
-      </li>
-      <li class="priority-item could-have">
-        <span class="priority-label">COULD HAVE</span>
-        <div>
-          <strong>Travel Insurance</strong> — Additional revenue stream (V2 phase)
-        </div>
-      </li>
-      <li class="priority-item could-have">
-        <span class="priority-label">COULD HAVE</span>
-        <div>
-          <strong>Group Booking</strong> — Advanced use case (V2 phase)
-        </div>
-      </li>
-      <li class="priority-item wont-have">
-        <span class="priority-label">WON'T HAVE (V1)</span>
-        <div>
-          <strong>Social Sharing</strong> — Out of scope, not core to booking flow
-        </div>
-      </li>
-    </ul>
-
-    <div class="narrative blue reveal d2">
-      <strong>Rationale:</strong> Focus on core booking flow (recommendation → payment → confirmation). History and escalation are critical for trust. Insurance and advanced features come in V2 when core flow is optimized.
-    </div>
-  </div>
-</section>
-
-<!-- ════════════════ SECTION 7: PRODUCT DECISIONS ════════════════ -->
-<section class="section" id="decisions">
-  <div class="container">
-    <div class="section-header reveal">
-      <div class="section-tag">Section 07 · Decisions</div>
-      <h2 class="section-title">Major product decisions &amp; trade-offs</h2>
-      <p class="section-lead">Explaining "why conversational AI instead of filters?" is what separates product professionals from feature builders.</p>
-    </div>
-
-    <div class="decision-box reveal d1">
-      <h3>Decision 1: Conversational AI vs. Traditional Filters</h3>
-      <div class="decision-row">
-        <div class="decision-label">Decision</div>
-        <div>Use conversational recommendation instead of traditional filter UI</div>
+    <div class="principles-grid reveal d1">
+      <div class="principle-card">
+        <div class="principle-label">Principle 01</div>
+        <div class="principle-title">Guided interaction</div>
+        <div class="principle-desc">Each prompt gives the user a clear next action. Options are surfaced as quick-reply chips when possible — reducing typing and cognitive load at every step.</div>
       </div>
-      <div class="decision-row">
-        <div class="decision-label">Reason</div>
-        <div>
-          <ul>
-            <li>Users often don't know exactly what they want</li>
-            <li>Conversation feels personal (reduces abandonment)</li>
-            <li>AI can surface serendipitous recommendations users wouldn't filter for</li>
-            <li>Reduces decision paralysis (chatbot does filtering)</li>
-          </ul>
-        </div>
+      <div class="principle-card">
+        <div class="principle-label">Principle 02</div>
+        <div class="principle-title">Conversational simplicity</div>
+        <div class="principle-desc">Short, plain-language messages throughout. No technical jargon, no overwhelming option lists. The system speaks like a knowledgeable friend, not a search engine.</div>
       </div>
-      <div class="pros-cons">
-        <div class="pros">
-          <h4>✅ Pros</h4>
-          <ul>
-            <li>Higher engagement (feels human)</li>
-            <li>Better personalization</li>
-            <li>Higher completion rate</li>
-            <li>Upsell opportunity in conversation</li>
-          </ul>
-        </div>
-        <div class="cons">
-          <h4>❌ Cons</h4>
-          <ul>
-            <li>Slower than instant filters (3s vs 0.5s)</li>
-            <li>AI can hallucinate</li>
-            <li>Users might want advanced filters</li>
-            <li>Mobile typing slower than clicking</li>
-          </ul>
-        </div>
-      </div>
-      <div class="decision-row">
-        <div class="decision-label">Mitigation</div>
-        <div>
-          <ul>
-            <li>Only call AI after collecting minimum info</li>
-            <li>3-second SLA with fallback to filters</li>
-            <li>Show recommendations + refine buttons</li>
-            <li>Human escalation if obviously wrong</li>
-          </ul>
-        </div>
+      <div class="principle-card">
+        <div class="principle-label">Principle 03</div>
+        <div class="principle-title">Emotional design</div>
+        <div class="principle-desc">Friendly tone, progress feedback, and reassurance on error states. Users who encounter a problem feel helped, not stuck — reducing abandonment at difficult moments.</div>
       </div>
     </div>
 
-    <div class="decision-box reveal d2">
-      <h3>Decision 2: Human Escalation vs. Full Automation</h3>
-      <div class="decision-row">
-        <div class="decision-label">Decision</div>
-        <div>Implement human escalation path for ~15% of conversations</div>
-      </div>
-      <div class="decision-row">
-        <div class="decision-label">Reason</div>
-        <div>
-          <ul>
-            <li>User trust: "If chatbot fails, human helps" = confidence</li>
-            <li>Edge cases: 15% of travelers have complex needs</li>
-            <li>Brand quality: Better human save than frustrated user</li>
-            <li>Feedback loop: Support learns patterns → improves AI</li>
-          </ul>
-        </div>
-      </div>
-      <div class="pros-cons">
-        <div class="pros">
-          <h4>✅ Pros</h4>
-          <ul>
-            <li>Higher trust and confidence</li>
-            <li>Better satisfaction scores</li>
-            <li>Handles edge cases gracefully</li>
-            <li>Generates training data for AI</li>
-          </ul>
-        </div>
-        <div class="cons">
-          <h4>❌ Cons</h4>
-          <ul>
-            <li>Requires support team (cost)</li>
-            <li>Slower than full automation</li>
-            <li>Support SLA must be <5 mins</li>
-            <li>Quality depends on training</li>
-          </ul>
-        </div>
-      </div>
-      <div class="decision-row">
-        <div class="decision-label">Implementation</div>
-        <div>
-          <ul>
-            <li>Escalate if: confidence <60%, user asks, or 2+ failures</li>
-            <li>Preserve context: support sees full conversation</li>
-            <li>SLA: 2 mins average response time</li>
-            <li>Feedback: log all escalations → analyze → retrain monthly</li>
-          </ul>
-        </div>
-      </div>
+    <div class="img-block reveal d1">
+      <img src="../img/travelhelper-figma-main.jpg" alt="TravelHelper main conversational interface — Figma mobile UI" />
+      <div class="img-caption">Fig 2 — Main conversational interface (Figma) showing guided prompts, quick-reply chips, and booking confirmation flow</div>
     </div>
 
-    <div class="decision-box reveal d3">
-      <h3>Decision 3: Payment Retry vs. Restart Booking</h3>
-      <div class="decision-row">
-        <div class="decision-label">Decision</div>
-        <div>Allow payment retry without restarting entire booking flow</div>
-      </div>
-      <div class="decision-row">
-        <div class="decision-label">Reason</div>
-        <div>
-          <ul>
-            <li>Payment failures are common (fraud checks, network, insufficient funds)</li>
-            <li>If user must restart: 70% abandon (lost revenue)</li>
-            <li>Preserve session = user retries = higher completion</li>
-            <li>Competition does this = user expectation</li>
-          </ul>
-        </div>
-      </div>
-      <div class="pros-cons">
-        <div class="pros">
-          <h4>✅ Pros</h4>
-          <ul>
-            <li>Higher completion (67% → 80%)</li>
-            <li>Better UX (no re-entering)</li>
-            <li>Captures otherwise lost revenue</li>
-            <li>Reduces support load</li>
-          </ul>
-        </div>
-        <div class="cons">
-          <h4>❌ Cons</h4>
-          <ul>
-            <li>Complex backend (session state)</li>
-            <li>Availability might change (rare)</li>
-            <li>User might try different card (fraud risk)</li>
-          </ul>
-        </div>
-      </div>
-      <div class="decision-row">
-        <div class="decision-label">Implementation</div>
-        <div>
-          <ul>
-            <li>Lock hotel availability for 10 mins</li>
-            <li>Allow 3 payment retry attempts</li>
-            <li>Show error reason: "Card declined" vs "Network error"</li>
-            <li>After 3 failures → escalate to support</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ════════════════ SECTION 8: ROADMAP ════════════════ -->
-<section class="section" id="roadmap">
-  <div class="container">
-    <div class="section-header reveal">
-      <div class="section-tag">Section 08 · Roadmap</div>
-      <h2 class="section-title">Phased rollout: MVP → V2 → V3</h2>
-      <p class="section-lead">We prioritize ruthlessly, phasing features to hit business goals incrementally. MVP proves the concept. V2 hits the revenue target. V3 expands.</p>
-    </div>
-
-    <div class="roadmap-grid reveal d1">
-      <div class="phase-card">
-        <h3>🚀 MVP (Q1 Launch)</h3>
-        <div class="phase-goal">Validate core concept + 70% completion</div>
-        <ul>
-          <li>Conversational recommendation</li>
-          <li>Payment processing</li>
-          <li>Manual human escalation</li>
-          <li>Booking confirmation + email</li>
-          <li>Basic analytics</li>
-        </ul>
-        <div class="phase-success">Success: <strong>70% chatbot completion, 3.9/5 CSAT</strong></div>
-      </div>
-
-      <div class="phase-card">
-        <h3>📈 V2 (Q2-Q3)</h3>
-        <div class="phase-goal">Hit 80% completion, reduce support</div>
-        <ul>
-          <li>Booking history + repeat booking</li>
-          <li>Recently viewed trips</li>
-          <li>Payment retry (session preservation)</li>
-          <li>Smart escalation (ML-based)</li>
-          <li>Advanced analytics (funnel, drop-off)</li>
-        </ul>
-        <div class="phase-success">Success: <strong>80% completion, 60 tickets/day, 4.3/5 CSAT</strong></div>
-      </div>
-
-      <div class="phase-card">
-        <h3>⭐ V3 (Q4)</h3>
-        <div class="phase-goal">85%+ completion, expand revenue</div>
-        <ul>
-          <li>Travel insurance options</li>
-          <li>Group booking coordination</li>
-          <li>Expense tracking + shared costs</li>
-          <li>Multi-trip planning (calendar sync)</li>
-          <li>Advanced personalization engine</li>
-        </ul>
-        <div class="phase-success">Success: <strong>85% completion, +$1M revenue, 4.5/5 CSAT</strong></div>
-      </div>
-    </div>
-
-    <div class="narrative success reveal d2">
-      <strong>Phasing logic:</strong> MVP proves the chatbot works + hits 70% completion. V2 focuses on closing the 15% gap to 80% + reducing support costs (ROI on team). V3 unlocks new revenue + advanced features (only build if V1-2 succeeds).
-    </div>
-  </div>
-</section>
-
-<!-- ════════════════ SECTION 9: KEY TAKEAWAYS ════════════════ -->
-<section class="section" id="takeaways">
-  <div class="container">
-    <div class="section-header reveal">
-      <div class="section-tag">Section 09 · Principles</div>
-      <h2 class="section-title">Five principles of product thinking</h2>
-    </div>
-
-    <div class="insights-list reveal d1">
-      <div class="insight-item">
-        <div class="insight-num">Principle 01</div>
-        <div class="insight-title">Business First, Features Second</div>
-        <div class="insight-desc">
-          This is NOT "let's build a chatbot because it's trendy." This IS "reduce booking abandonment from 33% to 20% using conversational AI." The business goal justifies every engineering decision.
-        </div>
-      </div>
-
-      <div class="insight-item">
-        <div class="insight-num">Principle 02</div>
-        <div class="insight-title">Every Feature Ladders Up to a Goal</div>
-        <div class="insight-desc">
-          Payment retry (feature) → preserves session → increases completion 67% → 80% (goal) → generates $2.5M ARR (impact). Without this clear ladder, features become busywork.
-        </div>
-      </div>
-
-      <div class="insight-item">
-        <div class="insight-num">Principle 03</div>
-        <div class="insight-title">Personas Drive Prioritization</div>
-        <div class="insight-desc">
-          Business Traveler pain = speed → design for 5-min bookings. Backpacker pain = cost → show value indicators. Family pain = complexity → ask about kids. Same product, different paths.
-        </div>
-      </div>
-
-      <div class="insight-item">
-        <div class="insight-num">Principle 04</div>
-        <div class="insight-title">Decisions &amp; Trade-offs Show Maturity</div>
-        <div class="insight-desc">
-          If you document "Why conversational AI instead of filters?" and "Why human escalation instead of full automation?" you're thinking like a product professional, not just a designer.
-        </div>
-      </div>
-
-      <div class="insight-item">
-        <div class="insight-num">Principle 05</div>
-        <div class="insight-title">Metrics Tell the Story</div>
-        <div class="insight-desc">
-          Q1 goal: 70% completion (prove concept). Q2 goal: 80% completion (revenue target). Q3 goal: 60 tickets/day (justify investment). Each metric explains progress and impact.
-        </div>
-      </div>
+    <div class="narrative success reveal">
+      <strong>Outcome of the design approach:</strong> By treating the chatbot as a decision-support tool rather than a search interface, every screen has a clear purpose — narrow the options, confirm the choice, or recover from a failure. No dead-ends remain in the final flow.
     </div>
   </div>
 </section>
@@ -1172,19 +526,19 @@ img { display: block; max-width: 100%; }
 <section class="section" id="conclusion">
   <div class="container">
     <div class="section-header reveal">
-      <div class="section-tag">Conclusion</div>
-      <h2 class="section-title">From solution to business outcome</h2>
+      <div class="section-tag">Section 05 · Conclusion</div>
+      <h2 class="section-title">What this project demonstrates</h2>
     </div>
 
     <div class="final-card reveal d1">
       <p>
-        <strong>The TravelHelper case study demonstrates the difference between building features and solving business problems.</strong> By starting with business goals, mapping pain points to outcomes, defining success metrics, and making intentional trade-off decisions, I've translated a product idea into a professional, outcome-focused strategy.
+        <strong>This case study demonstrates the ability to translate behavioral pain points into structured workflows</strong> — not just wireframes. The BPMN approach forced explicit thinking about edge cases, error states, and escalation paths before any UI was designed.
       </p>
       <p>
-        These skills—business analysis, product thinking, metrics-driven design, workflow mastery, and decision documentation—apply directly to Product Manager, Business Analyst, and Product Strategy roles.
+        The combination of <strong>product analysis (pain point → impact → response), process design (BPMN), and UX execution (Figma)</strong> reflects the kind of end-to-end thinking that applies directly to Product Analyst and Business Analyst roles where process design and service recovery matter.
       </p>
       <p>
-        This is what distinguishes product professionals from feature builders: the ability to ask "why?" not just "what?" and to measure success by outcomes, not output.
+        The skills used here — structured problem decomposition, exception handling, workflow documentation, and user-centered communication design — transfer directly to data-driven product work in fintech, e-commerce, and service operations.
       </p>
     </div>
 
@@ -1201,7 +555,7 @@ img { display: block; max-width: 100%; }
 <footer class="site-footer">
   <div class="container footer-inner">
     <a href="../index.html" class="footer-brand">Giao <em>Duong</em></a>
-    <div class="footer-copy">TravelHelper Case Study — Product & Business Analysis</div>
+    <div class="footer-copy">TravelHelper Case Study · Product & Business Analysis</div>
     <div class="footer-copy">dnqgiao1408@gmail.com</div>
   </div>
 </footer>
