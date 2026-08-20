@@ -1,0 +1,669 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>Báo cáo phân tích chiến dịch tiếp thị ngân hàng</title>
+<style>
+:root {
+  --bg:#f4f7fa;
+  --paper:#ffffff;
+  --ink:#172a3a;
+  --muted:#657789;
+  --navy:#12324a;
+  --blue:#2864dc;
+  --green:#16835d;
+  --red:#b84343;
+  --amber:#c98700;
+  --line:#dce5ec;
+  --soft-blue:#eaf2ff;
+  --soft-green:#e9f7f1;
+  --soft-red:#fff0f0;
+  --soft-amber:#fff7df;
+  --shadow:0 14px 40px rgba(16,45,68,.08);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;background:var(--bg);color:var(--ink);
+  font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Arial,sans-serif;
+  line-height:1.55;
+}
+a{color:inherit}
+.topbar{
+  position:sticky;top:0;z-index:20;background:rgba(18,50,74,.96);
+  color:#fff;border-bottom:1px solid rgba(255,255,255,.14);
+}
+.topbar-inner{
+  max-width:1220px;margin:auto;display:flex;align-items:center;gap:18px;
+  padding:10px 22px;overflow:auto;
+}
+.brand{font-weight:800;white-space:nowrap;margin-right:auto}
+.nav a{
+  font-size:13px;color:#dce9f2;text-decoration:none;white-space:nowrap;
+  padding:7px 9px;border-radius:8px;
+}
+.nav a:hover{background:rgba(255,255,255,.1)}
+.print-btn{
+  border:1px solid rgba(255,255,255,.3);background:transparent;color:#fff;
+  border-radius:8px;padding:7px 10px;cursor:pointer;white-space:nowrap
+}
+main{max-width:1220px;margin:0 auto;padding:30px 22px 70px}
+.hero{
+  background:linear-gradient(135deg,#113148,#1f5372);
+  color:white;border-radius:22px;padding:42px;box-shadow:var(--shadow);
+  overflow:hidden;position:relative;
+}
+.hero:after{
+  content:"";position:absolute;right:-80px;top:-120px;width:330px;height:330px;
+  border-radius:50%;background:rgba(255,255,255,.06)
+}
+.eyebrow{font-size:13px;letter-spacing:.09em;text-transform:uppercase;color:#b9d3e5;font-weight:800}
+h1{font-size:42px;line-height:1.08;margin:10px 0 14px;max-width:900px}
+.hero p{font-size:18px;max-width:900px;color:#d8e7f1}
+.hero-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:28px}
+.hero-stat{background:rgba(255,255,255,.09);padding:16px;border-radius:14px}
+.hero-stat b{display:block;font-size:25px}
+.hero-stat span{font-size:12px;color:#c9dce8}
+.section{margin-top:34px}
+.section-head{display:flex;gap:18px;align-items:flex-end;margin-bottom:14px}
+.chapter{color:var(--blue);font-weight:900;font-size:13px;letter-spacing:.08em;text-transform:uppercase}
+h2{font-size:29px;line-height:1.18;margin:3px 0}
+.subtitle{color:var(--muted);max-width:880px;margin:0}
+.card{
+  background:var(--paper);border:1px solid var(--line);border-radius:18px;
+  padding:20px;box-shadow:0 7px 24px rgba(16,45,68,.045)
+}
+.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+.metric .label{font-size:12px;color:var(--muted);font-weight:700}
+.metric .value{font-size:27px;font-weight:900;color:var(--navy);margin-top:4px}
+.metric .note{font-size:12px;color:var(--muted);margin-top:4px}
+.good{background:var(--soft-green)}
+.warn{background:var(--soft-amber)}
+.bad{background:var(--soft-red)}
+.info{background:var(--soft-blue)}
+.story{
+  border-left:5px solid var(--blue);background:#fff;padding:18px 20px;
+  border-radius:0 16px 16px 0;margin:16px 0;
+}
+.story strong{color:var(--navy)}
+.story .big{font-size:25px;font-weight:900}
+.funnel{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;align-items:center}
+.funnel-step{text-align:center;padding:20px 8px;border-radius:14px;background:#edf3f7;position:relative}
+.funnel-step:not(:last-child):after{content:"→";position:absolute;right:-15px;top:34%;font-size:28px;color:#8ba1b1;z-index:2}
+.funnel-step b{display:block;font-size:28px;color:var(--navy)}
+.funnel-step span{font-size:12px;color:var(--muted)}
+.chart-title{font-size:16px;font-weight:850;margin:0 0 5px}
+.chart-sub{font-size:12px;color:var(--muted);margin-bottom:14px}
+.bars{display:grid;gap:11px}
+.bar-row{display:grid;grid-template-columns:minmax(100px,160px) 1fr 72px;gap:10px;align-items:center}
+.bar-label{font-size:13px;font-weight:700}
+.bar-track{height:18px;background:#edf2f5;border-radius:999px;overflow:hidden;position:relative}
+.bar-fill{height:100%;border-radius:999px;background:linear-gradient(90deg,#3374dc,#69a0ed)}
+.bar-fill.green{background:linear-gradient(90deg,#16835d,#59b18c)}
+.bar-fill.red{background:linear-gradient(90deg,#b84343,#e17b7b)}
+.bar-fill.amber{background:linear-gradient(90deg,#c98700,#eab24b)}
+.bar-value{font-size:13px;text-align:right;font-weight:850}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--muted)}
+.dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:5px}
+.insight-list{margin:0;padding-left:20px}
+.insight-list li{margin:7px 0}
+.signal-grid{display:grid;grid-template-columns:1.2fr .8fr 2fr;gap:0;border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.signal-grid > div{padding:12px 14px;border-bottom:1px solid var(--line)}
+.signal-grid > div:nth-last-child(-n+3){border-bottom:none}
+.signal-head{background:var(--navy);color:white;font-weight:800}
+.badge{display:inline-block;padding:4px 9px;border-radius:999px;font-size:12px;font-weight:800}
+.badge-strong{background:#dff3e9;color:#126846}
+.badge-mid{background:#fff0c7;color:#8c6100}
+.badge-weak{background:#eef2f5;color:#627481}
+.scatter-wrap{overflow:auto}
+svg text{font-family:inherit}
+.heatmap{width:100%;border-collapse:separate;border-spacing:4px}
+.heatmap th{font-size:12px;text-align:center;padding:7px;color:var(--muted)}
+.heatmap td{text-align:center;padding:13px 7px;border-radius:8px;font-size:12px}
+.heat-very-good{background:#ccebdc;color:#0c6040}
+.heat-good{background:#e7f5ec;color:#16724f}
+.heat-neutral{background:#f2f4f5;color:#52636f}
+.heat-bad{background:#fff1dc;color:#986000}
+.heat-very-bad{background:#fde5e5;color:#9f3535}
+.table-wrap{overflow:auto}
+table.report{border-collapse:collapse;width:100%;font-size:13px}
+table.report th{background:var(--navy);color:white;text-align:left;padding:11px;white-space:nowrap}
+table.report td{padding:11px;border-bottom:1px solid var(--line);vertical-align:top}
+.callout{
+  padding:18px 20px;border-radius:16px;background:var(--soft-green);
+  border:1px solid #cce9da;
+}
+.callout h3{margin:0 0 7px;font-size:17px}
+.caution{background:var(--soft-amber);border-color:#f1dfad}
+.risk{background:var(--soft-red);border-color:#f1cccc}
+.summary-strip{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:16px 0;
+}
+.summary-item{border-radius:14px;padding:18px;text-align:center;background:#fff;border:1px solid var(--line)}
+.summary-item b{display:block;font-size:29px;color:var(--navy)}
+.summary-item span{font-size:12px;color:var(--muted)}
+.action-flow{display:flex;gap:8px;align-items:stretch;overflow:auto}
+.action-step{min-width:180px;flex:1;background:white;border:1px solid var(--line);border-radius:14px;padding:16px}
+.action-step .n{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:var(--navy);color:white;font-weight:900}
+.action-step h4{margin:10px 0 5px}
+.action-arrow{display:grid;place-items:center;color:#8ca1af;font-size:25px}
+.footer-note{color:var(--muted);font-size:12px;margin-top:14px}
+details{background:white;border:1px solid var(--line);border-radius:14px;padding:12px 16px}
+details summary{cursor:pointer;font-weight:800}
+small.mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+@media(max-width:900px){
+  h1{font-size:32px}
+  .hero-grid,.grid-4{grid-template-columns:repeat(2,1fr)}
+  .grid-3{grid-template-columns:1fr}
+  .grid-2{grid-template-columns:1fr}
+  .funnel{grid-template-columns:1fr 1fr}
+  .funnel-step:after{display:none}
+  .signal-grid{grid-template-columns:1fr}
+  .signal-grid > div{border-bottom:1px solid var(--line)!important}
+}
+@media(max-width:560px){
+  main{padding:18px 12px 50px}
+  .hero{padding:27px 20px}
+  .hero-grid,.grid-4{grid-template-columns:1fr 1fr}
+  .bar-row{grid-template-columns:100px 1fr 58px}
+}
+@media print{
+  .topbar,.print-btn{display:none!important}
+  body{background:white}
+  main{max-width:none;padding:0}
+  .hero,.card,.story,.callout,details{box-shadow:none;break-inside:avoid}
+  .section{break-before:auto}
+}
+</style>
+</head>
+<body>
+<header class="topbar">
+  <div class="topbar-inner">
+    <div class="brand">BÁO CÁO PHÂN TÍCH TIẾP THỊ NGÂN HÀNG</div>
+    <nav class="nav">
+      <a href="#tomtat">Tóm tắt</a>
+      <a href="#hientrang">Hiện trạng</a>
+      <a href="#khachhang">Khách hàng</a>
+      <a href="#kenhsanpham">Kênh & sản phẩm</a>
+      <a href="#mohinh">Mô hình ưu tiên</a>
+      <a href="#hanhdong">Khuyến nghị</a>
+    </nav>
+    <button class="print-btn" type="button" onclick="window.print()">In báo cáo</button>
+  </div>
+</header>
+
+<main>
+<section class="hero" id="tomtat">
+  <div class="eyebrow">BÁO CÁO PHÂN TÍCH CHIẾN DỊCH • DỮ LIỆU GIẢ LẬP</div>
+  <h1>Làm sao để ngân hàng tiếp cận đúng khách hàng hơn?</h1>
+  <p>
+    Báo cáo này trả lời 4 câu hỏi đơn giản: chiến dịch hiện tại có hiệu quả không, khách hàng nào dễ chuyển đổi hơn, nên tiếp cận qua kênh nào, và mô hình có giúp ngân hàng ưu tiên đúng khách hàng hơn hay không.
+  </p>
+  <div class="hero-grid">
+    <div class="hero-stat"><b>8.000</b><span>khách hàng trong tập dữ liệu</span></div>
+    <div class="hero-stat"><b>1.93%</b><span>tỷ lệ chuyển đổi trên khách đã tiếp cận</span></div>
+    <div class="hero-stat"><b>146.5%</b><span>ROI toàn chiến dịch</span></div>
+    <div class="hero-stat"><b>1.24×</b><span>mức hiệu quả so với chọn ngẫu nhiên khi chọn 20% khách ưu tiên</span></div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="section-head">
+    <div>
+      <div class="chapter">TÓM TẮT CHÍNH</div>
+      <h2>5 kết quả quan trọng nhất</h2>
+      <p class="subtitle">Phần này chỉ giữ lại những kết quả quan trọng để hỗ trợ quyết định marketing.</p>
+    </div>
+  </div>
+  <div class="grid-3">
+    <div class="card"><strong>1. Tiếp cận nhiều nhưng ít khách chuyển đổi.</strong><p>5.432 khách đã được tiếp cận nhưng chỉ 105 khách chuyển đổi; tương đương khoảng 1 khách chuyển đổi trên mỗi 52 khách được tiếp cận.</p></div>
+    <div class="card"><strong>2. Mức độ sử dụng app là dấu hiệu rõ nhất.</strong><p>Nhóm “Hoạt động số” đạt tỷ lệ chuyển đổi 4.46%, cao khoảng 2.56 lần nhóm bán lẻ đại trà.</p></div>
+    <div class="card"><strong>3. Kênh có nhiều khách chuyển đổi chưa chắc tiết kiệm chi phí.</strong><p>Chi nhánh có tỷ lệ chuyển đổi cao nhất, nhưng ứng dụng di động có chi phí để có 1 khách chuyển đổi thấp hơn khoảng 83% và ROI vượt trội.</p></div>
+    <div class="card"><strong>4. Tỷ lệ chuyển đổi cao chưa chắc mang lại lợi nhuận cao.</strong><p>Bảo hiểm và vay cá nhân không dẫn đầu về tỷ lệ chuyển đổi nhưng có ROI cao nhất trong nhóm sản phẩm.</p></div>
+    <div class="card"><strong>5. Mô hình chỉ dùng thông tin khách hàng có cải thiện, nhưng chưa nhiều.</strong><p>20% khách hàng được xếp hạng cao nhất giữ 24.8% số chuyển đổi, tương đương mức hiệu quả 1.24×. Nhóm 10% đầu mạnh hơn đáng kể.</p></div>
+    <div class="card warn"><strong>Điều cần làm.</strong><p>Không nên chỉ giảm số khách được tiếp cận. Ngân hàng cần ưu tiên đúng khách, chọn đúng kênh và theo dõi kết quả từng đợt trước khi mở rộng.</p></div>
+  </div>
+</section>
+
+<section class="section" id="hientrang">
+  <div class="section-head">
+    <div>
+      <div class="chapter">CHƯƠNG 1 — HIỆN TRẠNG</div>
+      <h2>Chiến dịch tiếp cận được nhiều khách, nhưng tỷ lệ chuyển đổi còn thấp</h2>
+      <p class="subtitle">Trước tiên cần hiểu: khách hàng đang rơi rụng ở bước nào của chiến dịch?</p>
+    </div>
+  </div>
+
+  <div class="grid-4">
+    <div class="card metric info"><div class="label">Tổng khách hàng</div><div class="value">8.000</div><div class="note">Quy mô tập khách hàng</div></div>
+    <div class="card metric info"><div class="label">Đã tiếp cận</div><div class="value">5.432</div><div class="note">67.9% tổng khách hàng</div></div>
+    <div class="card metric"><div class="label">Đã nhấp / tương tác</div><div class="value">810</div><div class="note">Tỷ lệ nhấp 14.91%</div></div>
+    <div class="card metric bad"><div class="label">Đã chuyển đổi</div><div class="value">105</div><div class="note">Tỷ lệ chuyển đổi 1.93%</div></div>
+  </div>
+
+  <div class="card" style="margin-top:16px">
+    <p class="chart-title">Phễu chiến dịch</p>
+    <p class="chart-sub">Biểu đồ cho thấy số khách giảm dần từ lúc được tiếp cận đến lúc thực sự chuyển đổi.</p>
+    <div class="funnel">
+      <div class="funnel-step"><b>8.000</b><span>Tổng khách hàng</span></div>
+      <div class="funnel-step"><b>5.432</b><span>Đã tiếp cận</span></div>
+      <div class="funnel-step"><b>810</b><span>Đã nhấp / tương tác</span></div>
+      <div class="funnel-step"><b>105</b><span>Đã chuyển đổi</span></div>
+    </div>
+  </div>
+
+  <div class="grid-2" style="margin-top:16px">
+    <div class="card">
+      <p class="chart-title">Phần lớn khách được tiếp cận vẫn không chuyển đổi</p>
+      <p class="chart-sub">Tỷ lệ này được tính trên nhóm khách đã được tiếp cận chiến dịch.</p>
+      <div class="bars">
+        <div class="bar-row">
+          <div class="bar-label">Không chuyển đổi</div>
+          <div class="bar-track"><div class="bar-fill red" style="width:98.07%"></div></div>
+          <div class="bar-value">98.07%</div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-label">Chuyển đổi</div>
+          <div class="bar-track"><div class="bar-fill green" style="width:1.93%"></div></div>
+          <div class="bar-value">1.93%</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <p class="chart-title">Chiến dịch thu về bao nhiêu so với chi phí</p>
+      <p class="chart-sub">ROI được tính bằng tổng doanh thu và tổng chi phí của cả chiến dịch.</p>
+      <div class="grid-3">
+        <div class="metric"><div class="label">Chi phí chiến dịch</div><div class="value">3.642.7 triệu</div></div>
+        <div class="metric"><div class="label">Doanh thu</div><div class="value">8.980 triệu</div></div>
+        <div class="metric good"><div class="label">Phần thu về sau khi trừ chi phí</div><div class="value">5.337.4 triệu</div></div>
+      </div>
+      <div class="story">
+        <strong>Điều cần lưu ý:</strong> chiến dịch vẫn tạo ra giá trị dương, nhưng tỷ lệ chuyển đổi thấp cho thấy ngân hàng vẫn đang tiếp cận nhiều khách chưa phù hợp.
+      </div>
+    </div>
+  </div>
+
+  <div class="story">
+    <span class="big">Câu hỏi tiếp theo: “Vậy nên ưu tiên khách hàng nào?”</span><br>
+    Nếu tiếp tục tiếp cận rộng như hiện tại, ngân hàng sẽ vẫn tốn chi phí cho nhiều khách khó chuyển đổi.
+  </div>
+</section>
+
+<section class="section" id="khachhang">
+  <div class="section-head">
+    <div>
+      <div class="chapter">CHƯƠNG 2 — KHÁCH HÀNG</div>
+      <h2>Mức độ sử dụng app hữu ích hơn tuổi, thu nhập hay thời gian gắn bó</h2>
+      <p class="subtitle">Dữ liệu cho thấy những khách dùng app thường xuyên có xu hướng chuyển đổi tốt hơn. Tuổi, thu nhập hay thời gian gắn bó nếu nhìn riêng lẻ không cho thấy khác biệt rõ bằng.</p>
+    </div>
+  </div>
+
+  <div class="grid-4">
+    <div class="card metric good"><div class="label">Nhóm Hoạt động số</div><div class="value">4.46%</div><div class="note">tỷ lệ chuyển đổi</div></div>
+    <div class="card metric"><div class="label">Bán lẻ đại trà</div><div class="value">1.74%</div><div class="note">tỷ lệ chuyển đổi</div></div>
+    <div class="card metric good"><div class="label">Mức cao hơn</div><div class="value">2.56×</div><div class="note">Hoạt động số / bán lẻ đại trà</div></div>
+    <div class="card metric warn"><div class="label">Đăng nhập 21+ lần</div><div class="value">7.46%</div><div class="note">nhưng nhóm này chỉ có 67 khách</div></div>
+  </div>
+
+  <div class="grid-2" style="margin-top:16px">
+    <div class="card">
+      <p class="chart-title">Tỷ lệ chuyển đổi theo phân khúc khách hàng</p>
+      <p class="chart-sub">Mức trung bình toàn chiến dịch: 1.93%.</p>
+      <div id="segmentBars" class="bars"></div>
+      <div class="footer-note">Phân khúc “Tương tác thấp” chỉ có 2 quan sát đã tiếp cận nên không đủ để kết luận.</div>
+    </div>
+    <div class="card">
+      <p class="chart-title">Tỷ lệ chuyển đổi theo số lần đăng nhập ứng dụng trong 30 ngày</p>
+      <p class="chart-sub">Tỷ lệ chuyển đổi tăng rõ ở nhóm đăng nhập app nhiều.</p>
+      <div id="appBars" class="bars"></div>
+      <div class="footer-note">Nhóm đăng nhập trên 21 lần có tỷ lệ chuyển đổi cao, nhưng số khách trong nhóm còn ít. Vì vậy chỉ nên xem đây là dấu hiệu để theo dõi thêm.</div>
+    </div>
+  </div>
+
+  <div class="grid-2" style="margin-top:16px">
+    <div class="card">
+      <p class="chart-title">Khách dùng app thường xuyên giúp giảm chi phí để có 1 khách chuyển đổi</p>
+      <div class="summary-strip">
+        <div class="summary-item"><b>2.21%</b><span>tỷ lệ chuyển đổi — khách hoạt động số</span></div>
+        <div class="summary-item"><b>30.1 triệu</b><span>chi phí để có 1 khách chuyển đổi — hoạt động số</span></div>
+        <div class="summary-item"><b>-33%</b><span>thấp hơn so với nhóm ít hoạt động số</span></div>
+      </div>
+      <div class="callout">
+        <h3>Ý nghĩa</h3>
+        Trong dữ liệu này, khách dùng app thường xuyên vừa chuyển đổi tốt hơn, vừa tốn ít chi phí hơn để tạo ra 1 khách chuyển đổi.
+      </div>
+    </div>
+
+    <div class="card">
+      <p class="chart-title">Yếu tố nào giúp nhận biết khách dễ chuyển đổi hơn?</p>
+      <div class="signal-grid">
+        <div class="signal-head">Yếu tố</div><div class="signal-head">Mức hữu ích</div><div class="signal-head">Diễn giải</div>
+        <div>Đăng nhập ứng dụng</div><div><span class="badge badge-strong">Mạnh</span></div><div>Tăng rõ ở nhóm hoạt động cao; là tín hiệu số nổi bật nhất.</div>
+        <div>Hoạt động số</div><div><span class="badge badge-strong">Mạnh</span></div><div>Tỷ lệ chuyển đổi cao hơn và chi phí để có 1 khách chuyển đổi thấp hơn.</div>
+        <div>Nhóm khách hàng</div><div><span class="badge badge-mid">Có ý nghĩa</span></div><div>Nhóm Hoạt động số nổi bật, nhưng một số phân khúc có cỡ mẫu nhỏ.</div>
+        <div>Số dư tài khoản</div><div><span class="badge badge-mid">Trung bình</span></div><div>Có khác biệt giữa các nhóm nhưng không tạo xu hướng tuyến tính rõ.</div>
+        <div>Thu nhập</div><div><span class="badge badge-weak">Yếu</span></div><div>Thu nhập cao hơn không đồng nghĩa chuyển đổi cao hơn.</div>
+        <div>Tuổi</div><div><span class="badge badge-weak">Yếu</span></div><div>Không thấy mẫu hình đơn điệu đủ rõ để dùng làm quy tắc chính.</div>
+        <div>Thời gian gắn bó</div><div><span class="badge badge-weak">Yếu</span></div><div>Khác biệt tỷ lệ chuyển đổi giữa các nhóm tương đối nhỏ.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="story">
+    <strong>Kết luận chương 2:</strong> Không nên chọn khách chỉ theo quy tắc đơn giản như
+    “khách thu nhập cao thì ưu tiên” hoặc “khách lâu năm thì ưu tiên”.
+    Nên kết hợp <strong>mức độ dùng app + hành vi gần đây + thông tin khách hàng</strong> để xếp thứ tự ưu tiên.
+  </div>
+</section>
+
+<section class="section" id="kenhsanpham">
+  <div class="section-head">
+    <div>
+      <div class="chapter">CHƯƠNG 3 — KÊNH & SẢN PHẨM</div>
+      <h2>Không chỉ nhìn số khách chuyển đổi, mà còn phải nhìn chi phí và lợi nhuận</h2>
+      <p class="subtitle">Sau khi biết nên ưu tiên ai, cần xác định nên liên hệ qua kênh nào và giới thiệu sản phẩm nào để mang lại hiệu quả tốt hơn.</p>
+    </div>
+  </div>
+
+  <div class="grid-4">
+    <div class="card metric info"><div class="label">Kênh có tỷ lệ chuyển đổi cao nhất</div><div class="value">Chi nhánh</div><div class="note">4.18%</div></div>
+    <div class="card metric good"><div class="label">Kênh có ROI cao nhất</div><div class="value">Ứng dụng di động</div><div class="note">589% ROI</div></div>
+    <div class="card metric good"><div class="label">Chi phí để có 1 khách chuyển đổi thấp nhất</div><div class="value">12.5 triệu</div><div class="note">Ứng dụng di động</div></div>
+    <div class="card metric bad"><div class="label">Chi phí để có 1 khách chuyển đổi cao nhất</div><div class="value">154.6 triệu</div><div class="note">Mạng xã hội</div></div>
+  </div>
+
+  <div class="grid-2" style="margin-top:16px">
+    <div class="card">
+      <p class="chart-title">So sánh tỷ lệ chuyển đổi và ROI theo kênh</p>
+      <p class="chart-sub">Kênh càng nằm cao và về bên phải thì càng vừa có tỷ lệ chuyển đổi tốt, vừa có ROI cao.</p>
+      <div class="scatter-wrap"><svg id="channelScatter" viewBox="0 0 650 370" width="100%" role="img" aria-label="Biểu đồ phân tán hiệu quả kênh"></svg></div>
+    </div>
+    <div class="card">
+      <p class="chart-title">Vì sao ứng dụng di động đáng ưu tiên?</p>
+      <ul class="insight-list">
+        <li>Chi nhánh đạt tỷ lệ chuyển đổi <strong>4.18%</strong>, cao nhất trong các kênh.</li>
+        <li>Nhưng chi phí để có 1 khách chuyển đổi tại chi nhánh là <strong>71.8 triệu</strong>.</li>
+        <li>Ứng dụng di động có tỷ lệ chuyển đổi <strong>2.80%</strong>, nhưng chi phí để có 1 khách chuyển đổi chỉ <strong>12.5 triệu</strong>.</li>
+        <li>Tức chi phí để có 1 khách chuyển đổi của ứng dụng di động thấp hơn chi nhánh khoảng <strong>83%</strong>.</li>
+        <li>Email cũng có ROI cao, phù hợp vai trò kênh chi phí thấp.</li>
+        <li>SMS và mạng xã hội đang có ROI âm; nên xem lại cách chọn khách và thông điệp trước khi mở rộng.</li>
+      </ul>
+      <div class="callout">
+        <h3>Đề xuất</h3>
+        Nên ưu tiên ứng dụng di động cho khách thường xuyên dùng app. Chi nhánh nên dành cho những trường hợp cần tư vấn nhiều hoặc khách có giá trị cao.
+      </div>
+    </div>
+  </div>
+
+  <div class="grid-2" style="margin-top:16px">
+    <div class="card">
+      <p class="chart-title">Sản phẩm có nhiều khách chuyển đổi chưa chắc mang lại lợi nhuận cao</p>
+      <div id="productBars" class="bars"></div>
+      <div class="story">
+        <strong>Kết quả đáng chú ý:</strong> Thẻ tín dụng có tỷ lệ chuyển đổi cao nhất, nhưng bảo hiểm và vay cá nhân có ROI cao hơn rất nhiều.
+      </div>
+    </div>
+    <div class="card">
+      <p class="chart-title">ROI theo từng kênh và sản phẩm</p>
+      <p class="chart-sub">Màu xanh là các tổ hợp hiệu quả hơn; màu đỏ là các tổ hợp đang bị lỗ.</p>
+      <div class="table-wrap">
+        <table class="heatmap">
+          <thead><tr>
+            <th>Kênh</th>
+            <th>Thẻ tín dụng</th><th>Vay cá nhân</th><th>Bảo hiểm</th><th>Tiết kiệm</th><th>Tài khoản số</th>
+          </tr></thead>
+          <tbody>
+            <tr><th>Ứng dụng di động</th><td class="heat-very-good"><strong>430%</strong></td><td class="heat-very-good"><strong>1398%</strong></td><td class="heat-very-good"><strong>1210%</strong></td><td class="heat-good"><strong>118%</strong></td><td class="heat-good"><strong>111%</strong></td></tr><tr><th>Email</th><td class="heat-very-good"><strong>403%</strong></td><td class="heat-very-good"><strong>686%</strong></td><td class="heat-very-good"><strong>1518%</strong></td><td class="heat-very-bad"><strong>-38%</strong></td><td class="heat-good"><strong>122%</strong></td></tr><tr><th>Chi nhánh</th><td class="heat-bad"><strong>-18%</strong></td><td class="heat-good"><strong>183%</strong></td><td class="heat-very-good"><strong>331%</strong></td><td class="heat-very-bad"><strong>-50%</strong></td><td class="heat-very-bad"><strong>-80%</strong></td></tr><tr><th>SMS</th><td class="heat-bad"><strong>-3%</strong></td><td class="heat-very-bad"><strong>-100%</strong></td><td class="heat-very-bad"><strong>-100%</strong></td><td class="heat-neutral"><strong>52%</strong></td><td class="heat-very-bad"><strong>-65%</strong></td></tr><tr><th>Mạng xã hội</th><td class="heat-very-bad"><strong>-100%</strong></td><td class="heat-very-good"><strong>311%</strong></td><td class="heat-very-bad"><strong>-100%</strong></td><td class="heat-very-bad"><strong>-100%</strong></td><td class="heat-very-bad"><strong>-71%</strong></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="story">
+    <strong>Kết luận chương 3:</strong> Khi quyết định chiến dịch, nên nhìn cùng lúc 3 yếu tố:
+    <strong>khả năng chuyển đổi × chi phí tiếp cận × lợi nhuận mang lại</strong>.
+    Đây cũng là lý do mô hình “khách hàng + bối cảnh kênh/sản phẩm” có thể là bước phát triển tiếp theo,
+    nhưng không nên trộn lẫn với câu hỏi thuần túy “ai là khách hàng nên ưu tiên?”.
+  </div>
+</section>
+
+<section class="section" id="mohinh">
+  <div class="section-head">
+    <div>
+      <div class="chapter">CHƯƠNG 4 — MÔ HÌNH ƯU TIÊN</div>
+      <h2>Mô hình giúp ưu tiên khách tốt hơn, nhưng mức cải thiện hiện tại chưa lớn</h2>
+      <p class="subtitle">Kết quả này được kiểm tra chéo 5 lần để tránh việc mô hình được đánh giá trên chính dữ liệu mà nó đã học.</p>
+    </div>
+  </div>
+
+  <div class="grid-4">
+    <div class="card metric info"><div class="label">Nhóm khách được ưu tiên</div><div class="value">20%</div><div class="note">1.087 khách trong tập đã tiếp cận</div></div>
+    <div class="card metric good"><div class="label">Tỷ lệ khách chuyển đổi nằm trong nhóm ưu tiên</div><div class="value">24.8%</div><div class="note">26/105 chuyển đổi</div></div>
+    <div class="card metric good"><div class="label">Mức hiệu quả so với chọn ngẫu nhiên</div><div class="value">1.24×</div><div class="note">so với chọn ngẫu nhiên cùng quy mô</div></div>
+    <div class="card metric warn"><div class="label">Số khách không cần liên hệ ngay</div><div class="value">80.0%</div><div class="note">không có nghĩa là chi phí giảm đúng bằng tỷ lệ này</div></div>
+  </div>
+
+  <div class="grid-2" style="margin-top:16px">
+    <div class="card">
+      <p class="chart-title">Mô hình có gom được nhiều khách chuyển đổi vào nhóm ưu tiên không?</p>
+      <p class="chart-sub">Đường mô hình càng cao hơn đường chọn ngẫu nhiên thì mô hình càng xếp đúng khách chuyển đổi lên đầu danh sách.</p>
+      <svg id="gainChart" viewBox="0 0 650 370" width="100%" role="img" aria-label="Đường tích lũy chuyển đổi"></svg>
+    </div>
+    <div class="card">
+      <p class="chart-title">Tỷ lệ chuyển đổi của từng nhóm 10% khách</p>
+      <p class="chart-sub">Nhóm 1 là 10% khách được mô hình ưu tiên cao nhất.</p>
+      <div id="decileBars" class="bars"></div>
+    </div>
+  </div>
+
+  <div class="grid-2" style="margin-top:16px">
+    <div class="callout">
+      <h3>Nhóm 10% đầu là nơi mô hình cho kết quả tốt nhất</h3>
+      Nhóm 10% đầu giữ <strong>17.1%</strong> số chuyển đổi,
+      tương đương mức hiệu quả <strong>1.71×</strong>.
+      Khi mở rộng sang 20%, mức hiệu quả giảm xuống <strong>1.24×</strong>.
+      Vì vậy nên thử nghiệm trước với nhóm 10% đầu, sau đó mới cân nhắc mở rộng.
+    </div>
+    <div class="callout caution">
+      <h3>Không nên hiểu điểm mô hình là “xác suất chắc chắn khách sẽ chuyển đổi”</h3>
+      Điểm mô hình nên dùng để <strong>xếp thứ tự khách nào nên ưu tiên trước</strong>, không nên nói rằng một khách cụ thể có “60% khả năng chắc chắn sẽ chuyển đổi”.
+    </div>
+  </div>
+
+  <div class="story">
+    <strong>Cách hiểu đúng:</strong> Mô hình chỉ dùng thông tin khách hàng làm tốt hơn chọn ngẫu nhiên, nhưng chỉ số đánh giá khoảng 0.557 cho thấy khả năng xếp đúng khách vẫn còn hạn chế.
+    Vì vậy mô hình phù hợp để hỗ trợ thử nghiệm ưu tiên khách hàng, nhưng chưa nên dùng một mình để tự động quyết định toàn bộ chiến dịch.
+  </div>
+</section>
+
+<section class="section" id="hanhdong">
+  <div class="section-head">
+    <div>
+      <div class="chapter">CHƯƠNG 5 — HÀNH ĐỘNG</div>
+      <h2>Biến kết quả phân tích thành hành động cụ thể</h2>
+      <p class="subtitle">Kết quả chỉ có giá trị khi được chuyển thành cách chọn khách, chọn kênh và theo dõi hiệu quả rõ ràng.</p>
+    </div>
+  </div>
+
+  <div class="action-flow">
+    <div class="action-step"><div class="n">1</div><h4>Chọn nhóm khách để thử trước</h4><p>Ưu tiên 10% khách có điểm xếp hạng cao nhất thay vì triển khai ngay toàn bộ 20%.</p></div>
+    <div class="action-arrow">→</div>
+    <div class="action-step"><div class="n">2</div><h4>Liên hệ qua kênh phù hợp</h4><p>Ưu tiên ứng dụng di động cho khách hoạt động số; dùng email bổ trợ và chi nhánh có chọn lọc.</p></div>
+    <div class="action-arrow">→</div>
+    <div class="action-step"><div class="n">3</div><h4>Theo dõi kết quả thật</h4><p>Theo dõi chuyển đổi, chi phí để có 1 khách chuyển đổi và ROI theo nhóm ưu tiên.</p></div>
+    <div class="action-arrow">→</div>
+    <div class="action-step"><div class="n">4</div><h4>Chỉ mở rộng khi kết quả tốt</h4><p>Chỉ mở rộng sang nhóm tiếp theo nếu mức hiệu quả và hiệu quả kinh tế vẫn duy trì.</p></div>
+  </div>
+
+  <div class="card" style="margin-top:16px">
+    <p class="chart-title">Bảng đề xuất hành động</p>
+    <div class="table-wrap">
+      <table class="report">
+        <thead><tr><th>Phát hiện</th><th>Ý nghĩa</th><th>Khuyến nghị</th><th>Chỉ số nên theo dõi</th></tr></thead>
+        <tbody>
+<tr>
+  <td><strong>Tỷ lệ chuyển đổi nền thấp</strong></td>
+  <td>Ngân sách đang được phân bổ cho nhiều khách hàng không chuyển đổi.</td>
+  <td>Chuyển từ tiếp cận rộng sang xếp hạng khách hàng theo mức ưu tiên.</td>
+  <td>Tỷ lệ chuyển đổi, mức hiệu quả tại nhóm 10%/20% đầu.</td>
+</tr>
+<tr>
+  <td><strong>Hành vi số nổi bật hơn thông tin cơ bản</strong></td>
+  <td>Tín hiệu gần thời điểm chiến dịch có giá trị hơn các quy tắc “khách giàu / khách lâu năm”.</td>
+  <td>Dùng mức độ hoạt động số và tần suất đăng nhập làm tín hiệu ưu tiên.</td>
+  <td>Tỷ lệ chuyển đổi theo mức tương tác số.</td>
+</tr>
+<tr>
+  <td><strong>Hiệu quả kênh khác biệt lớn</strong></td>
+  <td>Kênh chuyển đổi cao chưa chắc có hiệu quả kinh tế tốt.</td>
+  <td>Ưu tiên ứng dụng di động cho nhóm phù hợp; dùng chi nhánh có chọn lọc.</td>
+  <td>Chi phí/khách chuyển đổi và ROI theo kênh.</td>
+</tr>
+<tr>
+  <td><strong>Chuyển đổi không đồng nghĩa lợi nhuận</strong></td>
+  <td>Sản phẩm có tỷ lệ chuyển đổi trung bình vẫn có thể tạo giá trị lớn.</td>
+  <td>Kết hợp khả năng chuyển đổi với giá trị kinh tế của sản phẩm ở giai đoạn tiếp theo.</td>
+  <td>Tỷ suất ROI theo sản phẩm và tổ hợp kênh–sản phẩm.</td>
+</tr>
+<tr>
+  <td><strong>Mô hình khách hàng thuần có sức phân biệt còn vừa phải</strong></td>
+  <td>Không nên triển khai rộng chỉ dựa trên một mô hình duy nhất.</td>
+  <td>Thử nghiệm trên nhóm ưu tiên cao nhất trước, đo hiệu quả thực tế rồi mới mở rộng.</td>
+  <td>Mức hiệu quả so với chọn ngẫu nhiên nhóm 10% đầu, tỷ lệ chuyển đổi thực tế, hiệu quả theo đợt.</td>
+</tr>
+</tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="story">
+    <span class="big">Kết luận cuối cùng</span><br>
+    Ngân hàng nên chuyển từ <strong>gửi chiến dịch cho quá nhiều khách</strong> sang <strong>ưu tiên những khách phù hợp hơn dựa trên dữ liệu</strong>:
+    chọn khách hàng có tín hiệu tốt hơn, tiếp cận qua kênh có hiệu quả kinh tế phù hợp,
+    và liên tục đo lường để điều chỉnh phạm vi chiến dịch.
+  </div>
+</section>
+
+<section class="section">
+  <details>
+    <summary>Lưu ý khi đọc báo cáo</summary>
+    <div style="padding:10px 2px 4px">
+      <ul class="insight-list">
+        <li>Dữ liệu là <strong>dữ liệu giả lập</strong>, gồm 8.000 khách hàng; vì vậy kết luận mang tính minh họa phương pháp, không đại diện cho hành vi khách hàng ngân hàng thực tế.</li>
+        <li>Phân tích chuyển đổi chỉ dùng những khách đã được tiếp cận chiến dịch, vì khách chưa được tiếp cận không có kết quả chuyển đổi quan sát được trong chiến dịch.</li>
+        <li>Dữ liệu không có biến thời gian chiến dịch, nên báo cáo không thực hiện phân tích xu hướng theo tháng hay độ trôi hiệu quả theo thời gian.</li>
+        <li>Không có nhóm đối chứng ngẫu nhiên, vì vậy các mối liên hệ như “đăng nhập nhiều hơn → chuyển đổi cao hơn” là <strong>mối liên hệ thấy trong dữ liệu</strong>, không phải bằng chứng nhân quả.</li>
+        <li>Mô hình nền tảng “ai nên được ưu tiên” loại các biến phát sinh sau chiến dịch và không dùng kênh/sản phẩm để tránh trộn câu hỏi khách hàng với câu hỏi bối cảnh chiến dịch.</li>
+        <li>Khi thêm kênh và sản phẩm vào mô hình có thêm thông tin kênh và sản phẩm, mức bắt giữ chuyển đổi ở 20% đầu có thể đạt khoảng <strong>34.3%</strong> và mức hiệu quả <strong>1.71×</strong>; tuy nhiên đây là một bài toán khác và không được dùng để thay thế kết quả mô hình khách hàng thuần.</li>
+        <li>“Giảm 80.0% khối lượng liên hệ” chỉ là giảm số khách được liên hệ nếu chọn 20% đầu, <strong>không phải cam kết tiết kiệm đúng 80.0% chi phí</strong>, vì chi phí khác nhau theo kênh và có thể tồn tại chi phí cố định.</li>
+      </ul>
+    </div>
+  </details>
+</section>
+</main>
+
+<script>
+const segmentData = [{"name": "Hoạt động số", "rate": 4.456824512534819, "n": 359}, {"name": "Giá trị cao", "rate": 3.0303030303030303, "n": 66}, {"name": "Bán lẻ đại trà", "rate": 1.7382617382617382, "n": 5005}, {"name": "Tương tác thấp", "rate": 0.0, "n": 2}];
+const appData = [{"name": "1-5", "rate": 1.639344262295082, "n": 122}, {"name": "6-10", "rate": 1.3379872018615475, "n": 1719}, {"name": "11-15", "rate": 1.9328956965718453, "n": 2742}, {"name": "16-20", "rate": 2.813299232736573, "n": 782}, {"name": "21+", "rate": 7.462686567164178, "n": 67}];
+const channelData = [{"name": "Chi nhánh", "cvr": 4.180064308681672, "roi": 32.10075026795284, "cac": 71.76923076923077, "n": 622}, {"name": "Ứng dụng di động", "cvr": 2.7997886951928157, "roi": 589.0046034261565, "cac": 12.500943396226415, "n": 1893}, {"name": "Email", "cvr": 1.2718600953895072, "roi": 412.7186009538951, "cac": 15.725000000000001, "n": 1258}, {"name": "SMS", "cvr": 0.7900677200902935, "roi": -31.0258339603712, "cac": 56.957142857142856, "n": 886}, {"name": "Mạng xã hội", "cvr": 0.38809831824062097, "roi": -16.990081931867177, "cac": 154.6, "n": 773}];
+const productData = [{"name": "Bảo hiểm", "cvr": 1.615798922800718, "roi": 480.9006894528385, "cac": 37.87222222222223}, {"name": "Vay cá nhân", "cvr": 2.0054694621695535, "roi": 434.44901815237193, "cac": 33.679545454545455}, {"name": "Thẻ tín dụng", "cvr": 2.2418478260869565, "roi": 78.72089015804245, "cac": 30.774242424242424}, {"name": "Tiết kiệm", "cvr": 1.631321370309951, "roi": -15.336236090953067, "cac": 41.339999999999996}, {"name": "Tài khoản số", "cvr": 1.9444444444444444, "roi": -26.931106471816285, "cac": 34.214285714285715}];
+const decileData = [{"name": "Nhóm 1", "population": 10.014727540500736, "captured": 17.142857142857142, "rate": 3.308823529411765, "lift": 1.7117647058823529}, {"name": "Nhóm 2", "population": 20.029455081001473, "captured": 24.761904761904763, "rate": 1.4705882352941175, "lift": 1.2362745098039214}, {"name": "Nhóm 3", "population": 30.025773195876287, "captured": 33.33333333333333, "rate": 1.6574585635359116, "lift": 1.1101573676680971}, {"name": "Nhóm 4", "population": 40.02209131075111, "captured": 44.761904761904766, "rate": 2.209944751381215, "lift": 1.1184299294694877}, {"name": "Nhóm 5", "population": 50.01840942562592, "captured": 55.23809523809524, "rate": 2.0257826887661143, "lift": 1.104355293828978}, {"name": "Nhóm 6", "population": 60.014727540500736, "captured": 66.66666666666666, "rate": 2.209944751381215, "lift": 1.110838445807771}, {"name": "Nhóm 7", "population": 70.01104565537555, "captured": 79.04761904761905, "rate": 2.394106813996317, "lift": 1.1290735384345691}, {"name": "Nhóm 8", "population": 80.00736377025038, "captured": 87.61904761904762, "rate": 1.6574585635359116, "lift": 1.0951372909955515}, {"name": "Nhóm 9", "population": 90.00368188512519, "captured": 92.38095238095238, "rate": 0.9208103130755065, "lift": 1.026413036067362}, {"name": "Nhóm 10", "population": 100.0, "captured": 100.0, "rate": 1.4732965009208103, "lift": 1.0}];
+
+function bars(id, data, valueKey, suffix, maxOverride, colorClass) {
+  const root = document.getElementById(id);
+  const vals = data.map(d => d[valueKey]);
+  const max = maxOverride || Math.max(...vals) * 1.08 || 1;
+  root.innerHTML = data.map(d => `
+    <div class="bar-row">
+      <div class="bar-label">${d.name}</div>
+      <div class="bar-track"><div class="bar-fill ${colorClass||''}" style="width:${Math.max(0, d[valueKey])/max*100}%"></div></div>
+      <div class="bar-value">${Number(d[valueKey]).toFixed(2)}${suffix}</div>
+    </div>`).join('');
+}
+bars("segmentBars", segmentData, "rate", "%", 8, "green");
+bars("appBars", appData, "rate", "%", 8, "green");
+bars("decileBars", decileData, "rate", "%", 4, "");
+
+const productRoot = document.getElementById("productBars");
+const maxROI = Math.max(...productData.map(d=>Math.max(0,d.roi)));
+productRoot.innerHTML = productData.map(d => `
+  <div style="margin-bottom:14px">
+    <div style="display:flex;justify-content:space-between;gap:8px;font-size:13px">
+      <strong>${d.name}</strong>
+      <span>Chuyển đổi ${d.cvr.toFixed(2)}% • Hoàn vốn ${d.roi.toFixed(0)}%</span>
+    </div>
+    <div class="bar-track" style="margin-top:6px">
+      <div class="bar-fill ${d.roi<0?'red':'green'}" style="width:${d.roi<0?4:Math.max(5,d.roi/maxROI*100)}%"></div>
+    </div>
+  </div>`).join('');
+
+function scatterChart(svgId, rows) {
+  const svg = document.getElementById(svgId);
+  const W=650,H=370,L=62,R=25,T=28,B=55;
+  const xmax=Math.max(...rows.map(d=>d.cvr))*1.15;
+  const ymin=Math.min(-60, ...rows.map(d=>d.roi))*1.05;
+  const ymax=Math.max(...rows.map(d=>d.roi))*1.12;
+  const x=v=>L+v/xmax*(W-L-R);
+  const y=v=>T+(ymax-v)/(ymax-ymin)*(H-T-B);
+  let h='';
+  // axes/grid
+  [0,1,2,3,4].forEach(i=>{
+    const v=ymin+(ymax-ymin)*i/4; const yy=y(v);
+    h+=`<line x1="${L}" y1="${yy}" x2="${W-R}" y2="${yy}" stroke="#e1e8ed"/>`;
+    h+=`<text x="${L-8}" y="${yy+4}" text-anchor="end" font-size="11" fill="#657789">${Math.round(v)}%</text>`;
+  });
+  [0,1,2,3,4].forEach(i=>{
+    const v=xmax*i/4; const xx=x(v);
+    h+=`<line x1="${xx}" y1="${T}" x2="${xx}" y2="${H-B}" stroke="#edf1f4"/>`;
+    h+=`<text x="${xx}" y="${H-B+20}" text-anchor="middle" font-size="11" fill="#657789">${v.toFixed(1)}%</text>`;
+  });
+  const zeroY=y(0);
+  h+=`<line x1="${L}" y1="${zeroY}" x2="${W-R}" y2="${zeroY}" stroke="#9aabb7" stroke-width="1.3"/>`;
+  rows.forEach((d,i)=>{
+    const cx=x(d.cvr), cy=y(d.roi);
+    const r=Math.max(7, Math.min(18, Math.sqrt(d.n)/3));
+    h+=`<circle cx="${cx}" cy="${cy}" r="${r}" fill="#2864dc" fill-opacity=".72" stroke="#174e9f" stroke-width="1"/>`;
+    const dx = d.name==="Chi nhánh" ? -8 : 8;
+    const anchor = d.name==="Chi nhánh" ? "end" : "start";
+    h+=`<text x="${cx+dx}" y="${cy-9}" text-anchor="${anchor}" font-size="11" font-weight="700" fill="#172a3a">${d.name}</text>`;
+  });
+  h+=`<text x="${(L+W-R)/2}" y="${H-9}" text-anchor="middle" font-size="12" font-weight="700" fill="#657789">Tỷ lệ chuyển đổi</text>`;
+  h+=`<text x="15" y="${(T+H-B)/2}" text-anchor="middle" transform="rotate(-90 15 ${(T+H-B)/2})" font-size="12" font-weight="700" fill="#657789">Tỷ suất ROI</text>`;
+  svg.innerHTML=h;
+}
+scatterChart("channelScatter", channelData);
+
+function gainChart(svgId, rows) {
+  const svg=document.getElementById(svgId);
+  const W=650,H=370,L=58,R=24,T=24,B=50;
+  const points=[{population:0,captured:0}, ...rows];
+  const x=v=>L+v/100*(W-L-R);
+  const y=v=>T+(100-v)/100*(H-T-B);
+  let h='';
+  [0,20,40,60,80,100].forEach(v=>{
+    h+=`<line x1="${L}" y1="${y(v)}" x2="${W-R}" y2="${y(v)}" stroke="#e3eaef"/>`;
+    h+=`<text x="${L-8}" y="${y(v)+4}" text-anchor="end" font-size="11" fill="#657789">${v}%</text>`;
+    h+=`<text x="${x(v)}" y="${H-B+20}" text-anchor="middle" font-size="11" fill="#657789">${v}%</text>`;
+  });
+  h+=`<line x1="${x(0)}" y1="${y(0)}" x2="${x(100)}" y2="${y(100)}" stroke="#9aaab5" stroke-width="2" stroke-dasharray="6 5"/>`;
+  const path=points.map((d,i)=>`${i?'L':'M'} ${x(d.population)} ${y(d.captured)}`).join(' ');
+  h+=`<path d="${path}" fill="none" stroke="#16835d" stroke-width="3"/>`;
+  points.slice(1).forEach(d=>h+=`<circle cx="${x(d.population)}" cy="${y(d.captured)}" r="4" fill="#16835d"/>`);
+  h+=`<text x="${(L+W-R)/2}" y="${H-8}" text-anchor="middle" font-size="12" font-weight="700" fill="#657789">Tỷ lệ khách hàng được nhắm tới</text>`;
+  h+=`<text x="14" y="${(T+H-B)/2}" text-anchor="middle" transform="rotate(-90 14 ${(T+H-B)/2})" font-size="12" font-weight="700" fill="#657789">Tỷ lệ chuyển đổi được giữ lại</text>`;
+  h+=`<rect x="${W-205}" y="30" width="12" height="3" fill="#16835d"/><text x="${W-187}" y="35" font-size="11" fill="#657789">Mô hình xếp hạng</text>`;
+  h+=`<line x1="${W-205}" y1="52" x2="${W-193}" y2="52" stroke="#9aaab5" stroke-width="2" stroke-dasharray="5 3"/><text x="${W-187}" y="56" font-size="11" fill="#657789">Chọn ngẫu nhiên</text>`;
+  svg.innerHTML=h;
+}
+gainChart("gainChart", decileData);
+
+document.querySelectorAll('.nav a').forEach(a=>a.addEventListener('click',()=>{}));
+</script>
+</body>
+</html>
